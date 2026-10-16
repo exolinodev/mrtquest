@@ -26,6 +26,14 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+      - name: Mobiler Regressionstest
+        run: npm run test:mobile
+      - name: Screenshots bei Fehlern hochladen
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: mobile-report
+          path: mobile-report
       - uses: actions/upload-pages-artifact@v5
         with:
           path: dist

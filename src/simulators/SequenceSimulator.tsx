@@ -120,7 +120,9 @@ export function SequenceSimulator() {
       </Panel>
 
       <Panel title={tr('Pulssequenzdiagramm (schematisch)', 'Диаграмма импульсной последовательности (схематично)')} className="span-2">
-        <PulseDiagram sequence={s} te={protocol.te} ti={protocol.ti} etl={protocol.etl} flip={protocol.flip} />
+        <div className="scroll-x">
+          <PulseDiagram sequence={s} te={protocol.te} ti={protocol.ti} etl={protocol.etl} flip={protocol.flip} />
+        </div>
       </Panel>
 
       <Panel title={tr('Parameter', 'Параметры')}>

@@ -628,7 +628,7 @@ p {
 }
 .hero {
   display: grid;
-  grid-template-columns: 1fr 260px;
+  grid-template-columns: minmax(0, 1fr) 260px;
   gap: 2rem;
   align-items: center;
   padding: 1.6rem;
@@ -1882,13 +1882,13 @@ th {
     grid-column: span 2;
   }
   .profile-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 900px) {
   .app-shell {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .sidebar {
     position: fixed;
@@ -1929,19 +1929,19 @@ th {
     display: none;
   }
   .hero {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .kpi-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .theory {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .toc {
     position: static;
   }
   .console {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .console-controls {
     position: static;
@@ -1951,27 +1951,27 @@ th {
     grid-column: auto;
   }
   .scenario-header {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 @media (max-width: 680px) {
   .sim-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .span-2,
   .span-3 {
     grid-column: auto;
   }
   .profile-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .spin-fan {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     justify-items: center;
   }
   .image-pair {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   h1,
   .hero h1 {
@@ -1988,5 +1988,109 @@ th {
   *::after {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------- Mobile-Feinschliff
+ * Ergebnis des mobilen Regressionstests (npm run test:mobile):
+ * lange Komposita umbrechen, Button-Reihen umbrechen, Touch-Ziele ≥ 24 px.
+ */
+h1,
+h2,
+h3,
+.lead,
+.theory-body p,
+.theory-body li,
+.question-prompt,
+.option,
+.stat-label,
+.kpi-label,
+.module-sub,
+.scenario-task {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.row.gap {
+  flex-wrap: wrap;
+}
+
+.name-form .text-field {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+
+.theory-body,
+.console-center,
+.hero > * {
+  min-width: 0;
+}
+
+.toc a,
+.back-link,
+.next-module a,
+.checklist a {
+  display: inline-block;
+  padding: 0.2rem 0;
+  min-height: 24px;
+}
+
+@media (max-width: 680px) {
+  .toc li {
+    margin: 0.15rem 0;
+  }
+  .toc a {
+    padding: 0.35rem 0;
+  }
+  .num-field {
+    flex: 1 1 100px;
+  }
+}
+
+/* Breite Diagramme auf dem Handy horizontal scrollbar statt unlesbar klein */
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.level-badge {
+  white-space: nowrap;
+}
+.level-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.level-info {
+  min-width: 0;
+}
+.toc a {
+  display: block;
+}
+
+@media (max-width: 680px) {
+  .sim-canvas {
+    aspect-ratio: 1 / 1;
+  }
+  .scroll-x .pulse-diagram {
+    min-width: 600px;
+  }
+  .tabs {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+  .tabs button {
+    flex: 1 1 auto;
+    padding: 0.6rem 0.7rem;
+    white-space: normal;
+  }
+  .image-placeholder {
+    aspect-ratio: auto;
+    min-height: 72px;
+  }
+  .lang-toggle button {
+    padding: 0.3rem 0.45rem;
+  }
+  .formula .katex {
+    font-size: 0.98em;
   }
 }

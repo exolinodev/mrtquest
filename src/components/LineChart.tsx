@@ -1,4 +1,4 @@
-import { useId, useMemo } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { numberLocale } from '../i18n/format';
 
 export interface Series {
@@ -30,7 +30,9 @@ interface Props {
   ariaLabel: string;
 }
 
-const W = 640;
+/** Maximale Zeichenbreite; auf schmalen Bildschirmen wird die tatsächliche Breite genutzt, damit Beschriftungen lesbar bleiben. */
+const MAX_W = 640;
+const MIN_W = 280;
 const PAD = { l: 48, r: 16, t: 14, b: 40 };
 
 function ticks([a, b]: [number, number], count: number): number[] {
@@ -46,14 +48,29 @@ function ticks([a, b]: [number, number], count: number): number[] {
 /** Schlankes SVG-Liniendiagramm für Relaxations- und Profilkurven. */
 export function LineChart({ series, xDomain, yDomain, xLabel, yLabel, markers = [], height = 280, xTicks = 6, yTicks = 5, zeroLine = false, ariaLabel }: Props) {
   const clipId = useId();
-  const H = height;
+  const figRef = useRef<HTMLElement>(null);
+  const [W, setW] = useState(MAX_W);
+  useEffect(() => {
+    const el = figRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(([entry]) => {
+      const w = Math.round(entry.contentRect.width);
+      if (w > 0) setW(Math.max(MIN_W, Math.min(MAX_W, w)));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const narrow = W < 440;
+  const H = Math.round(height * Math.max(0.78, W / MAX_W));
+  const xTickCount = narrow ? Math.min(xTicks, 4) : xTicks;
+  const yTickCount = narrow ? Math.min(yTicks, 4) : yTicks;
   const sx = (x: number) => PAD.l + ((x - xDomain[0]) / (xDomain[1] - xDomain[0])) * (W - PAD.l - PAD.r);
   const sy = (y: number) => H - PAD.b - ((y - yDomain[0]) / (yDomain[1] - yDomain[0])) * (H - PAD.t - PAD.b);
-  const xt = useMemo(() => ticks(xDomain, xTicks), [xDomain, xTicks]);
-  const yt = useMemo(() => ticks(yDomain, yTicks), [yDomain, yTicks]);
+  const xt = useMemo(() => ticks(xDomain, xTickCount), [xDomain, xTickCount]);
+  const yt = useMemo(() => ticks(yDomain, yTickCount), [yDomain, yTickCount]);
 
   return (
-    <figure className="chart">
+    <figure className="chart" ref={figRef}>
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={ariaLabel}>
         <defs>
           <clipPath id={clipId}>
@@ -92,7 +109,7 @@ export function LineChart({ series, xDomain, yDomain, xLabel, yLabel, markers = 
           {markers.map((m, i) => (
             <g key={`${m.label}-${i}`}>
               <line x1={sx(m.x)} x2={sx(m.x)} y1={PAD.t} y2={H - PAD.b} stroke={m.color ?? 'var(--accent)'} strokeWidth={1.5} strokeDasharray="3 3" />
-              <text x={sx(m.x) + 4} y={PAD.t + 12} className="chart-marker" fill={m.color ?? 'var(--accent)'}>
+              <text x={sx(m.x) + 4} y={PAD.t + 12 + (i % 2) * 13} className="chart-marker" fill={m.color ?? 'var(--accent)'}>
                 {m.label}
               </text>
             </g>

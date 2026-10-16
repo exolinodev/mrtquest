@@ -12,6 +12,7 @@ npm run dev       # Entwicklungsserver auf http://localhost:5173
 npm run build     # Typecheck + Produktions-Build nach dist/
 npm run preview   # Build lokal ausliefern (http://localhost:4173)
 npm test          # Unit-Tests (Physik, Spiellogik, Lösbarkeit der Szenarien)
+npm run test:mobile  # Mobiler Regressionstest (nach npm run build, nutzt lokales Chrome)
 ```
 
 Der Build nutzt relative Pfade (`base: './'`) und einen Hash-Router. `dist/` lässt sich daher auf jedem statischen Webserver und in jedem Unterverzeichnis ausliefern. Jeder Push auf `main` wird per GitHub Actions getestet, gebaut und auf GitHub Pages veröffentlicht (`.github/workflows/deploy.yml`).
@@ -33,6 +34,10 @@ Dazu kommen:
 - **Klinische Fälle**: sechs Szenarien (MS-FLAIR, Klaustrophobie, STIR bei 3 T unter SAR-Limit, Leber im Atemanhalt, Schlaganfall-EPI, Neurostimulator mit 1 W/kg). In der Protokoll-Konsole werden Kontrast, SNR, Auflösung, Messzeit, SAR und Artefakte live berechnet. Pflichtkriterien entscheiden über das Bestehen, Bonuskriterien über bis zu drei Sterne.
 - **Challenges**: pro Modul acht Aufgaben aus Verständnisfragen und Rechen-Puzzles. Rechen-Puzzles erzeugen ihre Werte bei jedem Durchlauf neu.
 - **Abschlussprüfung**: 21 gemischte Aufgaben. Sie wird freigeschaltet, sobald jede Modul-Challenge einmal gespielt wurde.
+
+## Mobiler Regressionstest
+
+`npm run test:mobile` öffnet jede Seite (Übersicht, Theorie, Simulatoren, Challenges, alle klinischen Fälle, Labor, Prüfung, Profil, geöffnete Navigation) in beiden Sprachen bei 360, 390 und 768 px Breite – insgesamt 244 Seitenansichten. Geprüft werden horizontales Überlaufen und aus dem Bild ragende Elemente, Touch-Ziele unter 24 × 24 px (WCAG 2.5.8) sowie Konsolen- und Laufzeitfehler. Ganzseitige Screenshots landen in `mobile-report/` zur visuellen Durchsicht. Mit `VIEWPORTS=360 LANGS=ru` lässt sich der Lauf eingrenzen; `CHROME_PATH` überschreibt den Browserpfad. Der Test läuft auch in GitHub Actions vor jeder Veröffentlichung.
 
 ## Sprachen
 

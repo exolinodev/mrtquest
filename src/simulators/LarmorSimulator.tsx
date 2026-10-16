@@ -6,6 +6,9 @@ import { fmt, larmorAngular, larmorMHz, spinExcess, zeemanEnergy } from '../phys
 import { useGame } from '../game/GameContext';
 import { useLang } from '../i18n/LanguageContext';
 
+/** Zahl mit Dezimalkomma für KaTeX ({,} verhindert zusätzlichen Abstand). */
+const texNum = (v: number, digits: number) => v.toFixed(digits).replace('.', '{,}');
+
 interface Challenge {
   b0: number;
   nucleusId: string;
@@ -67,7 +70,7 @@ export function LarmorSimulator() {
     const resize = () => {
       const w = canvas.clientWidth;
       canvas.width = w * dpr;
-      canvas.height = w * 0.75 * dpr;
+      canvas.height = canvas.clientHeight * dpr;
     };
     resize();
     window.addEventListener('resize', resize);
@@ -83,9 +86,11 @@ export function LarmorSimulator() {
       const H = canvas.height;
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, W, H);
+      // Schmale Canvas (Handy, quadratisch): Oszilloskop als Streifen unten statt oben rechts
+      const narrow = W / dpr < 480;
       const cx = W / 2;
-      const cy = H * 0.62;
-      const R = Math.min(W, H) * 0.36;
+      const cy = narrow ? H * 0.5 : H * 0.62;
+      const R = Math.min(W, H) * (narrow ? 0.3 : 0.36);
       const tilt = 0.32; // Projektionsneigung
       const proj = (x: number, y: number, z: number) => [cx + x * R, cy - z * R + y * R * tilt] as const;
 
@@ -169,10 +174,12 @@ export function LarmorSimulator() {
       ctx.fill();
 
       // Signal-Oszilloskop (Quermagnetisierung → induzierte Spannung)
-      const sw = W * 0.28;
-      const sh = H * 0.18;
-      const sx0 = W - sw - 12 * dpr;
-      const sy0 = 12 * dpr;
+      // Fenster mindestens so breit wie die Beschriftung (schmale Handy-Canvas)
+      const labelW = ctx.measureText(coilLabel).width + 12 * dpr;
+      const sw = narrow ? W - 24 * dpr : Math.min(W * 0.6, Math.max(W * 0.28, labelW));
+      const sh = narrow ? H * 0.12 : H * 0.18;
+      const sx0 = narrow ? 12 * dpr : W - sw - 12 * dpr;
+      const sy0 = narrow ? H - sh - 26 * dpr : 12 * dpr;
       ctx.fillStyle = 'rgba(15,23,42,0.8)';
       ctx.fillRect(sx0, sy0, sw, sh);
       ctx.strokeStyle = 'rgba(52,211,153,0.9)';
@@ -268,7 +275,7 @@ export function LarmorSimulator() {
         </div>
         <TeX
           block
-          tex={`f_0 = \\bar\\gamma B_0 = ${nucleus.gammaBar.toFixed(3)}\\,\\tfrac{\\text{${MHz}}}{\\text{${T}}} \\cdot ${b0.toFixed(2)}\\,\\text{${T}} = ${f0.toFixed(2)}\\,\\text{${MHz}}`}
+          tex={`f_0 = \\bar\\gamma B_0 = ${texNum(nucleus.gammaBar, 3)}\\,\\tfrac{\\text{${MHz}}}{\\text{${T}}} \\cdot ${texNum(b0, 2)}\\,\\text{${T}} = ${texNum(f0, 2)}\\,\\text{${MHz}}`}
         />
         <p className="small muted">{loc(nucleus.note)}</p>
       </Panel>
