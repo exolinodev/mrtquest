@@ -1,5 +1,7 @@
 # MRT-Quest
 
+**Live spielen:** https://exolinodev.github.io/mrtquest/
+
 Browserbasierte Lern-App zu MRT-Physik und Gerätetechnik für Medizininformatik-Studierende. Gebaut mit React 18, TypeScript und Vite. Der Fortschritt (XP, Level, Abzeichen) wird lokal im Browser gespeichert; es gibt kein Backend.
 
 ## Starten
@@ -12,7 +14,7 @@ npm run preview   # Build lokal ausliefern (http://localhost:4173)
 npm test          # Unit-Tests (Physik, Spiellogik, Lösbarkeit der Szenarien)
 ```
 
-Der Build nutzt relative Pfade (`base: './'`) und einen Hash-Router. `dist/` lässt sich daher auf jedem statischen Webserver und in jedem Unterverzeichnis ausliefern.
+Der Build nutzt relative Pfade (`base: './'`) und einen Hash-Router. `dist/` lässt sich daher auf jedem statischen Webserver und in jedem Unterverzeichnis ausliefern. Jeder Push auf `main` wird per GitHub Actions getestet, gebaut und auf GitHub Pages veröffentlicht (`.github/workflows/deploy.yml`).
 
 ## Inhalte
 
