@@ -1,4 +1,5 @@
 import { useId, useMemo } from 'react';
+import { numberLocale } from '../i18n/format';
 
 export interface Series {
   id: string;
@@ -63,7 +64,7 @@ export function LineChart({ series, xDomain, yDomain, xLabel, yLabel, markers = 
           <g key={`y${v}`}>
             <line x1={PAD.l} x2={W - PAD.r} y1={sy(v)} y2={sy(v)} className="chart-grid" />
             <text x={PAD.l - 6} y={sy(v)} className="chart-tick" textAnchor="end" dominantBaseline="middle">
-              {v.toLocaleString('de-DE')}
+              {v.toLocaleString(numberLocale())}
             </text>
           </g>
         ))}
@@ -71,7 +72,7 @@ export function LineChart({ series, xDomain, yDomain, xLabel, yLabel, markers = 
           <g key={`x${v}`}>
             <line x1={sx(v)} x2={sx(v)} y1={PAD.t} y2={H - PAD.b} className="chart-grid" />
             <text x={sx(v)} y={H - PAD.b + 16} className="chart-tick" textAnchor="middle">
-              {v.toLocaleString('de-DE')}
+              {v.toLocaleString(numberLocale())}
             </text>
           </g>
         ))}

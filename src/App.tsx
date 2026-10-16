@@ -1,6 +1,7 @@
 import { Layout, ToastStack } from './components/Layout';
 import { useRoute } from './components/router';
 import { GameProvider } from './game/GameContext';
+import { LanguageProvider } from './i18n/LanguageContext';
 import { Dashboard } from './pages/Dashboard';
 import { ModulePage } from './pages/ModulePage';
 import { ClinicPage, ExamPage, LabPage, ProfilePage } from './pages/OtherPages';
@@ -25,11 +26,13 @@ function Routes({ route }: { route: string[] }) {
 export default function App() {
   const route = useRoute();
   return (
-    <GameProvider>
-      <Layout route={route}>
-        <Routes route={route} />
-      </Layout>
-      <ToastStack />
-    </GameProvider>
+    <LanguageProvider>
+      <GameProvider>
+        <Layout route={route}>
+          <Routes route={route} />
+        </Layout>
+        <ToastStack />
+      </GameProvider>
+    </LanguageProvider>
   );
 }

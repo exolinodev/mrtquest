@@ -6,6 +6,7 @@
  * - Relaxationszeiten: Stanisz et al., MRM 54:507 (2005); Bojorquez et al., MRI 35:69 (2017)
  * - SAR-Grenzwerte: IEC 60601-2-33 (Ganzkörper, 6-min-Mittelung)
  */
+import type { Loc } from '../i18n/format';
 
 export const PLANCK = 6.62607015e-34; // J·s
 export const HBAR = PLANCK / (2 * Math.PI);
@@ -17,7 +18,9 @@ export const FAT_WATER_SHIFT_PPM = 3.5;
 
 export interface Nucleus {
   id: string;
-  label: string;
+  /** Kurzsymbol, z. B. ¹H */
+  symbol: string;
+  label: Loc;
   /** γ/2π in MHz/T */
   gammaBar: number;
   spin: string;
@@ -25,54 +28,74 @@ export interface Nucleus {
   abundance: number;
   /** relative Sensitivität gegenüber ¹H bei gleicher Feldstärke und Teilchenzahl */
   relSensitivity: number;
-  note: string;
+  note: Loc;
 }
 
 export const NUCLEI: Nucleus[] = [
   {
     id: 'H1',
-    label: '¹H (Proton)',
+    symbol: '¹H',
+    label: { de: '¹H (Proton)', uk: '¹H (протон)' },
     gammaBar: 42.577,
     spin: '1/2',
     abundance: 99.98,
     relSensitivity: 1,
-    note: 'Standard der klinischen MRT: in Wasser und Fett allgegenwärtig, höchstes γ aller stabilen Kerne.',
+    note: {
+      de: 'Standard der klinischen MRT: in Wasser und Fett allgegenwärtig, höchstes γ aller stabilen Kerne.',
+      uk: 'Стандарт клінічної МРТ: присутній усюди у воді та жирі, найвище γ серед стабільних ядер.',
+    },
   },
   {
     id: 'F19',
-    label: '¹⁹F',
+    symbol: '¹⁹F',
+    label: { de: '¹⁹F', uk: '¹⁹F' },
     gammaBar: 40.052,
     spin: '1/2',
     abundance: 100,
     relSensitivity: 0.83,
-    note: 'Kaum endogen vorhanden – ideal für Kontrastmittel- und Tracer-Bildgebung ohne Hintergrund.',
+    note: {
+      de: 'Kaum endogen vorhanden – ideal für Kontrastmittel- und Tracer-Bildgebung ohne Hintergrund.',
+      uk: 'Майже відсутній в організмі – ідеальний для візуалізації контрастних речовин і трейсерів без фону.',
+    },
   },
   {
     id: 'P31',
-    label: '³¹P',
+    symbol: '³¹P',
+    label: { de: '³¹P', uk: '³¹P' },
     gammaBar: 17.235,
     spin: '1/2',
     abundance: 100,
     relSensitivity: 0.066,
-    note: 'Spektroskopie des Energiestoffwechsels (ATP, Phosphokreatin), z. B. im Muskel.',
+    note: {
+      de: 'Spektroskopie des Energiestoffwechsels (ATP, Phosphokreatin), z. B. im Muskel.',
+      uk: "Спектроскопія енергетичного обміну (АТФ, фосфокреатин), напр. у м’язах.",
+    },
   },
   {
     id: 'Na23',
-    label: '²³Na',
+    symbol: '²³Na',
+    label: { de: '²³Na', uk: '²³Na' },
     gammaBar: 11.262,
     spin: '3/2',
     abundance: 100,
     relSensitivity: 0.093,
-    note: 'Natrium-Bildgebung: Marker für Zellintegrität, sehr kurze T2-Komponenten.',
+    note: {
+      de: 'Natrium-Bildgebung: Marker für Zellintegrität, sehr kurze T2-Komponenten.',
+      uk: 'Натрієва візуалізація: маркер цілісності клітин, дуже короткі T2-компоненти.',
+    },
   },
   {
     id: 'C13',
-    label: '¹³C',
+    symbol: '¹³C',
+    label: { de: '¹³C', uk: '¹³C' },
     gammaBar: 10.708,
     spin: '1/2',
     abundance: 1.1,
     relSensitivity: 0.016,
-    note: 'Geringe natürliche Häufigkeit; mit Hyperpolarisation für Stoffwechsel-Bildgebung nutzbar.',
+    note: {
+      de: 'Geringe natürliche Häufigkeit; mit Hyperpolarisation für Stoffwechsel-Bildgebung nutzbar.',
+      uk: 'Низька природна поширеність; з гіперполяризацією придатний для метаболічної візуалізації.',
+    },
   },
 ];
 
@@ -93,7 +116,7 @@ export interface TissueParams {
 
 export interface Tissue {
   id: TissueId;
-  label: string;
+  label: Loc;
   color: string;
   params: Record<FieldStrength, TissueParams>;
 }
@@ -101,7 +124,7 @@ export interface Tissue {
 export const TISSUES: Record<TissueId, Tissue> = {
   wm: {
     id: 'wm',
-    label: 'Weiße Substanz',
+    label: { de: 'Weiße Substanz', uk: 'Біла речовина' },
     color: '#e2e8f0',
     params: {
       1.5: { t1: 780, t2: 80, t2star: 55, pd: 0.69 },
@@ -110,7 +133,7 @@ export const TISSUES: Record<TissueId, Tissue> = {
   },
   gm: {
     id: 'gm',
-    label: 'Graue Substanz',
+    label: { de: 'Graue Substanz', uk: 'Сіра речовина' },
     color: '#94a3b8',
     params: {
       1.5: { t1: 1100, t2: 95, t2star: 65, pd: 0.8 },
@@ -119,7 +142,7 @@ export const TISSUES: Record<TissueId, Tissue> = {
   },
   csf: {
     id: 'csf',
-    label: 'Liquor (CSF)',
+    label: { de: 'Liquor (CSF)', uk: 'Ліквор (СМР)' },
     color: '#38bdf8',
     params: {
       1.5: { t1: 4000, t2: 2000, t2star: 1000, pd: 1.0 },
@@ -128,7 +151,7 @@ export const TISSUES: Record<TissueId, Tissue> = {
   },
   fat: {
     id: 'fat',
-    label: 'Fettgewebe',
+    label: { de: 'Fettgewebe', uk: 'Жирова тканина' },
     color: '#facc15',
     params: {
       1.5: { t1: 260, t2: 85, t2star: 40, pd: 0.9 },
@@ -137,7 +160,7 @@ export const TISSUES: Record<TissueId, Tissue> = {
   },
   muscle: {
     id: 'muscle',
-    label: 'Muskel',
+    label: { de: 'Muskel', uk: "М’яз" },
     color: '#f87171',
     params: {
       1.5: { t1: 1000, t2: 44, t2star: 30, pd: 0.75 },
@@ -146,7 +169,7 @@ export const TISSUES: Record<TissueId, Tissue> = {
   },
   liver: {
     id: 'liver',
-    label: 'Leber',
+    label: { de: 'Leber', uk: 'Печінка' },
     color: '#fb923c',
     params: {
       1.5: { t1: 580, t2: 46, t2star: 30, pd: 0.75 },
@@ -155,7 +178,7 @@ export const TISSUES: Record<TissueId, Tissue> = {
   },
   lesion: {
     id: 'lesion',
-    label: 'Läsion / Ödem',
+    label: { de: 'Läsion / Ödem', uk: 'Вогнище / набряк' },
     color: '#c084fc',
     params: {
       1.5: { t1: 1350, t2: 180, t2star: 110, pd: 0.86 },
@@ -164,7 +187,7 @@ export const TISSUES: Record<TissueId, Tissue> = {
   },
   blood: {
     id: 'blood',
-    label: 'Blut (venös)',
+    label: { de: 'Blut (venös)', uk: 'Кров (венозна)' },
     color: '#fb7185',
     params: {
       1.5: { t1: 1440, t2: 180, t2star: 60, pd: 0.85 },

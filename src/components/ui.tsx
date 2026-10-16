@@ -1,4 +1,6 @@
 import { useId, type ReactNode } from 'react';
+import { numberLocale } from '../i18n/format';
+import { useLang } from '../i18n/LanguageContext';
 import { RichText } from './RichText';
 
 interface SliderProps {
@@ -21,7 +23,7 @@ export function Slider({ label, value, min, max, step = 1, unit, onChange, forma
       <div className="slider-head">
         <label htmlFor={id}>{label}</label>
         <output htmlFor={id}>
-          {format ? format(value) : value.toLocaleString('de-DE')}
+          {format ? format(value) : value.toLocaleString(numberLocale())}
           {unit && <span className="unit"> {unit}</span>}
         </output>
       </div>
@@ -124,8 +126,9 @@ export function ProgressBar({ value, label, color }: { value: number; label?: st
 }
 
 export function Stars({ count, max = 3 }: { count: number; max?: number }) {
+  const { tr } = useLang();
   return (
-    <span className="stars" aria-label={`${count} von ${max} Sternen`}>
+    <span className="stars" aria-label={tr(`${count} von ${max} Sternen`, `${count} з ${max} зірок`)}>
       {Array.from({ length: max }, (_, i) => (
         <span key={i} className={i < count ? 'star on' : 'star'}>
           ★

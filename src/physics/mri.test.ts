@@ -94,7 +94,8 @@ describe('FFT', () => {
 describe('Protokollmodell', () => {
   it('Standard-T2-TSE ist plausibel', () => {
     const m = computeMetrics(DEFAULT_PROTOCOL, ANATOMY.brain);
-    expect(m.weighting).toContain('T2');
+    expect(m.weighting.de).toContain('T2');
+    expect(m.weighting.uk).toContain('T2');
     expect(m.scanTimeS).toBeGreaterThan(30);
     expect(m.scanTimeS).toBeLessThan(180);
     expect(m.sar).toBeGreaterThan(0.5);
@@ -119,7 +120,7 @@ describe('Protokollmodell', () => {
     const ti = nullPointTI(TISSUES.csf.params[1.5].t1, 9000);
     const m = computeMetrics({ ...DEFAULT_PROTOCOL, sequence: 'IR', tr: 9000, ti, te: 100 }, ANATOMY.brain);
     expect(m.signals.csf).toBeLessThan(0.01);
-    expect(m.weighting).toContain('FLAIR');
+    expect(m.weighting.de).toContain('FLAIR');
   });
   it('synthetisiert ein endliches Bild', () => {
     const m = computeMetrics(DEFAULT_PROTOCOL, ANATOMY.brain);

@@ -1,4 +1,5 @@
 import { ALL_SIMULATORS, MODULES, type ModuleId } from '../content/modules';
+import type { Loc } from '../i18n/format';
 import { SCENARIOS } from '../content/scenarios';
 import { levelFromXp } from './levels';
 import type { GameState } from './types';
@@ -7,8 +8,8 @@ export type BadgeTier = 'bronze' | 'silver' | 'gold';
 
 export interface BadgeDef {
   id: string;
-  title: string;
-  description: string;
+  title: Loc;
+  description: Loc;
   icon: string;
   tier: BadgeTier;
   /** Bonus-XP bei Freischaltung */
@@ -18,21 +19,21 @@ export interface BadgeDef {
 
 const moduleMastered = (s: GameState, id: ModuleId) => (s.modules[id]?.bestScore ?? 0) >= 0.8;
 
-const MODULE_BADGES: Record<ModuleId, { title: string; icon: string }> = {
-  kernspin: { title: 'Larmor-Meister:in', icon: '🧲' },
-  relaxation: { title: 'Relaxations-Profi', icon: '⏳' },
-  ortskodierung: { title: 'Gradienten-Guru', icon: '📐' },
-  kraum: { title: 'Fourier-Flüsterer:in', icon: '🌀' },
-  sequenzen: { title: 'Sequenz-Architekt:in', icon: '📈' },
-  qualitaet: { title: 'Qualitäts-Wächter:in', icon: '🛡️' },
-  hardware: { title: 'Technik-Insider:in', icon: '🏥' },
+const MODULE_BADGES: Record<ModuleId, { title: Loc; icon: string }> = {
+  kernspin: { title: { de: 'Larmor-Meister:in', uk: 'Майстер Лармора' }, icon: '🧲' },
+  relaxation: { title: { de: 'Relaxations-Profi', uk: 'Профі релаксації' }, icon: '⏳' },
+  ortskodierung: { title: { de: 'Gradienten-Guru', uk: 'Гуру градієнтів' }, icon: '📐' },
+  kraum: { title: { de: 'Fourier-Flüsterer:in', uk: 'Заклинач Фур’є' }, icon: '🌀' },
+  sequenzen: { title: { de: 'Sequenz-Architekt:in', uk: 'Архітектор послідовностей' }, icon: '📈' },
+  qualitaet: { title: { de: 'Qualitäts-Wächter:in', uk: 'Вартовий якості' }, icon: '🛡️' },
+  hardware: { title: { de: 'Technik-Insider:in', uk: 'Знавець апаратури' }, icon: '🏥' },
 };
 
 export const BADGES: BadgeDef[] = [
   {
     id: 'erste-schritte',
-    title: 'Erste Schritte',
-    description: 'Schließe deine erste Challenge ab.',
+    title: { de: 'Erste Schritte', uk: 'Перші кроки' },
+    description: { de: 'Schließe deine erste Challenge ab.', uk: 'Заверши своє перше завдання.' },
     icon: '👣',
     tier: 'bronze',
     xp: 20,
@@ -40,8 +41,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'perfektionist',
-    title: 'Perfektionist:in',
-    description: 'Beende eine Modul-Challenge mit 100 %.',
+    title: { de: 'Perfektionist:in', uk: 'Перфекціоніст' },
+    description: { de: 'Beende eine Modul-Challenge mit 100 %.', uk: 'Заверши завдання модуля на 100 %.' },
     icon: '💎',
     tier: 'silver',
     xp: 40,
@@ -49,8 +50,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'theorie-fan',
-    title: 'Bücherwurm',
-    description: 'Lies alle Theorie-Kapitel vollständig.',
+    title: { de: 'Bücherwurm', uk: 'Книголюб' },
+    description: { de: 'Lies alle Theorie-Kapitel vollständig.', uk: 'Прочитай усі теоретичні розділи повністю.' },
     icon: '📚',
     tier: 'silver',
     xp: 40,
@@ -59,7 +60,10 @@ export const BADGES: BadgeDef[] = [
   ...MODULES.map<BadgeDef>((m) => ({
     id: `meister-${m.id}`,
     title: MODULE_BADGES[m.id].title,
-    description: `Erreiche mindestens 80 % in der Challenge „${m.title}“.`,
+    description: {
+      de: `Erreiche mindestens 80 % in der Challenge „${m.title.de}“.`,
+      uk: `Набери щонайменше 80 % у завданні «${m.title.uk}».`,
+    },
     icon: MODULE_BADGES[m.id].icon,
     tier: 'silver',
     xp: 30,
@@ -67,8 +71,8 @@ export const BADGES: BadgeDef[] = [
   })),
   {
     id: 'grand-slam',
-    title: 'Grand Slam',
-    description: 'Meistere alle sieben Module mit mindestens 80 %.',
+    title: { de: 'Grand Slam', uk: 'Великий шолом' },
+    description: { de: 'Meistere alle sieben Module mit mindestens 80 %.', uk: 'Опануй усі сім модулів щонайменше на 80 %.' },
     icon: '🏆',
     tier: 'gold',
     xp: 150,
@@ -76,8 +80,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'simulator-entdecker',
-    title: 'Simulator-Entdecker:in',
-    description: 'Öffne jeden virtuellen Simulator mindestens einmal.',
+    title: { de: 'Simulator-Entdecker:in', uk: 'Дослідник симуляторів' },
+    description: { de: 'Öffne jeden virtuellen Simulator mindestens einmal.', uk: 'Відкрий кожен віртуальний симулятор хоча б раз.' },
     icon: '🔭',
     tier: 'silver',
     xp: 40,
@@ -85,8 +89,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'combo-5',
-    title: 'Im Fluss',
-    description: '5 richtige Antworten in Folge.',
+    title: { de: 'Im Fluss', uk: 'У потоці' },
+    description: { de: '5 richtige Antworten in Folge.', uk: '5 правильних відповідей поспіль.' },
     icon: '🔥',
     tier: 'bronze',
     xp: 20,
@@ -94,8 +98,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'combo-15',
-    title: 'Kohärente Präzession',
-    description: '15 richtige Antworten in Folge – keine Dephasierung!',
+    title: { de: 'Kohärente Präzession', uk: 'Когерентна прецесія' },
+    description: { de: '15 richtige Antworten in Folge – keine Dephasierung!', uk: '15 правильних відповідей поспіль – жодного дефазування!' },
     icon: '🌊',
     tier: 'gold',
     xp: 80,
@@ -103,8 +107,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'fleissig',
-    title: 'Fleißige Spins',
-    description: 'Beantworte insgesamt 100 Fragen.',
+    title: { de: 'Fleißige Spins', uk: 'Працьовиті спіни' },
+    description: { de: 'Beantworte insgesamt 100 Fragen.', uk: 'Дай відповідь загалом на 100 запитань.' },
     icon: '🐝',
     tier: 'silver',
     xp: 50,
@@ -112,8 +116,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'treffsicher',
-    title: 'Treffsicher',
-    description: 'Mindestens 85 % Trefferquote bei 40 oder mehr Antworten.',
+    title: { de: 'Treffsicher', uk: 'Влучний' },
+    description: { de: 'Mindestens 85 % Trefferquote bei 40 oder mehr Antworten.', uk: 'Щонайменше 85 % влучності при 40 або більше відповідях.' },
     icon: '🎯',
     tier: 'gold',
     xp: 80,
@@ -121,8 +125,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'resonanz',
-    title: 'In Resonanz',
-    description: 'Treffe im Präzessions-Labor die Resonanzfrequenz.',
+    title: { de: 'In Resonanz', uk: 'У резонансі' },
+    description: { de: 'Treffe im Präzessions-Labor die Resonanzfrequenz.', uk: 'Влуч у резонансну частоту в лабораторії прецесії.' },
     icon: '📡',
     tier: 'bronze',
     xp: 20,
@@ -130,8 +134,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'nullpunkt-jaeger',
-    title: 'Nullpunkt-Jäger:in',
-    description: 'Unterdrücke den Liquor per FLAIR-Inversionszeit (±5 %).',
+    title: { de: 'Nullpunkt-Jäger:in', uk: 'Мисливець за нульовою точкою' },
+    description: { de: 'Unterdrücke den Liquor per FLAIR-Inversionszeit (±5 %).', uk: 'Пригніть ліквор за допомогою часу інверсії FLAIR (±5 %).' },
     icon: '🕳️',
     tier: 'silver',
     xp: 30,
@@ -139,8 +143,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'fett-weg',
-    title: 'Fettfrei',
-    description: 'Finde die STIR-Inversionszeit, die Fett nullt (±5 %).',
+    title: { de: 'Fettfrei', uk: 'Без жиру' },
+    description: { de: 'Finde die STIR-Inversionszeit, die Fett nullt (±5 %).', uk: 'Знайди час інверсії STIR, який обнуляє жир (±5 %).' },
     icon: '🧈',
     tier: 'silver',
     xp: 30,
@@ -148,8 +152,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'ernst',
-    title: 'Ernsthaft optimiert',
-    description: 'Stelle im GRE den Ernst-Winkel der weißen Substanz ein (±2°).',
+    title: { de: 'Ernsthaft optimiert', uk: 'Оптимізовано за Ернстом' },
+    description: { de: 'Stelle im GRE den Ernst-Winkel der weißen Substanz ein (±2°).', uk: 'Встанови в GRE кут Ернста для білої речовини (±2°).' },
     icon: '📐',
     tier: 'bronze',
     xp: 20,
@@ -157,8 +161,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'fischgraet',
-    title: 'Fischgrät-Künstler:in',
-    description: 'Erzeuge im K-Raum-Studio ein Spike-Artefakt.',
+    title: { de: 'Fischgrät-Künstler:in', uk: 'Майстер «ялинки»' },
+    description: { de: 'Erzeuge im K-Raum-Studio ein Spike-Artefakt.', uk: 'Створи в студії k-простору артефакт спайка.' },
     icon: '🐟',
     tier: 'bronze',
     xp: 15,
@@ -166,8 +170,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'basiswelle',
-    title: 'Wellenreiter:in',
-    description: 'Untersuche einzelne k-Raum-Punkte und ihre Ortsfrequenz-Muster.',
+    title: { de: 'Wellenreiter:in', uk: 'Серфер хвиль' },
+    description: { de: 'Untersuche einzelne k-Raum-Punkte und ihre Ortsfrequenz-Muster.', uk: 'Досліди окремі точки k-простору та їхні візерунки просторових частот.' },
     icon: '〰️',
     tier: 'bronze',
     xp: 15,
@@ -175,8 +179,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'schichtwerker',
-    title: 'Präzisions-Schichtwerker:in',
-    description: 'Stelle in der Gradienten-Werkbank exakt die Zielschicht ein.',
+    title: { de: 'Präzisions-Schichtwerker:in', uk: 'Майстер точних зрізів' },
+    description: { de: 'Stelle in der Gradienten-Werkbank exakt die Zielschicht ein.', uk: 'Точно налаштуй цільовий зріз у градієнтній майстерні.' },
     icon: '🔪',
     tier: 'bronze',
     xp: 20,
@@ -184,8 +188,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'klinik-debut',
-    title: 'Klinik-Debüt',
-    description: 'Schließe dein erstes klinisches Szenario ab.',
+    title: { de: 'Klinik-Debüt', uk: 'Клінічний дебют' },
+    description: { de: 'Schließe dein erstes klinisches Szenario ab.', uk: 'Заверши свій перший клінічний сценарій.' },
     icon: '🩺',
     tier: 'bronze',
     xp: 20,
@@ -193,8 +197,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'drei-sterne',
-    title: 'Optimales Protokoll',
-    description: 'Erreiche in einem Szenario alle drei Sterne.',
+    title: { de: 'Optimales Protokoll', uk: 'Оптимальний протокол' },
+    description: { de: 'Erreiche in einem Szenario alle drei Sterne.', uk: 'Отримай у сценарії всі три зірки.' },
     icon: '⭐',
     tier: 'silver',
     xp: 40,
@@ -202,8 +206,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'sar-waechter',
-    title: 'SAR-Wächter:in',
-    description: 'Löse ein 3-Tesla-Szenario im Normal Mode (≤ 2 W/kg).',
+    title: { de: 'SAR-Wächter:in', uk: 'Вартовий SAR' },
+    description: { de: 'Löse ein 3-Tesla-Szenario im Normal Mode (≤ 2 W/kg).', uk: 'Розв’яжи 3-тесловий сценарій у нормальному режимі (≤ 2 Вт/кг).' },
     icon: '🌡️',
     tier: 'silver',
     xp: 40,
@@ -211,8 +215,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'klinik-profi',
-    title: 'Oberärzt:in der MR',
-    description: 'Erreiche in allen Szenarien mindestens zwei Sterne.',
+    title: { de: 'Oberärzt:in der MR', uk: 'Завідувач МР-відділення' },
+    description: { de: 'Erreiche in allen Szenarien mindestens zwei Sterne.', uk: 'Отримай щонайменше дві зірки в усіх сценаріях.' },
     icon: '🏅',
     tier: 'gold',
     xp: 150,
@@ -220,8 +224,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'artefakt-detektiv',
-    title: 'Artefakt-Detektiv:in',
-    description: 'Diagnostiziere und behebe 10 Artefakte korrekt.',
+    title: { de: 'Artefakt-Detektiv:in', uk: 'Детектив артефактів' },
+    description: { de: 'Diagnostiziere und behebe 10 Artefakte korrekt.', uk: 'Правильно діагностуй і усунь 10 артефактів.' },
     icon: '🕵️',
     tier: 'silver',
     xp: 50,
@@ -229,8 +233,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'facharzt',
-    title: 'Prüfung bestanden',
-    description: 'Bestehe die Abschlussprüfung mit mindestens 80 %.',
+    title: { de: 'Prüfung bestanden', uk: 'Іспит складено' },
+    description: { de: 'Bestehe die Abschlussprüfung mit mindestens 80 %.', uk: 'Склади підсумковий іспит щонайменше на 80 %.' },
     icon: '🎓',
     tier: 'gold',
     xp: 150,
@@ -238,8 +242,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'dranbleiben',
-    title: 'Dranbleiben',
-    description: 'Lerne an 3 verschiedenen Tagen.',
+    title: { de: 'Dranbleiben', uk: 'Не здавайся' },
+    description: { de: 'Lerne an 3 verschiedenen Tagen.', uk: 'Навчайся протягом 3 різних днів.' },
     icon: '📅',
     tier: 'bronze',
     xp: 25,
@@ -247,8 +251,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'marathon',
-    title: 'Langzeit-T1',
-    description: 'Lerne an 7 verschiedenen Tagen.',
+    title: { de: 'Langzeit-T1', uk: 'Довге T1' },
+    description: { de: 'Lerne an 7 verschiedenen Tagen.', uk: 'Навчайся протягом 7 різних днів.' },
     icon: '🏃',
     tier: 'silver',
     xp: 60,
@@ -256,8 +260,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'level-5',
-    title: 'Halbzeit',
-    description: 'Erreiche Level 5.',
+    title: { de: 'Halbzeit', uk: 'Півдороги' },
+    description: { de: 'Erreiche Level 5.', uk: 'Досягни 5-го рівня.' },
     icon: '🚀',
     tier: 'silver',
     xp: 0,
@@ -265,8 +269,8 @@ export const BADGES: BadgeDef[] = [
   },
   {
     id: 'level-10',
-    title: 'Larmor-Legende',
-    description: 'Erreiche Level 10.',
+    title: { de: 'Larmor-Legende', uk: 'Легенда Лармора' },
+    description: { de: 'Erreiche Level 10.', uk: 'Досягни 10-го рівня.' },
     icon: '👑',
     tier: 'gold',
     xp: 0,

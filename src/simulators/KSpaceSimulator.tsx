@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
 import { Panel, Segmented, Slider, Toggle } from '../components/ui';
 import { useGame } from '../game/GameContext';
+import { useLang } from '../i18n/LanguageContext';
 import { imageToKSpace, kSpaceToImage, magnitude, type Complex2D } from '../physics/fft';
 import { fmt } from '../physics/mri';
 import { getPhantom, renderPhantom, seededRandom, type PhantomId } from '../physics/phantom';
@@ -46,6 +47,7 @@ function drawSigned(canvas: HTMLCanvasElement, data: Float64Array) {
 
 export function KSpaceSimulator() {
   const { dispatch } = useGame();
+  const { tr } = useLang();
   const [phantomId, setPhantomId] = useState<PhantomId>('brain');
   const [contrast, setContrast] = useState<Contrast>('T2w');
   const [filter, setFilter] = useState<FilterMode>('none');
@@ -147,76 +149,122 @@ export function KSpaceSimulator() {
     setMotion(0);
   };
 
-  const presets: Array<{ label: string; apply: () => void; text: string }> = [
-    { label: 'Nur Zentrum', text: 'Tiefpass: Kontrast bleibt, Details verschwinden, Gibbs-Ringing an Kanten.', apply: () => {
+  const presets: Array<{ id: string; label: string; text: string; apply: () => void }> = [
+    {
+      id: 'center',
+      label: tr('Nur Zentrum', 'Лише центр'),
+      text: tr('Tiefpass: Kontrast bleibt, Details verschwinden, Gibbs-Ringing an Kanten.', 'Фільтр низьких частот: контраст зберігається, деталі зникають, на краях – кільця Гіббса.'),
+      apply: () => {
         reset();
         setFilter('lowpass');
         setRadius(12);
-      } },
-    { label: 'Nur Peripherie', text: 'Hochpass: nur Kanten bleiben – Kontrast und Flächen fehlen.', apply: () => {
+      },
+    },
+    {
+      id: 'periphery',
+      label: tr('Nur Peripherie', 'Лише периферія'),
+      text: tr('Hochpass: nur Kanten bleiben – Kontrast und Flächen fehlen.', 'Фільтр високих частот: залишаються лише краї – контраст і площини зникають.'),
+      apply: () => {
         reset();
         setFilter('highpass');
         setRadius(8);
-      } },
-    { label: 'Jede 2. Zeile', text: 'Δk verdoppelt → FOV halbiert → Einfaltung in Phasenrichtung.', apply: () => {
+      },
+    },
+    {
+      id: 'skip',
+      label: tr('Jede 2. Zeile', 'Кожен 2-й рядок'),
+      text: tr('Δk verdoppelt → FOV halbiert → Einfaltung in Phasenrichtung.', 'Δk подвоюється → FOV зменшується вдвічі → загортання у фазовому напрямку.'),
+      apply: () => {
         reset();
         setSkip(2);
-      } },
-    { label: 'Partial Fourier 5/8', text: 'Fehlende Hälfte wird hier ohne Symmetrie-Rekonstruktion mit Nullen gefüllt → leichte Unschärfe/Phasenfehler.', apply: () => {
+      },
+    },
+    {
+      id: 'partial',
+      label: tr('Partial Fourier 5/8', 'Partial Fourier 5/8'),
+      text: tr(
+        'Fehlende Hälfte wird hier ohne Symmetrie-Rekonstruktion mit Nullen gefüllt → leichte Unschärfe/Phasenfehler.',
+        'Відсутню частину тут заповнено нулями без симетричної реконструкції → легка розмитість/фазові похибки.',
+      ),
+      apply: () => {
         reset();
         setPartial(0.625);
-      } },
-    { label: 'Spike', text: 'Ein einziger fehlerhafter Datenpunkt → Streifenmuster über das gesamte Bild.', apply: () => {
+      },
+    },
+    {
+      id: 'spike',
+      label: tr('Spike', 'Спайк'),
+      text: tr('Ein einziger fehlerhafter Datenpunkt → Streifenmuster über das gesamte Bild.', 'Одна-єдина хибна точка даних → смугастий візерунок по всьому зображенню.'),
+      apply: () => {
         reset();
         setSpike(true);
-      } },
-    { label: 'Bewegung', text: 'Zufällige Verschiebung zwischen den Phasenkodierzeilen → Geister/Verschmierung in Phasenrichtung.', apply: () => {
+      },
+    },
+    {
+      id: 'motion',
+      label: tr('Bewegung', 'Рух'),
+      text: tr(
+        'Zufällige Verschiebung zwischen den Phasenkodierzeilen → Geister/Verschmierung in Phasenrichtung.',
+        'Випадкове зміщення між рядками фазового кодування → привиди/розмиття у фазовому напрямку.',
+      ),
+      apply: () => {
         reset();
         setMotion(4);
-      } },
+      },
+    },
   ];
-  const [presetText, setPresetText] = useState<string | null>(null);
+  const [presetId, setPresetId] = useState<string | null>(null);
+  const presetText = presets.find((p) => p.id === presetId)?.text;
 
   return (
     <div className="sim-grid">
-      <Panel title="k-Raum (log. Betrag)" actions={<span className="small muted">Klick: Basiswelle</span>}>
-        <canvas ref={kCanvas} className="pixel-canvas clickable" onClick={onKClick} aria-label="k-Raum-Darstellung, anklickbar" />
+      <Panel title={tr('k-Raum (log. Betrag)', 'k-простір (лог. модуль)')} actions={<span className="small muted">{tr('Klick: Basiswelle', 'Клік: базисна хвиля')}</span>}>
+        <canvas ref={kCanvas} className="pixel-canvas clickable" onClick={onKClick} aria-label={tr('k-Raum-Darstellung, anklickbar', 'Зображення k-простору, клікабельне')} />
         <p className="small muted">
-          Dunkelblau = nicht gemessene/verworfene Daten · Signalenergie erhalten: <strong>{fmt(energyKept * 100, 1)} %</strong>
+          {tr('Dunkelblau = nicht gemessene/verworfene Daten · Signalenergie erhalten', 'Темно-синій = невиміряні/відкинуті дані · збережена енергія сигналу')}:{' '}
+          <strong>{fmt(energyKept * 100, 1)} %</strong>
         </p>
       </Panel>
-      <Panel title="Rekonstruiertes Bild (inverse 2D-FFT)">
-        <canvas ref={imgCanvas} className="pixel-canvas" aria-label="Rekonstruiertes MR-Bild" />
-        <p className="small muted">Phasenrichtung: vertikal (y) · Ausleserichtung: horizontal (x)</p>
+      <Panel title={tr('Rekonstruiertes Bild (inverse 2D-FFT)', 'Реконструйоване зображення (обернене 2D-FFT)')}>
+        <canvas ref={imgCanvas} className="pixel-canvas" aria-label={tr('Rekonstruiertes MR-Bild', 'Реконструйоване МР-зображення')} />
+        <p className="small muted">{tr('Phasenrichtung: vertikal (y) · Ausleserichtung: horizontal (x)', 'Фазовий напрямок: вертикальний (y) · напрямок зчитування: горизонтальний (x)')}</p>
       </Panel>
-      <Panel title="Basiswelle eines k-Punkts">
+      <Panel title={tr('Basiswelle eines k-Punkts', 'Базисна хвиля точки k-простору')}>
         {basis ? (
           <>
-            <canvas ref={basisCanvas} className="pixel-canvas" aria-label="Ortsfrequenz-Muster des gewählten k-Raum-Punkts" />
+            <canvas ref={basisCanvas} className="pixel-canvas" aria-label={tr('Ortsfrequenz-Muster des gewählten k-Raum-Punkts', 'Візерунок просторової частоти вибраної точки k-простору')} />
             <p className="small">
-              k<sub>x</sub> = {basis.kx}, k<sub>y</sub> = {basis.ky} → {fmt(Math.hypot(basis.kx, basis.ky), 1)} Perioden über das FOV. Ein einzelner k-Punkt ist eine ebene Welle über das ganze
-              Bild!
+              k<sub>x</sub> = {basis.kx}, k<sub>y</sub> = {basis.ky} → {fmt(Math.hypot(basis.kx, basis.ky), 1)}{' '}
+              {tr(
+                'Perioden über das FOV. Ein einzelner k-Punkt ist eine ebene Welle über das ganze Bild!',
+                'періодів через FOV. Окрема точка k-простору – це плоска хвиля на все зображення!',
+              )}
             </p>
           </>
         ) : (
-          <p className="muted">Klicke in den k-Raum, um die zugehörige Ortsfrequenz (ebene Welle) zu sehen. Punkte nahe dem Zentrum sind langwellig, äußere Punkte fein gestreift.</p>
+          <p className="muted">
+            {tr(
+              'Klicke in den k-Raum, um die zugehörige Ortsfrequenz (ebene Welle) zu sehen. Punkte nahe dem Zentrum sind langwellig, äußere Punkte fein gestreift.',
+              'Клацніть у k-просторі, щоб побачити відповідну просторову частоту (плоску хвилю). Точки поблизу центру довгохвильові, зовнішні – дрібно смугасті.',
+            )}
+          </p>
         )}
       </Panel>
 
-      <Panel title="Experimente" className="span-3">
+      <Panel title={tr('Experimente', 'Експерименти')} className="span-3">
         <div className="row wrap gap">
           <Segmented<PhantomId>
-            label="Objekt"
+            label={tr('Objekt', 'Об’єкт')}
             value={phantomId}
             options={[
-              { value: 'brain', label: 'Kopf' },
-              { value: 'knee', label: 'Knie' },
-              { value: 'abdomen', label: 'Abdomen' },
+              { value: 'brain', label: tr('Kopf', 'Голова') },
+              { value: 'knee', label: tr('Knie', 'Коліно') },
+              { value: 'abdomen', label: tr('Abdomen', 'Живіт') },
             ]}
             onChange={setPhantomId}
           />
           <Segmented<Contrast>
-            label="Kontrast"
+            label={tr('Kontrast', 'Контраст')}
             value={contrast}
             options={[
               { value: 'T1w', label: 'T1w' },
@@ -228,41 +276,53 @@ export function KSpaceSimulator() {
         <div className="row wrap gap preset-row">
           {presets.map((p) => (
             <button
-              key={p.label}
+              key={p.id}
               type="button"
               className="btn small"
               onClick={() => {
                 p.apply();
-                setPresetText(p.text);
+                setPresetId(p.id);
               }}
             >
               {p.label}
             </button>
           ))}
-          <button type="button" className="btn small ghost" onClick={() => {
+          <button
+            type="button"
+            className="btn small ghost"
+            onClick={() => {
               reset();
-              setPresetText(null);
-            }}>
-            Zurücksetzen
+              setPresetId(null);
+            }}
+          >
+            {tr('Zurücksetzen', 'Скинути')}
           </button>
         </div>
         {presetText && <p className="callout callout-info small">{presetText}</p>}
         <div className="control-grid">
           <Segmented<FilterMode>
-            label="k-Raum-Filter"
+            label={tr('k-Raum-Filter', 'Фільтр k-простору')}
             value={filter}
             options={[
-              { value: 'none', label: 'aus' },
-              { value: 'lowpass', label: 'Tiefpass' },
-              { value: 'highpass', label: 'Hochpass' },
+              { value: 'none', label: tr('aus', 'вимк.') },
+              { value: 'lowpass', label: tr('Tiefpass', 'Низькочастотний') },
+              { value: 'highpass', label: tr('Hochpass', 'Високочастотний') },
             ]}
             onChange={setFilter}
           />
-          <Slider label="Filterradius" value={radius} min={2} max={60} unit="k-Punkte" onChange={setRadius} disabled={filter === 'none'} />
-          <Slider label="Unterabtastung R (jede R-te Zeile)" value={skip} min={1} max={4} onChange={setSkip} />
-          <Slider label="Partial Fourier (gemessener Anteil)" value={partial} min={0.5} max={1} step={0.125} onChange={setPartial} format={(v) => `${fmt(v * 8, 0)}/8`} />
-          <Slider label="Bewegung (Verschiebung pro Zeile)" value={motion} min={0} max={8} step={0.5} unit="px" onChange={setMotion} />
-          <Toggle label="Spike (fehlerhafter Datenpunkt)" checked={spike} onChange={setSpike} />
+          <Slider label={tr('Filterradius', 'Радіус фільтра')} value={radius} min={2} max={60} unit={tr('k-Punkte', 'точок k')} onChange={setRadius} disabled={filter === 'none'} />
+          <Slider label={tr('Unterabtastung R (jede R-te Zeile)', 'Недодискретизація R (кожен R-й рядок)')} value={skip} min={1} max={4} onChange={setSkip} />
+          <Slider
+            label={tr('Partial Fourier (gemessener Anteil)', 'Partial Fourier (виміряна частка)')}
+            value={partial}
+            min={0.5}
+            max={1}
+            step={0.125}
+            onChange={setPartial}
+            format={(v) => `${fmt(v * 8, 0)}/8`}
+          />
+          <Slider label={tr('Bewegung (Verschiebung pro Zeile)', 'Рух (зміщення на рядок)')} value={motion} min={0} max={8} step={0.5} unit={tr('px', 'пікс.')} onChange={setMotion} />
+          <Toggle label={tr('Spike (fehlerhafter Datenpunkt)', 'Спайк (хибна точка даних)')} checked={spike} onChange={setSpike} />
         </div>
       </Panel>
     </div>

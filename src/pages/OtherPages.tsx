@@ -8,22 +8,30 @@ import { SCENARIO_BY_ID, SCENARIOS } from '../content/scenarios';
 import { BADGES } from '../game/badges';
 import { useGame } from '../game/GameContext';
 import { levelProgress, xpForLevel } from '../game/levels';
+import { numberLocale, type Loc } from '../i18n/format';
+import { useLang } from '../i18n/LanguageContext';
 import { seededRandom } from '../physics/phantom';
 import { ProtocolConsole } from '../simulators/ProtocolConsole';
 import { SimulatorHost, SIMULATOR_BY_ID, SIMULATORS } from '../simulators/registry';
 import type { SimulatorId } from '../content/modules';
 
-const DIFF_LABEL = ['', 'Einstieg', 'Fortgeschritten', 'Expert:in'];
+const DIFF_LABEL: Loc[] = [
+  { de: '', uk: '' },
+  { de: 'Einstieg', uk: 'Початковий' },
+  { de: 'Fortgeschritten', uk: 'Просунутий' },
+  { de: 'Expert:in', uk: 'Експертний' },
+];
 
 export function ClinicPage({ scenarioId }: { scenarioId?: string }) {
   const { state } = useGame();
+  const { tr, loc } = useLang();
   const scenario = scenarioId ? SCENARIO_BY_ID[scenarioId] : undefined;
 
   if (scenarioId && scenario) {
     return (
       <div className="page">
         <Link to="/klinik" className="back-link">
-          ← Alle Fälle
+          {tr('← Alle Fälle', '← Усі випадки')}
         </Link>
         <header className="scenario-header">
           <span className="module-icon big" aria-hidden="true">
@@ -31,12 +39,12 @@ export function ClinicPage({ scenarioId }: { scenarioId?: string }) {
           </span>
           <div>
             <p className="eyebrow">
-              Klinischer Fall · {DIFF_LABEL[scenario.difficulty]} · bis {scenario.xp} XP
+              {tr('Klinischer Fall', 'Клінічний випадок')} · {loc(DIFF_LABEL[scenario.difficulty])} · {tr('bis', 'до')} {scenario.xp} XP
             </p>
-            <h1>{scenario.title}</h1>
-            <p className="lead">{scenario.story}</p>
+            <h1>{loc(scenario.title)}</h1>
+            <p className="lead">{loc(scenario.story)}</p>
             <p className="task">
-              <strong>Auftrag:</strong> {scenario.task}
+              <strong>{tr('Auftrag', 'Завдання')}:</strong> {loc(scenario.task)}
             </p>
           </div>
           <Stars count={state.scenarios[scenario.id]?.stars ?? 0} />
@@ -48,10 +56,12 @@ export function ClinicPage({ scenarioId }: { scenarioId?: string }) {
 
   return (
     <div className="page">
-      <h1>🩺 Klinische Fälle</h1>
+      <h1>🩺 {tr('Klinische Fälle', 'Клінічні випадки')}</h1>
       <p className="lead">
-        In der Praxis gibt es selten das eine „richtige“ Protokoll. Jeder Fall bringt Randbedingungen mit – Atemanhalt, SAR-Grenzen von Implantaten, Zeitdruck oder
-        Klaustrophobie. Optimiere Kontrast, SNR, Auflösung, Messzeit und Sicherheit gleichzeitig. Pflichtkriterien entscheiden über das Bestehen, Bonuskriterien über die Sterne.
+        {tr(
+          'In der Praxis gibt es selten das eine „richtige“ Protokoll. Jeder Fall bringt Randbedingungen mit – Atemanhalt, SAR-Grenzen von Implantaten, Zeitdruck oder Klaustrophobie. Optimiere Kontrast, SNR, Auflösung, Messzeit und Sicherheit gleichzeitig. Pflichtkriterien entscheiden über das Bestehen, Bonuskriterien über die Sterne.',
+          'На практиці рідко буває один «правильний» протокол. Кожен випадок має свої обмеження – затримка дихання, межі SAR для імплантів, брак часу чи клаустрофобія. Оптимізуй контраст, SNR, роздільну здатність, час сканування та безпеку одночасно. Обов’язкові критерії визначають, чи завдання виконано, бонусні – кількість зірок.',
+        )}
       </p>
       <div className="scenario-grid">
         {SCENARIOS.map((sc) => (
@@ -59,11 +69,11 @@ export function ClinicPage({ scenarioId }: { scenarioId?: string }) {
             <span className="module-icon" aria-hidden="true">
               {sc.icon}
             </span>
-            <strong>{sc.title}</strong>
+            <strong>{loc(sc.title)}</strong>
             <span className="muted small">
-              {DIFF_LABEL[sc.difficulty]} · bis {sc.xp} XP
+              {loc(DIFF_LABEL[sc.difficulty])} · {tr('bis', 'до')} {sc.xp} XP
             </span>
-            <span className="scenario-task">{sc.task}</span>
+            <span className="scenario-task">{loc(sc.task)}</span>
             <Stars count={state.scenarios[sc.id]?.stars ?? 0} />
           </Link>
         ))}
@@ -75,33 +85,39 @@ export function ClinicPage({ scenarioId }: { scenarioId?: string }) {
 export function LabPage({ simulatorId }: { simulatorId?: string }) {
   const meta = simulatorId ? SIMULATOR_BY_ID[simulatorId as SimulatorId] : undefined;
   const { state } = useGame();
+  const { tr, loc } = useLang();
   if (meta) {
     return (
       <div className="page">
         <Link to="/labor" className="back-link">
-          ← Simulator-Labor
+          {tr('← Simulator-Labor', '← Лабораторія симуляторів')}
         </Link>
         <h1>
-          {meta.icon} {meta.title}
+          {meta.icon} {loc(meta.title)}
         </h1>
-        <p className="lead">{meta.description}</p>
+        <p className="lead">{loc(meta.description)}</p>
         <SimulatorHost id={meta.id} />
       </div>
     );
   }
   return (
     <div className="page">
-      <h1>🔬 Simulator-Labor</h1>
-      <p className="lead">Alle virtuellen Simulatoren auf einen Blick – zum freien Experimentieren. Entdecke alle, um das Abzeichen „Simulator-Entdecker:in“ zu erhalten.</p>
+      <h1>🔬 {tr('Simulator-Labor', 'Лабораторія симуляторів')}</h1>
+      <p className="lead">
+        {tr(
+          'Alle virtuellen Simulatoren auf einen Blick – zum freien Experimentieren. Entdecke alle, um das Abzeichen „Simulator-Entdecker:in“ zu erhalten.',
+          'Усі віртуальні симулятори в одному місці – для вільних експериментів. Відкрий усі, щоб отримати відзнаку «Дослідник симуляторів».',
+        )}
+      </p>
       <div className="scenario-grid">
         {SIMULATORS.map((s) => (
           <Link key={s.id} to={`/labor/${s.id}`} className="scenario-card">
             <span className="module-icon" aria-hidden="true">
               {s.icon}
             </span>
-            <strong>{s.title}</strong>
-            <span className="scenario-task">{s.description}</span>
-            <span className="small muted">{state.simulatorsVisited.includes(s.id) ? '✔ entdeckt' : 'noch nicht geöffnet'}</span>
+            <strong>{loc(s.title)}</strong>
+            <span className="scenario-task">{loc(s.description)}</span>
+            <span className="small muted">{state.simulatorsVisited.includes(s.id) ? tr('✔ entdeckt', '✔ відкрито') : tr('noch nicht geöffnet', 'ще не відкрито')}</span>
           </Link>
         ))}
       </div>
@@ -111,20 +127,27 @@ export function LabPage({ simulatorId }: { simulatorId?: string }) {
 
 export function ExamPage() {
   const { state } = useGame();
+  const { tr, loc } = useLang();
   const [round, setRound] = useState(0);
   const [started, setStarted] = useState(false);
   const unlocked = MODULES.every((m) => (state.modules[m.id]?.attempts ?? 0) > 0);
   const questions = useMemo(() => drawExam(seededRandom((Date.now() + round * 104729) & 0xffffffff)), [round]);
+  const title = `🎓 ${tr('Abschlussprüfung', 'Підсумковий іспит')}`;
 
   if (!unlocked) {
     return (
       <div className="page">
-        <h1>🎓 Abschlussprüfung</h1>
-        <p className="lead">Die Prüfung wird freigeschaltet, sobald du jede Modul-Challenge mindestens einmal gespielt hast.</p>
+        <h1>{title}</h1>
+        <p className="lead">
+          {tr(
+            'Die Prüfung wird freigeschaltet, sobald du jede Modul-Challenge mindestens einmal gespielt hast.',
+            'Іспит відкриється, щойно ти пройдеш завдання кожного модуля хоча б один раз.',
+          )}
+        </p>
         <ul className="checklist">
           {MODULES.map((m) => (
             <li key={m.id} className={(state.modules[m.id]?.attempts ?? 0) > 0 ? 'ok' : ''}>
-              {(state.modules[m.id]?.attempts ?? 0) > 0 ? '✔' : '○'} <Link to={`/modul/${m.id}/challenge`}>{m.title}</Link>
+              {(state.modules[m.id]?.attempts ?? 0) > 0 ? '✔' : '○'} <Link to={`/modul/${m.id}/challenge`}>{loc(m.title)}</Link>
             </li>
           ))}
         </ul>
@@ -135,14 +158,21 @@ export function ExamPage() {
   if (!started) {
     return (
       <div className="page">
-        <h1>🎓 Abschlussprüfung</h1>
+        <h1>{title}</h1>
         <div className="challenge-intro">
           <p>
-            {EXAM_LENGTH} gemischte Aufgaben aus allen sieben Modulen. Bestehensgrenze: 80 %. Bestanden gibt es +150 XP und das Gold-Abzeichen „Prüfung bestanden“.
+            {tr(
+              `${EXAM_LENGTH} gemischte Aufgaben aus allen sieben Modulen. Bestehensgrenze: 80 %. Bestanden gibt es +150 XP und das Gold-Abzeichen „Prüfung bestanden“.`,
+              `${EXAM_LENGTH} змішаних завдань з усіх семи модулів. Прохідний бал: 80 %. За успішне складання – +150 XP і золота відзнака «Іспит складено».`,
+            )}
           </p>
-          {state.examBest > 0 && <p className="muted">Bisheriger Bestwert: {Math.round(state.examBest * 100)} %</p>}
+          {state.examBest > 0 && (
+            <p className="muted">
+              {tr('Bisheriger Bestwert', 'Найкращий результат досі')}: {Math.round(state.examBest * 100)} %
+            </p>
+          )}
           <button className="btn primary big" type="button" onClick={() => setStarted(true)}>
-            Prüfung beginnen
+            {tr('Prüfung beginnen', 'Почати іспит')}
           </button>
         </div>
       </div>
@@ -151,7 +181,7 @@ export function ExamPage() {
 
   return (
     <div className="page">
-      <h1>🎓 Abschlussprüfung</h1>
+      <h1>{title}</h1>
       <ChallengeRunner
         key={round}
         questions={questions}
@@ -169,10 +199,13 @@ export function ExamPage() {
 
 export function ProfilePage() {
   const { state, dispatch } = useGame();
-  const lp = levelProgress(state.xp);
+  const { lang, tr, loc } = useLang();
+  const lp = levelProgress(state.xp, lang);
   const [name, setName] = useState(state.playerName);
   const [confirmReset, setConfirmReset] = useState(false);
   const unlocked = Object.keys(state.badges).length;
+  const nf = (v: number) => v.toLocaleString(numberLocale(lang));
+  const tierLabel = (tier: string) => (tier === 'gold' ? tr('Gold', 'Золото') : tier === 'silver' ? tr('Silber', 'Срібло') : tr('Bronze', 'Бронза'));
 
   const exportProgress = () => {
     const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
@@ -186,10 +219,10 @@ export function ProfilePage() {
 
   return (
     <div className="page">
-      <h1>🏅 Profil & Abzeichen</h1>
+      <h1>🏅 {tr('Profil & Abzeichen', 'Профіль і відзнаки')}</h1>
       <section className="profile-grid">
         <div className="panel">
-          <h3>Spieler:in</h3>
+          <h3>{tr('Spieler:in', 'Гравець')}</h3>
           <form
             className="row gap"
             onSubmit={(e) => {
@@ -197,55 +230,58 @@ export function ProfilePage() {
               dispatch({ type: 'SET_NAME', name: name.trim() });
             }}
           >
-            <input className="text-field" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" aria-label="Name" maxLength={40} />
+            <input className="text-field" value={name} onChange={(e) => setName(e.target.value)} placeholder={tr('Name', 'Ім’я')} aria-label={tr('Name', 'Ім’я')} maxLength={40} />
             <button className="btn" type="submit">
-              Speichern
+              {tr('Speichern', 'Зберегти')}
             </button>
           </form>
           <p className="hero-title">
-            Level {lp.level} · {lp.title}
+            {tr('Level', 'Рівень')} {lp.level} · {lp.title}
           </p>
-          <ProgressBar value={lp.ratio} label="Level-Fortschritt" />
+          <ProgressBar value={lp.ratio} label={tr('Level-Fortschritt', 'Прогрес рівня')} />
           <p className="small muted">
-            {state.xp.toLocaleString('de-DE')} XP gesamt · nächstes Level bei {xpForLevel(lp.level + 1).toLocaleString('de-DE')} XP
+            {tr(
+              `${nf(state.xp)} XP gesamt · nächstes Level bei ${nf(xpForLevel(lp.level + 1))} XP`,
+              `${nf(state.xp)} XP загалом · наступний рівень при ${nf(xpForLevel(lp.level + 1))} XP`,
+            )}
           </p>
         </div>
         <div className="panel">
-          <h3>Statistik</h3>
+          <h3>{tr('Statistik', 'Статистика')}</h3>
           <dl className="stats-list">
-            <dt>Beantwortete Fragen</dt>
+            <dt>{tr('Beantwortete Fragen', 'Відповіді на питання')}</dt>
             <dd>{state.stats.answered}</dd>
-            <dt>Richtig</dt>
+            <dt>{tr('Richtig', 'Правильно')}</dt>
             <dd>
               {state.stats.correct} ({state.stats.answered ? Math.round((state.stats.correct / state.stats.answered) * 100) : 0} %)
             </dd>
-            <dt>Beste Serie</dt>
+            <dt>{tr('Beste Serie', 'Найкраща серія')}</dt>
             <dd>{state.stats.bestStreak}</dd>
-            <dt>Abgeschlossene Challenges</dt>
+            <dt>{tr('Abgeschlossene Challenges', 'Завершені завдання')}</dt>
             <dd>{state.stats.challengesCompleted}</dd>
-            <dt>Gelöste Artefakt-Fälle</dt>
+            <dt>{tr('Gelöste Artefakt-Fälle', 'Розв’язані випадки артефактів')}</dt>
             <dd>{state.stats.artifactsDiagnosed}</dd>
-            <dt>Lerntage</dt>
+            <dt>{tr('Lerntage', 'Дні навчання')}</dt>
             <dd>{state.activeDays.length}</dd>
-            <dt>Prüfung (Bestwert)</dt>
+            <dt>{tr('Prüfung (Bestwert)', 'Іспит (найкраще)')}</dt>
             <dd>{state.examBest ? `${Math.round(state.examBest * 100)} %` : '–'}</dd>
           </dl>
         </div>
         <div className="panel">
-          <h3>Modulfortschritt</h3>
+          <h3>{tr('Modulfortschritt', 'Прогрес модулів')}</h3>
           {MODULES.map((m) => (
             <div key={m.id} className="module-progress-row">
               <span>
-                {m.icon} {m.title}
+                {m.icon} {loc(m.title)}
               </span>
-              <ProgressBar value={state.modules[m.id]?.bestScore ?? 0} color={m.accent} label={m.title} />
+              <ProgressBar value={state.modules[m.id]?.bestScore ?? 0} color={m.accent} label={loc(m.title)} />
             </div>
           ))}
         </div>
       </section>
 
       <h2 className="section-title">
-        Abzeichen ({unlocked}/{BADGES.length})
+        {tr('Abzeichen', 'Відзнаки')} ({unlocked}/{BADGES.length})
       </h2>
       <div className="badge-grid">
         {BADGES.map((b) => {
@@ -255,30 +291,30 @@ export function ProfilePage() {
               <span className="badge-icon" aria-hidden="true">
                 {at ? b.icon : '🔒'}
               </span>
-              <strong>{b.title}</strong>
-              <span className="small">{b.description}</span>
+              <strong>{loc(b.title)}</strong>
+              <span className="small">{loc(b.description)}</span>
               <span className="badge-meta">
-                {b.tier === 'gold' ? 'Gold' : b.tier === 'silver' ? 'Silber' : 'Bronze'}
+                {tierLabel(b.tier)}
                 {b.xp ? ` · +${b.xp} XP` : ''}
-                {at ? ` · ${new Date(at).toLocaleDateString('de-DE')}` : ''}
+                {at ? ` · ${new Date(at).toLocaleDateString(numberLocale(lang))}` : ''}
               </span>
             </div>
           );
         })}
       </div>
 
-      <h2 className="section-title">Daten</h2>
+      <h2 className="section-title">{tr('Daten', 'Дані')}</h2>
       <div className="row gap wrap">
         <button className="btn" type="button" onClick={exportProgress}>
-          Fortschritt exportieren (JSON)
+          {tr('Fortschritt exportieren (JSON)', 'Експортувати прогрес (JSON)')}
         </button>
         {!confirmReset ? (
           <button className="btn danger" type="button" onClick={() => setConfirmReset(true)}>
-            Fortschritt zurücksetzen
+            {tr('Fortschritt zurücksetzen', 'Скинути прогрес')}
           </button>
         ) : (
           <span className="row gap">
-            <span className="bad-text">Wirklich alle XP, Level und Abzeichen löschen?</span>
+            <span className="bad-text">{tr('Wirklich alle XP, Level und Abzeichen löschen?', 'Справді видалити всі XP, рівні та відзнаки?')}</span>
             <button
               className="btn danger"
               type="button"
@@ -288,15 +324,20 @@ export function ProfilePage() {
                 setConfirmReset(false);
               }}
             >
-              Ja, zurücksetzen
+              {tr('Ja, zurücksetzen', 'Так, скинути')}
             </button>
             <button className="btn" type="button" onClick={() => setConfirmReset(false)}>
-              Abbrechen
+              {tr('Abbrechen', 'Скасувати')}
             </button>
           </span>
         )}
       </div>
-      <p className="small muted">Der Fortschritt wird ausschließlich lokal in diesem Browser gespeichert (localStorage). Es werden keine Daten übertragen.</p>
+      <p className="small muted">
+        {tr(
+          'Der Fortschritt wird ausschließlich lokal in diesem Browser gespeichert (localStorage). Es werden keine Daten übertragen.',
+          'Прогрес зберігається лише локально в цьому браузері (localStorage). Жодні дані не передаються.',
+        )}
+      </p>
     </div>
   );
 }

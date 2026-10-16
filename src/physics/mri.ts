@@ -5,6 +5,7 @@
  * Einheiten-Konvention: Zeiten in ms, Felder in T, Gradienten in mT/m,
  * Frequenzen in Hz (sofern nicht anders im Namen angegeben), Längen in mm.
  */
+import { numberLocale } from '../i18n/format';
 import { BODY_TEMPERATURE_K, BOLTZMANN, FAT_WATER_SHIFT_PPM, PLANCK, type TissueParams } from './constants';
 
 export const GAMMA_BAR_H1 = 42.577; // MHz/T
@@ -223,10 +224,10 @@ export function clamp(v: number, lo: number, hi: number): number {
   return Math.min(hi, Math.max(lo, v));
 }
 
-/** Formatiert Zahlen deutschsprachig mit fester Anzahl signifikanter Nachkommastellen. */
+/** Formatiert Zahlen in der aktiven Sprache mit begrenzter Anzahl Nachkommastellen. */
 export function fmt(v: number, digits = 2): string {
   if (!Number.isFinite(v)) return '–';
-  return v.toLocaleString('de-DE', { maximumFractionDigits: digits, minimumFractionDigits: 0 });
+  return v.toLocaleString(numberLocale(), { maximumFractionDigits: digits, minimumFractionDigits: 0 });
 }
 
 /** Formatiert Sekunden als m:ss. */
@@ -234,5 +235,5 @@ export function fmtDuration(seconds: number): string {
   if (!Number.isFinite(seconds)) return '–';
   const s = Math.round(seconds);
   const m = Math.floor(s / 60);
-  return `${m}:${String(s % 60).padStart(2, '0')} min`;
+  return `${m}:${String(s % 60).padStart(2, '0')} ${numberLocale() === 'uk-UA' ? 'хв' : 'min'}`;
 }

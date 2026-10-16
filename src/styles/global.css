@@ -1532,38 +1532,38 @@ th {
   fill: rgba(56, 189, 248, 0.08);
   stroke: #475569;
 }
-.scanner-svg .sx-part[aria-label^='Kryostat'] {
+.scanner-svg .sx-part[data-part='cryostat'] {
   fill: #1e293b;
 }
-.scanner-svg .sx-part[aria-label^='Supraleitende'] {
+.scanner-svg .sx-part[data-part='coils'] {
   fill: #0ea5e9;
 }
-.scanner-svg .sx-part[aria-label^='Shim'] {
+.scanner-svg .sx-part[data-part='shim'] {
   fill: #1f2a44;
 }
-.scanner-svg .sx-part[aria-label^='Gradienten'] {
+.scanner-svg .sx-part[data-part='gradient'] {
   fill: rgba(52, 211, 153, 0.3);
 }
-.scanner-svg .sx-part[aria-label^='HF-Körperspule'] {
+.scanner-svg .sx-part[data-part='body'] {
   fill: rgba(244, 114, 182, 0.25);
 }
-.scanner-svg .sx-part[aria-label^='Patient:in'] {
+.scanner-svg .sx-part[data-part='patient'] {
   fill: rgba(251, 191, 36, 0.35);
 }
-.scanner-svg .sx-part[aria-label^='Lokale'] {
+.scanner-svg .sx-part[data-part='surface'] {
   fill: none;
   stroke: #a78bfa;
 }
-.scanner-svg .sx-part[aria-label^='Kaltkopf'] {
+.scanner-svg .sx-part[data-part='coldhead'] {
   fill: #334155;
 }
-.scanner-svg .sx-part[aria-label^='Quenchrohr'] {
+.scanner-svg .sx-part[data-part='quench'] {
   fill: #64748b;
 }
-.scanner-svg .sx-part[aria-label^='Patiententisch'] {
+.scanner-svg .sx-part[data-part='table'] {
   fill: #475569;
 }
-.scanner-svg .sx-part[aria-label^='HF-Kabine'] {
+.scanner-svg .sx-part[data-part='cage'] {
   fill: rgba(180, 83, 9, 0.06);
   stroke: #b45309;
 }
@@ -1834,6 +1834,35 @@ th {
   }
 }
 
+.lang-toggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 0.2rem;
+  padding: 0.2rem;
+  border-radius: 10px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+}
+.lang-toggle button {
+  border: 0;
+  background: transparent;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.3rem 0.6rem;
+  border-radius: 7px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.lang-toggle button:hover {
+  color: var(--text);
+}
+.lang-toggle button.active {
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  color: #fff;
+}
+
 /* ---------------------------------------------------------------- Responsiv */
 @media (max-width: 1250px) {
   .console {
@@ -1885,9 +1914,19 @@ th {
   .topbar-stats {
     display: none;
   }
+  .lang-toggle {
+    margin-left: auto;
+  }
+  .topbar {
+    padding: 0.6rem 0.8rem;
+    gap: 0.6rem;
+  }
   .level-chip {
     min-width: 0;
     flex: 1;
+  }
+  .level-chip .level-xp {
+    display: none;
   }
   .hero {
     grid-template-columns: 1fr;

@@ -9,6 +9,7 @@ import { seededRandom } from '../physics/phantom';
 import { THEORY, type TheoryBlock } from '../content/theory';
 import { useGame } from '../game/GameContext';
 import { THEORY_XP } from '../game/reducer';
+import { useLang } from '../i18n/LanguageContext';
 import { SimulatorHost, SIMULATOR_BY_ID } from '../simulators/registry';
 
 type Tab = 'theorie' | 'simulator' | 'challenge';
@@ -68,16 +69,23 @@ function Block({ block }: { block: TheoryBlock }) {
 
 function TheoryView({ moduleId }: { moduleId: ModuleId }) {
   const { state, dispatch } = useGame();
-  const sections = THEORY[moduleId];
+  const { lang, tr } = useLang();
+  const sections = THEORY[lang][moduleId];
   const read = state.modules[moduleId]?.theoryRead;
   return (
     <article className="theory">
-      <nav className="toc" aria-label="Inhaltsverzeichnis">
-        <strong>Inhalt</strong>
+      <nav className="toc" aria-label={tr('Inhaltsverzeichnis', 'Зміст')}>
+        <strong>{tr('Inhalt', 'Зміст')}</strong>
         <ol>
           {sections.map((s, i) => (
-            <li key={s.title}>
-              <a href={`#sec-${moduleId}-${i}`} onClick={(e) => { e.preventDefault(); document.getElementById(`sec-${moduleId}-${i}`)?.scrollIntoView({ behavior: 'smooth' }); }}>
+            <li key={i}>
+              <a
+                href={`#sec-${moduleId}-${i}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById(`sec-${moduleId}-${i}`)?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
                 {s.title}
               </a>
             </li>
@@ -86,7 +94,7 @@ function TheoryView({ moduleId }: { moduleId: ModuleId }) {
       </nav>
       <div className="theory-body">
         {sections.map((s, i) => (
-          <section key={s.title} id={`sec-${moduleId}-${i}`}>
+          <section key={i} id={`sec-${moduleId}-${i}`}>
             <h2>
               <span className="sec-num">{i + 1}</span> {s.title}
             </h2>
@@ -97,14 +105,14 @@ function TheoryView({ moduleId }: { moduleId: ModuleId }) {
         ))}
         <div className="theory-done">
           {read ? (
-            <p className="ok-text">✔ Kapitel abgeschlossen.</p>
+            <p className="ok-text">{tr('✔ Kapitel abgeschlossen.', '✔ Розділ завершено.')}</p>
           ) : (
             <button className="btn primary" type="button" onClick={() => dispatch({ type: 'READ_THEORY', moduleId })}>
-              Kapitel als gelesen markieren (+{THEORY_XP} XP)
+              {tr('Kapitel als gelesen markieren', 'Позначити розділ як прочитаний')} (+{THEORY_XP} XP)
             </button>
           )}
           <Link to={`/modul/${moduleId}/simulator`} className="btn">
-            Weiter zum Simulator →
+            {tr('Weiter zum Simulator →', 'До симулятора →')}
           </Link>
         </div>
       </div>
@@ -114,6 +122,7 @@ function TheoryView({ moduleId }: { moduleId: ModuleId }) {
 
 function ChallengeView({ moduleId }: { moduleId: ModuleId }) {
   const { state } = useGame();
+  const { tr } = useLang();
   const [round, setRound] = useState(0);
   const [started, setStarted] = useState(false);
   const progress = state.modules[moduleId];
@@ -123,24 +132,35 @@ function ChallengeView({ moduleId }: { moduleId: ModuleId }) {
   if (!started) {
     return (
       <div className="challenge-intro">
-        <h2>🏁 Modul-Challenge</h2>
+        <h2>{tr('🏁 Modul-Challenge', '🏁 Завдання модуля')}</h2>
         <p>
-          {CHALLENGE_LENGTH} Aufgaben aus Verständnisfragen und Rechen-Puzzles mit zufällig generierten Werten. Jede Runde ist anders.
+          {tr(
+            `${CHALLENGE_LENGTH} Aufgaben aus Verständnisfragen und Rechen-Puzzles mit zufällig generierten Werten. Jede Runde ist anders.`,
+            `${CHALLENGE_LENGTH} завдань: питання на розуміння та розрахункові задачі з випадково згенерованими значеннями. Кожен раунд інший.`,
+          )}
         </p>
         <ul>
-          <li>XP pro richtiger Antwort: ◆ 10 · ◆◆ 15 · ◆◆◆ 25</li>
-          <li>Serie ab 3 richtigen: ×1,2 XP · ab 6: ×1,5 XP</li>
-          <li>Hinweise halbieren die XP der Frage</li>
-          <li>Abschlussbonus: 60 % → +10 · 80 % → +25 · 100 % → +40 XP</li>
-          <li>Ab 80 % gilt das Modul als gemeistert (Abzeichen!) – danach Wiederholungsmodus mit halben XP.</li>
+          <li>{tr('XP pro richtiger Antwort', 'XP за правильну відповідь')}: ◆ 10 · ◆◆ 15 · ◆◆◆ 25</li>
+          <li>{tr('Serie ab 3 richtigen: ×1,2 XP · ab 6: ×1,5 XP', 'Серія від 3 правильних: ×1,2 XP · від 6: ×1,5 XP')}</li>
+          <li>{tr('Hinweise halbieren die XP der Frage', 'Підказка зменшує XP за питання вдвічі')}</li>
+          <li>{tr('Abschlussbonus', 'Бонус за завершення')}: 60 % → +10 · 80 % → +25 · 100 % → +40 XP</li>
+          <li>
+            {tr(
+              'Ab 80 % gilt das Modul als gemeistert (Abzeichen!) – danach Wiederholungsmodus mit halben XP.',
+              'Від 80 % модуль вважається опанованим (відзнака!) – далі режим повторення з половиною XP.',
+            )}
+          </li>
         </ul>
         {progress && progress.attempts > 0 && (
           <p className="muted">
-            Bisher: {progress.attempts} Versuch(e), Bestwert {Math.round(progress.bestScore * 100)} %
+            {tr(
+              `Bisher: ${progress.attempts} Versuch(e), Bestwert ${Math.round(progress.bestScore * 100)} %`,
+              `Досі: спроб – ${progress.attempts}, найкращий результат ${Math.round(progress.bestScore * 100)} %`,
+            )}
           </p>
         )}
         <button className="btn primary big" type="button" onClick={() => setStarted(true)}>
-          Challenge starten
+          {tr('Challenge starten', 'Почати завдання')}
         </button>
       </div>
     );
@@ -162,12 +182,13 @@ function ChallengeView({ moduleId }: { moduleId: ModuleId }) {
 }
 
 export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }) {
+  const { tr, loc } = useLang();
   const meta = MODULE_BY_ID[moduleId as ModuleId];
   if (!meta) {
     return (
       <div className="page">
-        <h1>Modul nicht gefunden</h1>
-        <Link to="/">Zur Übersicht</Link>
+        <h1>{tr('Modul nicht gefunden', 'Модуль не знайдено')}</h1>
+        <Link to="/">{tr('Zur Übersicht', 'До огляду')}</Link>
       </div>
     );
   }
@@ -175,9 +196,9 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
   const idx = MODULES.findIndex((m) => m.id === meta.id);
   const next = MODULES[idx + 1];
   const tabs: Array<{ id: Tab; label: string }> = [
-    { id: 'theorie', label: '📖 Theorie' },
-    { id: 'simulator', label: `🔬 ${SIMULATOR_BY_ID[meta.simulator].title}` },
-    { id: 'challenge', label: '🏁 Challenge' },
+    { id: 'theorie', label: tr('📖 Theorie', '📖 Теорія') },
+    { id: 'simulator', label: `🔬 ${loc(SIMULATOR_BY_ID[meta.simulator].title)}` },
+    { id: 'challenge', label: tr('🏁 Challenge', '🏁 Завдання') },
   ];
 
   return (
@@ -187,9 +208,11 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
           {meta.icon}
         </span>
         <div>
-          <p className="eyebrow">Modul {meta.index}</p>
-          <h1>{meta.title}</h1>
-          <p className="lead">{meta.subtitle}</p>
+          <p className="eyebrow">
+            {tr('Modul', 'Модуль')} {meta.index}
+          </p>
+          <h1>{loc(meta.title)}</h1>
+          <p className="lead">{loc(meta.subtitle)}</p>
         </div>
       </header>
       <div className="tabs" role="tablist">
@@ -203,11 +226,11 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
         {active === 'theorie' && <TheoryView moduleId={meta.id} />}
         {active === 'simulator' && (
           <>
-            <p className="muted">{SIMULATOR_BY_ID[meta.simulator].description}</p>
+            <p className="muted">{loc(SIMULATOR_BY_ID[meta.simulator].description)}</p>
             <SimulatorHost id={meta.simulator} />
             <div className="row gap end">
               <Link to={`/modul/${meta.id}/challenge`} className="btn primary">
-                Zur Challenge →
+                {tr('Zur Challenge →', 'До завдання →')}
               </Link>
             </div>
           </>
@@ -216,7 +239,10 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
       </div>
       {next && (
         <p className="next-module">
-          Nächstes Modul: <Link to={`/modul/${next.id}`}>{next.icon} {next.title}</Link>
+          {tr('Nächstes Modul', 'Наступний модуль')}:{' '}
+          <Link to={`/modul/${next.id}`}>
+            {next.icon} {loc(next.title)}
+          </Link>
         </p>
       )}
     </div>

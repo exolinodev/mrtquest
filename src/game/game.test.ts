@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { MODULES } from '../content/modules';
 import { drawChallenge, drawExam, QUESTION_BANK } from '../content/questions';
-import { isNumericCorrect, parseNumber, resolveQuestion } from '../content/questions/types';
+import { isNumericCorrect, materialize, parseNumber, resolveQuestion } from '../content/questions/types';
+import { THEORY } from '../content/theory';
+import { LANGS } from '../i18n/format';
 import { evaluateScenario, SCENARIOS } from '../content/scenarios';
 import { seededRandom } from '../physics/phantom';
 import { ANATOMY, computeMetrics, type Protocol } from '../physics/protocol';
@@ -75,22 +77,32 @@ describe('Reducer & Abzeichen', () => {
 });
 
 describe('Fragenkatalog', () => {
-  it('jede Quelle liefert gültige Fragen (inkl. Generatoren, viele Seeds)', () => {
+  it('jede Quelle liefert gültige Fragen in beiden Sprachen (inkl. Generatoren, viele Seeds)', () => {
+    const cyrillic = /[\u0400-\u04FF]/;
     for (const id of Object.keys(QUESTION_BANK) as Array<keyof typeof QUESTION_BANK>) {
       for (const src of QUESTION_BANK[id]) {
         for (let seed = 1; seed < 30; seed++) {
-          const q = resolveQuestion(src, seededRandom(seed));
-          expect(q.prompt.length).toBeGreaterThan(10);
-          expect(q.explanation.length).toBeGreaterThan(10);
-          if (q.kind === 'numeric') {
-            expect(Number.isFinite(q.answer)).toBe(true);
-            expect(isNumericCorrect(q, q.answer)).toBe(true);
-          } else if (q.kind === 'mc') {
-            expect(q.answer).toBeGreaterThanOrEqual(0);
-            expect(q.answer).toBeLessThan(q.options.length);
-          } else {
-            expect(q.answers.every((a) => a >= 0 && a < q.options.length)).toBe(true);
+          const [de, uk] = LANGS.map((lang) => resolveQuestion(src, seededRandom(seed), lang));
+          for (const q of [de, uk]) {
+            expect(q.prompt.length).toBeGreaterThan(10);
+            expect(q.explanation.length).toBeGreaterThan(10);
+            if (q.kind === 'numeric') {
+              expect(Number.isFinite(q.answer)).toBe(true);
+              expect(isNumericCorrect(q, q.answer)).toBe(true);
+            } else if (q.kind === 'mc') {
+              expect(q.answer).toBeGreaterThanOrEqual(0);
+              expect(q.answer).toBeLessThan(q.options.length);
+            } else {
+              expect(q.answers.every((a) => a >= 0 && a < q.options.length)).toBe(true);
+            }
           }
+          // Gleicher Seed ⇒ gleiche Aufgabe in beiden Sprachen
+          expect(uk.kind).toBe(de.kind);
+          if (de.kind === 'numeric' && uk.kind === 'numeric') expect(uk.answer).toBe(de.answer);
+          if (de.kind === 'mc' && uk.kind === 'mc') expect(uk.answer).toBe(de.answer);
+          if (de.kind !== 'numeric' && uk.kind !== 'numeric') expect(uk.options.length).toBe(de.options.length);
+          expect(cyrillic.test(uk.prompt), `uk-Text fehlt: ${src.id}`).toBe(true);
+          expect(cyrillic.test(de.prompt), `de-Text enthält Kyrillisch: ${src.id}`).toBe(false);
           if (!('generate' in src)) break;
         }
       }
@@ -98,9 +110,16 @@ describe('Fragenkatalog', () => {
   });
   it('Challenges und Prüfung haben die richtige Länge ohne Duplikate', () => {
     for (const m of MODULES) {
-      const qs = drawChallenge(m.id, seededRandom(5));
-      expect(qs).toHaveLength(8);
-      expect(new Set(qs.map((q) => q.id)).size).toBe(8);
+      const refs = drawChallenge(m.id, seededRandom(5));
+      expect(refs).toHaveLength(8);
+      expect(new Set(refs.map((r) => r.source.id)).size).toBe(8);
+      // Sprachwechsel ändert weder Optionsreihenfolge noch Lösung
+      for (const ref of refs) {
+        const de = materialize(ref, 'de');
+        const uk = materialize(ref, 'uk');
+        if (de.kind === 'mc' && uk.kind === 'mc') expect(uk.answer).toBe(de.answer);
+        if (de.kind === 'multi' && uk.kind === 'multi') expect(uk.answers).toEqual(de.answers);
+      }
     }
     expect(drawExam(seededRandom(9))).toHaveLength(21);
   });
@@ -126,14 +145,28 @@ const SOLUTIONS: Record<string, Partial<Protocol>> = {
 
 describe('Klinische Szenarien', () => {
   for (const sc of SCENARIOS) {
-    it(`„${sc.title}“ ist lösbar und startet ungelöst`, () => {
+    it(`„${sc.title.de}“ ist lösbar und startet ungelöst`, () => {
       const startEval = evaluateScenario(sc, sc.start, computeMetrics(sc.start, ANATOMY[sc.anatomy]));
       expect(startEval.passed).toBe(false);
       const p: Protocol = { ...sc.start, ...SOLUTIONS[sc.id] };
       const ev = evaluateScenario(sc, p, computeMetrics(p, ANATOMY[sc.anatomy]));
-      const failed = ev.results.filter((r) => r.req.hard && !r.ok).map((r) => r.req.label);
+      const failed = ev.results.filter((r) => r.req.hard && !r.ok).map((r) => r.req.label.de);
       expect(failed).toEqual([]);
       expect(ev.stars).toBeGreaterThanOrEqual(1);
     });
   }
+});
+
+describe('Theorie zweisprachig', () => {
+  it('ukrainische Kapitel haben dieselbe Struktur wie die deutschen', () => {
+    for (const m of MODULES) {
+      const de = THEORY.de[m.id];
+      const uk = THEORY.uk[m.id];
+      expect(uk.length).toBe(de.length);
+      de.forEach((sec, i) => {
+        expect(uk[i].blocks.map((b) => b.type)).toEqual(sec.blocks.map((b) => b.type));
+        expect(/[\u0400-\u04FF]/.test(uk[i].title)).toBe(true);
+      });
+    }
+  });
 });

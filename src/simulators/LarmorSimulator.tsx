@@ -4,11 +4,14 @@ import { Panel, Segmented, Slider, Stat } from '../components/ui';
 import { NUCLEI } from '../physics/constants';
 import { fmt, larmorAngular, larmorMHz, spinExcess, zeemanEnergy } from '../physics/mri';
 import { useGame } from '../game/GameContext';
+import { useLang } from '../i18n/LanguageContext';
 
 interface Challenge {
   b0: number;
   nucleusId: string;
 }
+
+type ResonanceResult = { ok: true; nucleusId: string; b0: number; f0: number } | { ok: false; errPct: number; tooHigh: boolean };
 
 function newChallenge(): Challenge {
   const fields = [0.55, 1, 1.5, 3, 4.7, 7];
@@ -22,13 +25,14 @@ function newChallenge(): Challenge {
  */
 export function LarmorSimulator() {
   const { dispatch } = useGame();
+  const { tr, loc, lang } = useLang();
   const [b0, setB0] = useState(1.5);
   const [nucleusId, setNucleusId] = useState('H1');
   const [flip, setFlip] = useState(90);
   const [offsetHz, setOffsetHz] = useState(0);
   const [challenge, setChallenge] = useState<Challenge>(() => newChallenge());
   const [guess, setGuess] = useState(50);
-  const [resonanceMsg, setResonanceMsg] = useState<string | null>(null);
+  const [resonance, setResonance] = useState<ResonanceResult | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const tipRef = useRef<{ start: number; target: number; effective: number } | null>(null);
   const nucleus = NUCLEI.find((n) => n.id === nucleusId) ?? NUCLEI[0];
@@ -69,6 +73,7 @@ export function LarmorSimulator() {
     window.addEventListener('resize', resize);
     // Visualisierte Präzession: Logarithmisch skaliert, damit Feldänderungen sichtbar bleiben
     const visualHz = 0.25 + Math.log10(1 + f0) * 0.35;
+    const coilLabel = lang === 'uk' ? 'Напруга котушки (M⊥)' : 'Spulenspannung (M⊥)';
 
     const draw = (now: number) => {
       const dt = (now - last) / 1000;
@@ -183,7 +188,7 @@ export function LarmorSimulator() {
       }
       ctx.stroke();
       ctx.fillStyle = 'rgba(148,163,184,0.9)';
-      ctx.fillText('Spulenspannung (M⊥)', sx0 + 6 * dpr, sy0 + sh + 14 * dpr);
+      ctx.fillText(coilLabel, sx0 + 6 * dpr, sy0 + sh + 14 * dpr);
 
       raf = requestAnimationFrame(draw);
     };
@@ -192,7 +197,7 @@ export function LarmorSimulator() {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', resize);
     };
-  }, [f0]);
+  }, [f0, lang]);
 
   const challengeNucleus = NUCLEI.find((n) => n.id === challenge.nucleusId) ?? NUCLEI[0];
   const challengeF0 = larmorMHz(challenge.b0, challengeNucleus.gammaBar);
@@ -200,84 +205,113 @@ export function LarmorSimulator() {
   const checkResonance = () => {
     const err = Math.abs(guess - challengeF0) / challengeF0;
     if (err <= 0.005) {
-      setResonanceMsg(`✔ Resonanz! ${challengeNucleus.label} bei ${fmt(challenge.b0)} T präzediert mit ${fmt(challengeF0, 3)} MHz.`);
+      setResonance({ ok: true, nucleusId: challengeNucleus.id, b0: challenge.b0, f0: challengeF0 });
       dispatch({ type: 'FLAG', flag: 'resonance-hit', xp: 15 });
       setChallenge(newChallenge());
     } else {
-      setResonanceMsg(`✘ Keine Resonanz – Abweichung ${fmt(err * 100, 1)} %. ${guess > challengeF0 ? 'Frequenz zu hoch.' : 'Frequenz zu niedrig.'}`);
+      setResonance({ ok: false, errPct: err * 100, tooHigh: guess > challengeF0 });
     }
   };
 
+  const T = tr('T', 'Тл');
+  const MHz = tr('MHz', 'МГц');
+  const resNucleus = resonance?.ok ? (NUCLEI.find((n) => n.id === resonance.nucleusId) ?? NUCLEI[0]) : null;
+
   return (
     <div className="sim-grid">
-      <Panel title="Präzession im rotierenden Feld" className="span-2">
-        <canvas ref={canvasRef} className="sim-canvas" aria-label="3D-Darstellung der präzedierenden Magnetisierung" />
+      <Panel title={tr('Präzession im rotierenden Feld', 'Прецесія в обертовому полі')} className="span-2">
+        <canvas ref={canvasRef} className="sim-canvas" aria-label={tr('3D-Darstellung der präzedierenden Magnetisierung', '3D-зображення прецесуючої намагніченості')} />
         <p className="muted small">
-          Die Darstellung ist zeitlich stark verlangsamt (reale Präzession: {fmt(f0, 2)} Millionen Umläufe pro Sekunde). Rosa: Magnetisierung M, grün: messbare
-          Quermagnetisierung M⊥.
+          {tr(
+            `Die Darstellung ist zeitlich stark verlangsamt (reale Präzession: ${fmt(f0, 2)} Millionen Umläufe pro Sekunde). Rosa: Magnetisierung M, grün: messbare Quermagnetisierung M⊥.`,
+            `Зображення сильно сповільнене в часі (реальна прецесія: ${fmt(f0, 2)} мільйонів обертів за секунду). Рожевий: намагніченість M, зелений: вимірювана поперечна намагніченість M⊥.`,
+          )}
         </p>
       </Panel>
 
-      <Panel title="Parameter">
-        <Segmented
-          label="Atomkern"
-          value={nucleusId}
-          options={NUCLEI.map((n) => ({ value: n.id, label: n.label.split(' ')[0] }))}
-          onChange={setNucleusId}
-        />
-        <Slider label="Feldstärke B₀" value={b0} min={0.2} max={7} step={0.05} unit="T" onChange={setB0} format={(v) => fmt(v, 2)} />
-        <Slider label="Flipwinkel α" value={flip} min={10} max={180} step={5} unit="°" onChange={setFlip} />
+      <Panel title={tr('Parameter', 'Параметри')}>
+        <Segmented label={tr('Atomkern', 'Атомне ядро')} value={nucleusId} options={NUCLEI.map((n) => ({ value: n.id, label: n.symbol }))} onChange={setNucleusId} />
+        <Slider label={tr('Feldstärke B₀', 'Індукція поля B₀')} value={b0} min={0.2} max={7} step={0.05} unit={T} onChange={setB0} format={(v) => fmt(v, 2)} />
+        <Slider label={tr('Flipwinkel α', 'Кут відхилення α')} value={flip} min={10} max={180} step={5} unit="°" onChange={setFlip} />
         <Slider
-          label="Frequenzabweichung Δf des Pulses"
+          label={tr('Frequenzabweichung Δf des Pulses', 'Відхилення частоти імпульсу Δf')}
           value={offsetHz}
           min={-1000}
           max={1000}
           step={25}
-          unit="Hz"
+          unit={tr('Hz', 'Гц')}
           onChange={setOffsetHz}
-          hint="Bei Fehlabstimmung bleibt im rotierenden System eine z-Komponente des effektiven Feldes (Δω/γ) → der Vektor kippt nicht vollständig (Rechteckpuls, 1 ms)."
+          hint={tr(
+            'Bei Fehlabstimmung bleibt im rotierenden System eine z-Komponente des effektiven Feldes (Δω/γ) → der Vektor kippt nicht vollständig (Rechteckpuls, 1 ms).',
+            'При розстроюванні в обертовій системі залишається z-компонента ефективного поля (Δω/γ) → вектор відхиляється не повністю (прямокутний імпульс, 1 мс).',
+          )}
         />
         <button className="btn primary block" type="button" onClick={pulse}>
-          ⚡ HF-Puls senden
+          {tr('⚡ HF-Puls senden', '⚡ Надіслати РЧ-імпульс')}
         </button>
         <p className="small muted">
-          Effektiver Flipwinkel: <strong>{fmt(effectiveFlip, 1)}°</strong>
+          {tr('Effektiver Flipwinkel', 'Ефективний кут відхилення')}: <strong>{fmt(effectiveFlip, 1)}°</strong>
         </p>
       </Panel>
 
-      <Panel title="Messgrößen">
+      <Panel title={tr('Messgrößen', 'Вимірювані величини')}>
         <div className="stat-grid">
-          <Stat label="Larmor-Frequenz f₀" value={fmt(f0, 3)} unit="MHz" />
-          <Stat label="Kreisfrequenz ω₀" value={fmt(larmorAngular(b0, nucleus.gammaBar) / 1e6, 1)} unit="·10⁶ rad/s" />
-          <Stat label="Energiedifferenz ΔE" value={fmt(zeemanEnergy(b0, nucleus.gammaBar) * 1e26, 2)} unit="·10⁻²⁶ J" />
-          <Stat label="Spinüberschuss (310 K)" value={fmt(spinExcess(b0, nucleus.gammaBar) * 1e6, 2)} unit="ppm" sub={`≈ ${fmt(spinExcess(b0, nucleus.gammaBar) * 1e6, 1)} von 1 Mio. Spins`} />
+          <Stat label={tr('Larmor-Frequenz f₀', 'Частота Лармора f₀')} value={fmt(f0, 3)} unit={MHz} />
+          <Stat label={tr('Kreisfrequenz ω₀', 'Кутова частота ω₀')} value={fmt(larmorAngular(b0, nucleus.gammaBar) / 1e6, 1)} unit={tr('·10⁶ rad/s', '·10⁶ рад/с')} />
+          <Stat label={tr('Energiedifferenz ΔE', 'Різниця енергій ΔE')} value={fmt(zeemanEnergy(b0, nucleus.gammaBar) * 1e26, 2)} unit={tr('·10⁻²⁶ J', '·10⁻²⁶ Дж')} />
+          <Stat
+            label={tr('Spinüberschuss (310 K)', 'Надлишок спінів (310 K)')}
+            value={fmt(spinExcess(b0, nucleus.gammaBar) * 1e6, 2)}
+            unit="ppm"
+            sub={tr(`≈ ${fmt(spinExcess(b0, nucleus.gammaBar) * 1e6, 1)} von 1 Mio. Spins`, `≈ ${fmt(spinExcess(b0, nucleus.gammaBar) * 1e6, 1)} з 1 млн спінів`)}
+          />
         </div>
-        <TeX block tex={`f_0 = \\bar\\gamma B_0 = ${nucleus.gammaBar.toFixed(3)}\\,\\tfrac{\\text{MHz}}{\\text{T}} \\cdot ${b0.toFixed(2)}\\,\\text{T} = ${f0.toFixed(2)}\\,\\text{MHz}`} />
-        <p className="small muted">{nucleus.note}</p>
+        <TeX
+          block
+          tex={`f_0 = \\bar\\gamma B_0 = ${nucleus.gammaBar.toFixed(3)}\\,\\tfrac{\\text{${MHz}}}{\\text{${T}}} \\cdot ${b0.toFixed(2)}\\,\\text{${T}} = ${f0.toFixed(2)}\\,\\text{${MHz}}`}
+        />
+        <p className="small muted">{loc(nucleus.note)}</p>
       </Panel>
 
-      <Panel title="📡 Resonanz-Challenge" className="span-2">
+      <Panel title={tr('📡 Resonanz-Challenge', '📡 Резонансний виклик')} className="span-2">
         <p>
-          Stimme den Sender ab: Welche Frequenz bringt <strong>{challengeNucleus.label}</strong> bei <strong>{fmt(challenge.b0)} T</strong> in Resonanz? (Toleranz ±0,5 %)
+          {tr('Stimme den Sender ab: Welche Frequenz bringt', 'Налаштуйте передавач: яка частота приведе')} <strong>{loc(challengeNucleus.label)}</strong> {tr('bei', 'при')}{' '}
+          <strong>
+            {fmt(challenge.b0)} {T}
+          </strong>{' '}
+          {tr('in Resonanz? (Toleranz ±0,5 %)', 'до резонансу? (допуск ±0,5 %)')}
         </p>
-        <Slider label="Sendefrequenz" value={guess} min={1} max={310} step={0.05} unit="MHz" onChange={setGuess} format={(v) => fmt(v, 2)} />
+        <Slider label={tr('Sendefrequenz', 'Частота передавача')} value={guess} min={1} max={310} step={0.05} unit={MHz} onChange={setGuess} format={(v) => fmt(v, 2)} />
         <div className="row gap">
           <input
             className="num-field"
             type="number"
             step="0.01"
             value={guess}
-            aria-label="Sendefrequenz in MHz"
+            aria-label={tr('Sendefrequenz in MHz', 'Частота передавача в МГц')}
             onChange={(e) => setGuess(Number(e.target.value) || 0)}
           />
           <button className="btn primary" type="button" onClick={checkResonance}>
-            Puls senden
+            {tr('Puls senden', 'Надіслати імпульс')}
           </button>
           <button className="btn ghost" type="button" onClick={() => setChallenge(newChallenge())}>
-            Neue Aufgabe
+            {tr('Neue Aufgabe', 'Нове завдання')}
           </button>
         </div>
-        {resonanceMsg && <p className={resonanceMsg.startsWith('✔') ? 'ok-text' : 'bad-text'}>{resonanceMsg}</p>}
+        {resonance && (
+          <p className={resonance.ok ? 'ok-text' : 'bad-text'}>
+            {resonance.ok && resNucleus
+              ? tr(
+                  `✔ Resonanz! ${loc(resNucleus.label)} bei ${fmt(resonance.b0)} T präzediert mit ${fmt(resonance.f0, 3)} MHz.`,
+                  `✔ Резонанс! ${loc(resNucleus.label)} при ${fmt(resonance.b0)} Тл прецесує з частотою ${fmt(resonance.f0, 3)} МГц.`,
+                )
+              : !resonance.ok &&
+                tr(
+                  `✘ Keine Resonanz – Abweichung ${fmt(resonance.errPct, 1)} %. ${resonance.tooHigh ? 'Frequenz zu hoch.' : 'Frequenz zu niedrig.'}`,
+                  `✘ Немає резонансу – відхилення ${fmt(resonance.errPct, 1)} %. ${resonance.tooHigh ? 'Частота зависока.' : 'Частота занизька.'}`,
+                )}
+          </p>
+        )}
       </Panel>
     </div>
   );

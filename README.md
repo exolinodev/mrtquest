@@ -34,6 +34,12 @@ Dazu kommen:
 - **Challenges**: pro Modul acht Aufgaben aus Verständnisfragen und Rechen-Puzzles. Rechen-Puzzles erzeugen ihre Werte bei jedem Durchlauf neu.
 - **Abschlussprüfung**: 21 gemischte Aufgaben. Sie wird freigeschaltet, sobald jede Modul-Challenge einmal gespielt wurde.
 
+## Sprachen
+
+Die gesamte App ist auf Deutsch und Ukrainisch verfügbar: Oberfläche, Theorie, Fragen, Simulatoren, klinische Fälle und Abzeichen. Der Umschalter DE | УКР sitzt oben in der Kopfleiste; alternativ wechselt **Alt+L** die Sprache. Der Wechsel wirkt sofort und jederzeit, auch mitten in einer Challenge: Fragen werden aus einem gespeicherten Seed in der neuen Sprache neu erzeugt, mit denselben Zahlenwerten, derselben Optionsreihenfolge und derselben Auswahl. Die gewählte Sprache wird lokal gespeichert; beim ersten Besuch entscheidet die Browsersprache.
+
+Technisch liegen alle Inhalte als zweisprachige Datensätze (`{ de, uk }`) vor; Rechen-Puzzles erhalten die Sprache als Parameter. Die Tests prüfen, dass jede Frage in beiden Sprachen existiert und bei gleichem Seed identische Lösungen liefert und dass die ukrainischen Theorie-Kapitel strukturgleich zu den deutschen sind.
+
 ## Gamification
 
 - **XP**: 10/15/25 pro richtiger Antwort je nach Schwierigkeit. Ab drei richtigen Antworten in Folge gibt es ×1,2, ab sechs ×1,5. Ein genutzter Hinweis halbiert die XP der Frage. Dazu kommen Abschlussboni, 20 XP pro gelesenem Theorie-Kapitel, XP für Entdeckungen in Simulatoren und für Szenario-Sterne.
@@ -49,6 +55,7 @@ src/
   physics/      reine Funktionen: Formeln (mri.ts), FFT, Phantome, Protokoll- und Bildmodell
   content/      Module, Theorie, Fragenkataloge (inkl. Generatoren), klinische Szenarien
   game/         Zustand (Reducer), Level, Abzeichen, Persistenz, React-Context
+  i18n/         Sprachkontext (DE/UK), Zahlenformat, Typ für zweisprachige Texte
   simulators/   die acht interaktiven Simulatoren + Registry
   components/   UI-Bausteine, Challenge-Engine, KaTeX-Rendering, Router, Layout
   pages/        Übersicht, Modulseiten, Klinik, Labor, Prüfung, Profil

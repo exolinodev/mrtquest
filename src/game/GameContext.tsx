@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react';
+import { useLang } from '../i18n/LanguageContext';
 import { BADGE_BY_ID } from './badges';
 import { levelFromXp, levelTitle } from './levels';
 import { gameReducer, loadState, saveState, todayKey } from './reducer';
@@ -19,6 +20,11 @@ let toastCounter = 0;
 export function GameProvider({ children }: { children: ReactNode }) {
   const [state, rawDispatch] = useReducer(gameReducer, undefined, () => loadState());
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const { lang, tr } = useLang();
+  // Die Toast-Texte entstehen beim Zustandswechsel; die Sprache wird per Ref gelesen,
+  // damit ein Sprachwechsel keine erneute Auswertung des Effekts auslöst.
+  const langRef = useRef({ lang, tr });
+  langRef.current = { lang, tr };
   const prevRef = useRef<GameState>(state);
   const lastActionRef = useRef<GameAction | null>(null);
 
@@ -47,20 +53,34 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const action = lastActionRef.current;
     if (action?.type === 'RESET') return;
 
+    const { lang: l, tr: t } = langRef.current;
     for (const id of Object.keys(state.badges)) {
       if (!prev.badges[id]) {
         const b = BADGE_BY_ID[id];
-        if (b) notify({ kind: 'badge', title: `Abzeichen: ${b.title}`, detail: b.xp ? `${b.description} (+${b.xp} XP)` : b.description, icon: b.icon });
+        if (b) {
+          const description = b.description[l];
+          notify({ kind: 'badge', title: `${t('Abzeichen', 'Відзнака')}: ${b.title[l]}`, detail: b.xp ? `${description} (+${b.xp} XP)` : description, icon: b.icon });
+        }
       }
     }
     const before = levelFromXp(prev.xp);
     const after = levelFromXp(state.xp);
     if (after > before) {
-      notify({ kind: 'level', title: `Level ${after} erreicht!`, detail: `Neuer Titel: ${levelTitle(after)}`, icon: '⬆️' });
+      notify({
+        kind: 'level',
+        title: t(`Level ${after} erreicht!`, `Досягнуто рівня ${after}!`),
+        detail: `${t('Neuer Titel', 'Нове звання')}: ${levelTitle(after, l)}`,
+        icon: '⬆️',
+      });
     }
     const gained = state.xp - prev.xp;
     if (gained > 0 && action && (action.type === 'FLAG' || action.type === 'READ_THEORY')) {
-      notify({ kind: 'xp', title: `+${gained} XP`, detail: action.type === 'READ_THEORY' ? 'Theorie-Kapitel abgeschlossen' : 'Entdeckung im Simulator', icon: '✨' });
+      notify({
+        kind: 'xp',
+        title: `+${gained} XP`,
+        detail: action.type === 'READ_THEORY' ? t('Theorie-Kapitel abgeschlossen', 'Теоретичний розділ завершено') : t('Entdeckung im Simulator', 'Відкриття в симуляторі'),
+        icon: '✨',
+      });
     }
   }, [state, notify]);
 

@@ -3,6 +3,7 @@
  * Berechnet aus Sequenzparametern Kontrast, SNR, Messzeit, SAR und Artefaktrisiken
  * und synthetisiert daraus ein Bild inkl. typischer Artefakte.
  */
+import type { Loc } from '../i18n/format';
 import { TISSUES, type FieldStrength, type TissueId, type TissueParams } from './constants';
 import { imageToKSpace, kSpaceToImage, magnitude } from './fft';
 import {
@@ -24,12 +25,12 @@ import { fatMask, gaussian, getPhantom, renderPhantom, seededRandom, type Phanto
 
 export type SequenceType = 'SE' | 'TSE' | 'IR' | 'GRE' | 'EPI';
 
-export const SEQUENCE_LABELS: Record<SequenceType, string> = {
-  SE: 'Spin-Echo (SE)',
-  TSE: 'Turbo-Spin-Echo (TSE)',
-  IR: 'Inversion Recovery (IR-TSE)',
-  GRE: 'Gradientenecho (FLASH)',
-  EPI: 'Echo-Planar (SE-EPI)',
+export const SEQUENCE_LABELS: Record<SequenceType, Loc> = {
+  SE: { de: 'Spin-Echo (SE)', uk: 'Спін-ехо (SE)' },
+  TSE: { de: 'Turbo-Spin-Echo (TSE)', uk: 'Турбо-спін-ехо (TSE)' },
+  IR: { de: 'Inversion Recovery (IR-TSE)', uk: 'Інверсія-відновлення (IR-TSE)' },
+  GRE: { de: 'Gradientenecho (FLASH)', uk: 'Градієнтне ехо (FLASH)' },
+  EPI: { de: 'Echo-Planar (SE-EPI)', uk: 'Ехо-планарна (SE-EPI)' },
 };
 
 export interface Protocol {
@@ -136,26 +137,26 @@ export function allTissueSignals(protocol: Protocol): Record<TissueId, number> {
   return out;
 }
 
-export function describeWeighting(protocol: Protocol): string {
+export function describeWeighting(protocol: Protocol): Loc {
   const { sequence, tr, te, ti, flip, field } = protocol;
   if (sequence === 'IR') {
     const csfNull = nullPointTI(TISSUES.csf.params[field].t1, tr);
     const fatNull = nullPointTI(TISSUES.fat.params[field].t1, tr);
-    if (Math.abs(ti - csfNull) <= 0.12 * csfNull) return 'FLAIR (Liquor unterdrückt, T2-gewichtet)';
-    if (Math.abs(ti - fatNull) <= 0.15 * fatNull) return 'STIR (Fett unterdrückt)';
-    return ti < 1200 ? 'IR, T1-gewichtet' : 'IR, gemischter Kontrast';
+    if (Math.abs(ti - csfNull) <= 0.12 * csfNull) return { de: 'FLAIR (Liquor unterdrückt, T2-gewichtet)', uk: 'FLAIR (ліквор пригнічено, T2-зважене)' };
+    if (Math.abs(ti - fatNull) <= 0.15 * fatNull) return { de: 'STIR (Fett unterdrückt)', uk: 'STIR (жир пригнічено)' };
+    return ti < 1200 ? { de: 'IR, T1-gewichtet', uk: 'IR, T1-зважене' } : { de: 'IR, gemischter Kontrast', uk: 'IR, змішаний контраст' };
   }
   if (sequence === 'GRE') {
-    if (flip >= 40 && tr <= 400 && te <= 10) return 'T1-gewichtet (GRE)';
-    if (flip <= 25 && te >= 15) return 'T2*-gewichtet';
-    if (flip <= 15 && te < 10) return 'PD-gewichtet (GRE)';
-    return 'gemischter GRE-Kontrast';
+    if (flip >= 40 && tr <= 400 && te <= 10) return { de: 'T1-gewichtet (GRE)', uk: 'T1-зважене (GRE)' };
+    if (flip <= 25 && te >= 15) return { de: 'T2*-gewichtet', uk: 'T2*-зважене' };
+    if (flip <= 15 && te < 10) return { de: 'PD-gewichtet (GRE)', uk: 'PD-зважене (GRE)' };
+    return { de: 'gemischter GRE-Kontrast', uk: 'змішаний GRE-контраст' };
   }
-  if (sequence === 'EPI') return te >= 60 ? 'T2-gewichtet (EPI, Basis für DWI)' : 'EPI, gemischt';
-  if (tr <= 900 && te <= 30) return 'T1-gewichtet';
-  if (tr >= 2000 && te >= 70) return 'T2-gewichtet';
-  if (tr >= 2000 && te <= 40) return 'PD-gewichtet';
-  return 'gemischter Kontrast';
+  if (sequence === 'EPI') return te >= 60 ? { de: 'T2-gewichtet (EPI, Basis für DWI)', uk: 'T2-зважене (EPI, основа для DWI)' } : { de: 'EPI, gemischt', uk: 'EPI, змішане' };
+  if (tr <= 900 && te <= 30) return { de: 'T1-gewichtet', uk: 'T1-зважене' };
+  if (tr >= 2000 && te >= 70) return { de: 'T2-gewichtet', uk: 'T2-зважене' };
+  if (tr >= 2000 && te <= 40) return { de: 'PD-gewichtet', uk: 'PD-зважене' };
+  return { de: 'gemischter Kontrast', uk: 'змішаний контраст' };
 }
 
 // ---------------------------------------------------------------- Timing
@@ -225,7 +226,7 @@ export function timing(p: Protocol): TimingInfo {
 
 export interface ProtocolIssue {
   severity: 'error' | 'warning' | 'info';
-  text: string;
+  text: Loc;
 }
 
 export interface ProtocolMetrics {
@@ -242,7 +243,7 @@ export interface ProtocolMetrics {
   aliasing: boolean;
   aliasingMm: number;
   motionRisk: number;
-  weighting: string;
+  weighting: Loc;
   signals: Record<TissueId, number>;
   issues: ProtocolIssue[];
 }
@@ -320,18 +321,100 @@ export function computeMetrics(p: Protocol, anatomy: AnatomyContext): ProtocolMe
   const motionRisk = clamp((scanTimeS - anatomy.motionToleranceS) / anatomy.motionToleranceS, 0, 1);
 
   // Plausibilitätsprüfungen
-  if (p.te < t.minTE - 0.5) issues.push({ severity: 'error', text: `TE ${Math.round(p.te)} ms ist kürzer als das minimal mögliche TE von ${t.minTE.toFixed(1)} ms (Bandbreite erhöhen oder TE verlängern).` });
-  if (p.te > t.maxTE + 0.5) issues.push({ severity: 'error', text: `Effektives TE ${Math.round(p.te)} ms liegt außerhalb des Echozugs (max. ${t.maxTE.toFixed(0)} ms) – ETL erhöhen oder TE senken.` });
-  if (p.tr < t.minTR - 0.5 && p.sequence !== 'EPI') issues.push({ severity: 'error', text: `TR ${Math.round(p.tr)} ms ist kürzer als die minimal nötige Zeit von ${t.minTR.toFixed(0)} ms.` });
-  if (p.sequence === 'IR' && p.ti >= p.tr) issues.push({ severity: 'error', text: 'TI muss kürzer als TR sein.' });
-  if (t.concatenations > 1) issues.push({ severity: 'warning', text: `Nur ${t.maxSlicesPerTR} Schichten passen in ein TR → ${t.concatenations} Konkatenationen verlängern die Messzeit.` });
-  if (sarMode === 'first-level') issues.push({ severity: 'warning', text: `SAR ${sar.toFixed(2)} W/kg: First Level Mode – ärztliche Überwachung erforderlich.` });
-  if (sarMode === 'unzulässig') issues.push({ severity: 'error', text: `SAR ${sar.toFixed(2)} W/kg überschreitet 4 W/kg – Messung wird vom Scanner blockiert.` });
-  if (aliasing) issues.push({ severity: 'warning', text: `Phasen-FOV ${fovPhaseEff.toFixed(0)} mm < Objekt ${extentMm} mm → Einfaltung (Aliasing).` });
-  if (chemicalShiftPx > 2) issues.push({ severity: 'warning', text: `Chemische Verschiebung ${chemicalShiftPx.toFixed(1)} px – Bandbreite erhöhen oder Fettsättigung nutzen.` });
-  if (epiDistortionPx > 3) issues.push({ severity: 'warning', text: `EPI-Verzerrung ${epiDistortionPx.toFixed(1)} px – parallele Bildgebung oder höhere Bandbreite nutzen.` });
-  if (motionRisk > 0) issues.push({ severity: 'warning', text: `Messzeit überschreitet die Bewegungstoleranz (${anatomy.motionToleranceS} s) → Bewegungsartefakte wahrscheinlich.` });
-  if (p.acceleration > 1 && g > 1.3) issues.push({ severity: 'info', text: `Hoher g-Faktor (${g.toFixed(2)}) bei R=${p.acceleration} kostet zusätzlich SNR.` });
+  // Dezimalkomma ohne Tausendertrennung – in Deutsch und Ukrainisch identisch
+  const fx = (v: number, d: number) => v.toLocaleString('de-DE', { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: false });
+  const f1 = (v: number) => fx(v, 1);
+  const f0 = (v: number) => fx(v, 0);
+  const sarTxt = fx(sar, 2);
+  if (p.te < t.minTE - 0.5)
+    issues.push({
+      severity: 'error',
+      text: {
+        de: `TE ${Math.round(p.te)} ms ist kürzer als das minimal mögliche TE von ${f1(t.minTE)} ms (Bandbreite erhöhen oder TE verlängern).`,
+        uk: `TE ${Math.round(p.te)} мс коротший за мінімально можливий TE ${f1(t.minTE)} мс (збільште смугу пропускання або подовжте TE).`,
+      },
+    });
+  if (p.te > t.maxTE + 0.5)
+    issues.push({
+      severity: 'error',
+      text: {
+        de: `Effektives TE ${Math.round(p.te)} ms liegt außerhalb des Echozugs (max. ${f0(t.maxTE)} ms) – ETL erhöhen oder TE senken.`,
+        uk: `Ефективний TE ${Math.round(p.te)} мс виходить за межі ехо-послідовності (макс. ${f0(t.maxTE)} мс) – збільште ETL або зменште TE.`,
+      },
+    });
+  if (p.tr < t.minTR - 0.5 && p.sequence !== 'EPI')
+    issues.push({
+      severity: 'error',
+      text: {
+        de: `TR ${Math.round(p.tr)} ms ist kürzer als die minimal nötige Zeit von ${f0(t.minTR)} ms.`,
+        uk: `TR ${Math.round(p.tr)} мс коротший за мінімально необхідний час ${f0(t.minTR)} мс.`,
+      },
+    });
+  if (p.sequence === 'IR' && p.ti >= p.tr) issues.push({ severity: 'error', text: { de: 'TI muss kürzer als TR sein.', uk: 'TI має бути коротшим за TR.' } });
+  if (t.concatenations > 1)
+    issues.push({
+      severity: 'warning',
+      text: {
+        de: `Nur ${t.maxSlicesPerTR} Schichten passen in ein TR → ${t.concatenations} Konkatenationen verlängern die Messzeit.`,
+        uk: `Лише ${t.maxSlicesPerTR} зрізів вміщується в один TR → ${t.concatenations} конкатенації подовжують час сканування.`,
+      },
+    });
+  if (sarMode === 'first-level')
+    issues.push({
+      severity: 'warning',
+      text: {
+        de: `SAR ${sarTxt} W/kg: First Level Mode – ärztliche Überwachung erforderlich.`,
+        uk: `SAR ${sarTxt} Вт/кг: режим First Level – потрібен лікарський нагляд.`,
+      },
+    });
+  if (sarMode === 'unzulässig')
+    issues.push({
+      severity: 'error',
+      text: {
+        de: `SAR ${sarTxt} W/kg überschreitet 4 W/kg – Messung wird vom Scanner blockiert.`,
+        uk: `SAR ${sarTxt} Вт/кг перевищує 4 Вт/кг – сканер заблокує вимірювання.`,
+      },
+    });
+  if (aliasing)
+    issues.push({
+      severity: 'warning',
+      text: {
+        de: `Phasen-FOV ${f0(fovPhaseEff)} mm < Objekt ${extentMm} mm → Einfaltung (Aliasing).`,
+        uk: `Фазове FOV ${f0(fovPhaseEff)} мм < об’єкт ${extentMm} мм → загортання (аліасинг).`,
+      },
+    });
+  if (chemicalShiftPx > 2)
+    issues.push({
+      severity: 'warning',
+      text: {
+        de: `Chemische Verschiebung ${f1(chemicalShiftPx)} px – Bandbreite erhöhen oder Fettsättigung nutzen.`,
+        uk: `Хімічний зсув ${f1(chemicalShiftPx)} пікс. – збільште смугу пропускання або застосуйте жиропригнічення.`,
+      },
+    });
+  if (epiDistortionPx > 3)
+    issues.push({
+      severity: 'warning',
+      text: {
+        de: `EPI-Verzerrung ${f1(epiDistortionPx)} px – parallele Bildgebung oder höhere Bandbreite nutzen.`,
+        uk: `EPI-спотворення ${f1(epiDistortionPx)} пікс. – використайте паралельну візуалізацію або ширшу смугу.`,
+      },
+    });
+  if (motionRisk > 0)
+    issues.push({
+      severity: 'warning',
+      text: {
+        de: `Messzeit überschreitet die Bewegungstoleranz (${anatomy.motionToleranceS} s) → Bewegungsartefakte wahrscheinlich.`,
+        uk: `Час сканування перевищує допуск на рух (${anatomy.motionToleranceS} с) → ймовірні артефакти руху.`,
+      },
+    });
+  if (p.acceleration > 1 && g > 1.3)
+    issues.push({
+      severity: 'info',
+      text: {
+        de: `Hoher g-Faktor (${fx(g, 2)}) bei R=${p.acceleration} kostet zusätzlich SNR.`,
+        uk: `Високий g-фактор (${fx(g, 2)}) при R=${p.acceleration} додатково знижує SNR.`,
+      },
+    });
 
   return {
     timing: t,

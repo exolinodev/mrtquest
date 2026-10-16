@@ -1,3 +1,5 @@
+import { currentLang, type Lang } from '../i18n/format';
+
 /** XP-Schwelle für Level n: 50·n·(n−1) → 0, 100, 300, 600, 1000, … */
 export function xpForLevel(level: number): number {
   return 50 * level * (level - 1);
@@ -17,22 +19,37 @@ export interface LevelProgress {
   ratio: number;
 }
 
-const TITLES = [
-  'Erstsemester',
-  'Praktikant:in am MRT',
-  'MTR-Azubi',
-  'Spin-Flüsterer:in',
-  'Gradienten-Jongleur:in',
-  'K-Raum-Navigator:in',
-  'Sequenz-Architekt:in',
-  'Protokoll-Optimierer:in',
-  'MR-Physiker:in',
-  'Larmor-Legende',
-];
+const TITLES: Record<Lang, string[]> = {
+  de: [
+    'Erstsemester',
+    'Praktikant:in am MRT',
+    'MTR-Azubi',
+    'Spin-Flüsterer:in',
+    'Gradienten-Jongleur:in',
+    'K-Raum-Navigator:in',
+    'Sequenz-Architekt:in',
+    'Protokoll-Optimierer:in',
+    'MR-Physiker:in',
+    'Larmor-Legende',
+  ],
+  uk: [
+    'Першокурсник',
+    'Практикант МРТ',
+    'Учень рентгенлаборанта',
+    'Заклинач спінів',
+    'Жонглер градієнтів',
+    'Навігатор k-простору',
+    'Архітектор послідовностей',
+    'Оптимізатор протоколів',
+    'МР-фізик',
+    'Легенда Лармора',
+  ],
+};
 
-export function levelTitle(level: number): string {
-  if (level <= TITLES.length) return TITLES[level - 1];
-  return `${TITLES[TITLES.length - 1]} ${toRoman(level - TITLES.length + 1)}`;
+export function levelTitle(level: number, lang: Lang = currentLang()): string {
+  const titles = TITLES[lang];
+  if (level <= titles.length) return titles[level - 1];
+  return `${titles[titles.length - 1]} ${toRoman(level - titles.length + 1)}`;
 }
 
 function toRoman(n: number): string {
@@ -48,13 +65,13 @@ function toRoman(n: number): string {
   return out;
 }
 
-export function levelProgress(xp: number): LevelProgress {
+export function levelProgress(xp: number, lang: Lang = currentLang()): LevelProgress {
   const level = levelFromXp(xp);
   const base = xpForLevel(level);
   const next = xpForLevel(level + 1);
   return {
     level,
-    title: levelTitle(level),
+    title: levelTitle(level, lang),
     current: xp - base,
     needed: next - base,
     ratio: (xp - base) / (next - base),

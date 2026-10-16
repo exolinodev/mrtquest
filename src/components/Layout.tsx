@@ -3,6 +3,8 @@ import { MODULES } from '../content/modules';
 import { BADGES } from '../game/badges';
 import { useGame } from '../game/GameContext';
 import { levelProgress } from '../game/levels';
+import { numberLocale, type Lang } from '../i18n/format';
+import { useLang } from '../i18n/LanguageContext';
 import { Link } from './router';
 import { ProgressBar } from './ui';
 
@@ -20,12 +22,33 @@ function NavItem({ to, active, icon, label, sub }: { to: string; active: boolean
   );
 }
 
+const LANG_OPTIONS: Array<{ value: Lang; flag: string; short: string; name: string }> = [
+  { value: 'de', flag: '🇩🇪', short: 'DE', name: 'Deutsch' },
+  { value: 'uk', flag: '🇺🇦', short: 'УКР', name: 'Українська' },
+];
+
+/** Sprachumschalter: ein Klick wechselt sofort, ohne Neuladen (Tastatur: Alt+L). */
+export function LanguageToggle() {
+  const { lang, setLang, tr } = useLang();
+  return (
+    <div className="lang-toggle" role="group" aria-label={tr('Sprache wählen (Alt+L)', 'Вибір мови (Alt+L)')} title={tr('Sprache wechseln – Tastenkürzel Alt+L', 'Змінити мову – комбінація клавіш Alt+L')}>
+      {LANG_OPTIONS.map((o) => (
+        <button key={o.value} type="button" lang={o.value} aria-pressed={lang === o.value} aria-label={o.name} className={lang === o.value ? 'active' : ''} onClick={() => setLang(o.value)}>
+          <span aria-hidden="true">{o.flag}</span> {o.short}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function Layout({ route, children }: { route: string[]; children: ReactNode }) {
   const { state } = useGame();
-  const lp = levelProgress(state.xp);
+  const { lang, tr, loc } = useLang();
+  const lp = levelProgress(state.xp, lang);
   const [open, setOpen] = useState(false);
   const section = route[0] ?? '';
   const badgeCount = Object.keys(state.badges).length;
+  const nf = (v: number) => v.toLocaleString(numberLocale(lang));
 
   return (
     <div className={`app-shell${open ? ' nav-open' : ''}`}>
@@ -40,12 +63,12 @@ export function Layout({ route, children }: { route: string[]; children: ReactNo
           </span>
           <span>
             <strong>MRT-Quest</strong>
-            <small>Physik & Gerätetechnik</small>
+            <small>{tr('Physik & Gerätetechnik', 'Фізика й апаратура')}</small>
           </span>
         </Link>
-        <nav aria-label="Hauptnavigation">
-          <NavItem to="/" active={section === ''} icon="🏠" label="Übersicht" />
-          <div className="nav-group">Lernmodule</div>
+        <nav aria-label={tr('Hauptnavigation', 'Головна навігація')}>
+          <NavItem to="/" active={section === ''} icon="🏠" label={tr('Übersicht', 'Огляд')} />
+          <div className="nav-group">{tr('Lernmodule', 'Навчальні модулі')}</div>
           {MODULES.map((m) => {
             const best = state.modules[m.id]?.bestScore ?? 0;
             return (
@@ -54,44 +77,54 @@ export function Layout({ route, children }: { route: string[]; children: ReactNo
                 to={`/modul/${m.id}`}
                 active={section === 'modul' && route[1] === m.id}
                 icon={m.icon}
-                label={`${m.index}. ${m.title}`}
-                sub={best > 0 ? `Bestwert ${Math.round(best * 100)} %` : undefined}
+                label={`${m.index}. ${loc(m.title)}`}
+                sub={best > 0 ? `${tr('Bestwert', 'Найкращий результат')} ${Math.round(best * 100)} %` : undefined}
               />
             );
           })}
-          <div className="nav-group">Praxis</div>
-          <NavItem to="/klinik" active={section === 'klinik'} icon="🩺" label="Klinische Fälle" sub="Protokoll-Trade-offs" />
-          <NavItem to="/labor" active={section === 'labor'} icon="🔬" label="Simulator-Labor" sub="Alle Simulatoren" />
-          <NavItem to="/pruefung" active={section === 'pruefung'} icon="🎓" label="Abschlussprüfung" />
-          <NavItem to="/profil" active={section === 'profil'} icon="🏅" label="Profil & Abzeichen" sub={`${badgeCount}/${BADGES.length} Abzeichen`} />
+          <div className="nav-group">{tr('Praxis', 'Практика')}</div>
+          <NavItem to="/klinik" active={section === 'klinik'} icon="🩺" label={tr('Klinische Fälle', 'Клінічні випадки')} sub={tr('Protokoll-Trade-offs', 'Компроміси протоколів')} />
+          <NavItem to="/labor" active={section === 'labor'} icon="🔬" label={tr('Simulator-Labor', 'Лабораторія симуляторів')} sub={tr('Alle Simulatoren', 'Усі симулятори')} />
+          <NavItem to="/pruefung" active={section === 'pruefung'} icon="🎓" label={tr('Abschlussprüfung', 'Підсумковий іспит')} />
+          <NavItem
+            to="/profil"
+            active={section === 'profil'}
+            icon="🏅"
+            label={tr('Profil & Abzeichen', 'Профіль і відзнаки')}
+            sub={`${badgeCount}/${BADGES.length} ${tr('Abzeichen', 'відзнак')}`}
+          />
         </nav>
       </aside>
       <div className="main-col">
         <header className="topbar">
-          <button className="menu-btn" type="button" aria-label="Navigation öffnen" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+          <button className="menu-btn" type="button" aria-label={tr('Navigation öffnen', 'Відкрити навігацію')} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
             ☰
           </button>
-          <Link to="/profil" className="level-chip" title="Zum Profil">
-            <span className="level-badge">Lv {lp.level}</span>
+          <Link to="/profil" className="level-chip" title={tr('Zum Profil', 'До профілю')}>
+            <span className="level-badge">{tr('Lv', 'Рів.')} {lp.level}</span>
             <span className="level-info">
               <span className="level-title">{lp.title}</span>
-              <ProgressBar value={lp.ratio} label="Fortschritt zum nächsten Level" />
+              <ProgressBar value={lp.ratio} label={tr('Fortschritt zum nächsten Level', 'Прогрес до наступного рівня')} />
               <span className="level-xp">
-                {lp.current.toLocaleString('de-DE')} / {lp.needed.toLocaleString('de-DE')} XP
+                {nf(lp.current)} / {nf(lp.needed)} XP
               </span>
             </span>
           </Link>
           <div className="topbar-stats">
-            <span title="Gesamt-XP">✨ {state.xp.toLocaleString('de-DE')} XP</span>
-            <span title="Aktuelle Serie richtiger Antworten">🔥 {state.stats.streak}</span>
-            <span title="Abzeichen">🏅 {badgeCount}</span>
+            <span title={tr('Gesamt-XP', 'Загальний XP')}>✨ {nf(state.xp)} XP</span>
+            <span title={tr('Aktuelle Serie richtiger Antworten', 'Поточна серія правильних відповідей')}>🔥 {state.stats.streak}</span>
+            <span title={tr('Abzeichen', 'Відзнаки')}>🏅 {badgeCount}</span>
           </div>
+          <LanguageToggle />
         </header>
         <main className="content" id="main">
           {children}
         </main>
         <footer className="footer">
-          MRT-Quest · Lernsoftware für Medizininformatik · Werte didaktisch vereinfacht, kein Medizinprodukt · Fortschritt wird lokal im Browser gespeichert
+          {tr(
+            'MRT-Quest · Lernsoftware für Medizininformatik · Werte didaktisch vereinfacht, kein Medizinprodukt · Fortschritt wird lokal im Browser gespeichert',
+            'MRT-Quest · навчальна програма з медичної інформатики · значення дидактично спрощені, не є медичним виробом · прогрес зберігається локально в браузері',
+          )}
         </footer>
       </div>
       {open && <div className="scrim" onClick={() => setOpen(false)} aria-hidden="true" />}

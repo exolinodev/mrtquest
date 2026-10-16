@@ -1,14 +1,17 @@
 import { useMemo, useState, type FormEvent } from 'react';
-import { isNumericCorrect, parseNumber, type Question } from '../content/questions/types';
+import { isNumericCorrect, materialize, parseNumber, type QuestionRef } from '../content/questions/types';
 import { useGame } from '../game/GameContext';
 import { answerXp } from '../game/levels';
+import { numberLocale } from '../i18n/format';
+import { useLang } from '../i18n/LanguageContext';
 import { RichText } from './RichText';
 import { ProgressBar } from './ui';
 
 export type ChallengeKind = { type: 'module'; moduleId: string } | { type: 'exam' };
 
 interface Props {
-  questions: Question[];
+  /** sprachunabhängige Fragen; materialisiert in der aktiven Sprache */
+  questions: QuestionRef[];
   kind: ChallengeKind;
   /** Wiederholungsmodus (bereits gemeistert): halbierte XP */
   replay: boolean;
@@ -29,6 +32,7 @@ export function completionBonus(score: number, kind: ChallengeKind, replay: bool
 
 export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: Props) {
   const { state, dispatch } = useGame();
+  const { lang, tr } = useLang();
   const [index, setIndex] = useState(0);
   const [records, setRecords] = useState<AnswerRecord[]>([]);
   const [selected, setSelected] = useState<number[]>([]);
@@ -38,16 +42,17 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
   const [submitted, setSubmitted] = useState<AnswerRecord | null>(null);
   const [finished, setFinished] = useState<{ score: number; bonus: number } | null>(null);
 
-  const q = questions[index];
+  // Bei Sprachwechsel neu materialisiert: gleiche Seeds ⇒ gleiche Werte und Optionsreihenfolge
+  const q = useMemo(() => (questions[index] ? materialize(questions[index], lang) : undefined), [questions, index, lang]);
   const correctCount = records.filter((r) => r.correct).length;
   const earned = records.reduce((s, r) => s + r.xp, 0);
 
   const correctText = useMemo(() => {
     if (!q) return '';
-    if (q.kind === 'numeric') return `${q.answer.toLocaleString('de-DE', { maximumFractionDigits: 3 })} ${q.unit}`;
+    if (q.kind === 'numeric') return `${q.answer.toLocaleString(numberLocale(lang), { maximumFractionDigits: 3 })} ${q.unit}`;
     if (q.kind === 'mc') return q.options[q.answer];
     return q.answers.map((a) => q.options[a]).join(' · ');
-  }, [q]);
+  }, [q, lang]);
 
   if (finished) {
     const pct = Math.round(finished.score * 100);
@@ -55,34 +60,32 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
       <div className="challenge-summary">
         <div className="summary-score" data-tone={pct >= 80 ? 'good' : pct >= 60 ? 'warn' : 'bad'}>
           <span className="summary-pct">{pct} %</span>
-          <span>
-            {correctCount} von {questions.length} richtig
-          </span>
+          <span>{tr(`${correctCount} von ${questions.length} richtig`, `${correctCount} з ${questions.length} правильно`)}</span>
         </div>
         <p className="summary-text">
           {pct === 100
-            ? 'Perfekt! Kohärenter geht es nicht.'
+            ? tr('Perfekt! Kohärenter geht es nicht.', 'Ідеально! Когерентніше не буває.')
             : pct >= 80
-              ? 'Stark – dieses Thema sitzt.'
+              ? tr('Stark – dieses Thema sitzt.', 'Чудово – цю тему засвоєно.')
               : pct >= 60
-                ? 'Solide Basis. Schau dir die Erklärungen noch einmal an und versuche es erneut.'
-                : 'Hier lohnt sich ein zweiter Blick in Theorie und Simulator.'}
+                ? tr('Solide Basis. Schau dir die Erklärungen noch einmal an und versuche es erneut.', 'Міцна основа. Переглянь пояснення ще раз і спробуй знову.')
+                : tr('Hier lohnt sich ein zweiter Blick in Theorie und Simulator.', 'Варто ще раз переглянути теорію та симулятор.')}
         </p>
         <ul className="summary-xp">
           <li>
-            Antworten: <strong>+{earned} XP</strong>
+            {tr('Antworten', 'Відповіді')}: <strong>+{earned} XP</strong>
           </li>
           <li>
-            Abschlussbonus: <strong>+{finished.bonus} XP</strong>
+            {tr('Abschlussbonus', 'Бонус за завершення')}: <strong>+{finished.bonus} XP</strong>
           </li>
-          {replay && <li className="muted">Wiederholungsmodus: XP halbiert, da bereits gemeistert.</li>}
+          {replay && <li className="muted">{tr('Wiederholungsmodus: XP halbiert, da bereits gemeistert.', 'Режим повторення: XP зменшено вдвічі, бо тему вже опановано.')}</li>}
         </ul>
         <div className="row gap">
           <button className="btn primary" type="button" onClick={onRestart}>
-            Neue Runde
+            {tr('Neue Runde', 'Новий раунд')}
           </button>
           <button className="btn" type="button" onClick={onExit}>
-            Zurück
+            {tr('Zurück', 'Назад')}
           </button>
         </div>
       </div>
@@ -95,13 +98,13 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
     if (q.kind === 'numeric') {
       const v = parseNumber(numeric);
       if (v === null) {
-        setInputError('Bitte eine Zahl eingeben (z. B. 63,87).');
+        setInputError(tr('Bitte eine Zahl eingeben (z. B. 63,87).', 'Введи число (напр. 63,87).'));
         return null;
       }
       return isNumericCorrect(q, v);
     }
     if (selected.length === 0) {
-      setInputError('Bitte eine Antwort auswählen.');
+      setInputError(tr('Bitte eine Antwort auswählen.', 'Обери відповідь.'));
       return null;
     }
     if (q.kind === 'mc') return selected[0] === q.answer;
@@ -158,22 +161,26 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
     <div className="challenge">
       <div className="challenge-head">
         <span>
-          Frage {index + 1} / {questions.length}
+          {tr('Frage', 'Питання')} {index + 1} / {questions.length}
         </span>
-        <span className="difficulty" title="Schwierigkeit">
+        <span className="difficulty" title={tr('Schwierigkeit', 'Складність')}>
           {'◆'.repeat(q.difficulty)}
           {'◇'.repeat(3 - q.difficulty)}
         </span>
         <span className="combo" data-active={state.stats.streak >= 3}>
-          🔥 Serie {state.stats.streak}
+          🔥 {tr('Serie', 'Серія')} {state.stats.streak}
           {state.stats.streak >= 6 ? ' · ×1,5 XP' : state.stats.streak >= 3 ? ' · ×1,2 XP' : ''}
         </span>
       </div>
-      <ProgressBar value={index / questions.length} label="Fortschritt der Challenge" />
+      <ProgressBar value={index / questions.length} label={tr('Fortschritt der Challenge', 'Прогрес завдання')} />
 
       <form className="question" onSubmit={submit}>
         <p className="question-kind">
-          {q.kind === 'numeric' ? '🧮 Rechen-Puzzle' : q.kind === 'multi' ? '☑️ Mehrfachauswahl' : '🔘 Einfachauswahl'}
+          {q.kind === 'numeric'
+            ? tr('🧮 Rechen-Puzzle', '🧮 Розрахункова задача')
+            : q.kind === 'multi'
+              ? tr('☑️ Mehrfachauswahl', '☑️ Кілька варіантів')
+              : tr('🔘 Einfachauswahl', '🔘 Один варіант')}
         </p>
         <h3 className="question-prompt">
           <RichText text={q.prompt} />
@@ -185,8 +192,8 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
               type="text"
               inputMode="decimal"
               autoComplete="off"
-              aria-label="Antwort"
-              placeholder="Ergebnis"
+              aria-label={tr('Antwort', 'Відповідь')}
+              placeholder={tr('Ergebnis', 'Результат')}
               value={numeric}
               disabled={!!submitted}
               onChange={(e) => {
@@ -196,7 +203,9 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
               autoFocus
             />
             <span className="unit-label">{q.unit}</span>
-            <span className="muted small">Toleranz ±{(q.tolerance * 100).toLocaleString('de-DE')} %</span>
+            <span className="muted small">
+              {tr('Toleranz', 'Допуск')} ±{(q.tolerance * 100).toLocaleString(numberLocale(lang))} %
+            </span>
           </div>
         ) : (
           <div className="options" role={q.kind === 'mc' ? 'radiogroup' : 'group'}>
@@ -232,27 +241,27 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
         {!submitted ? (
           <div className="row gap">
             <button className="btn primary" type="submit">
-              Antwort prüfen
+              {tr('Antwort prüfen', 'Перевірити відповідь')}
             </button>
             {q.hint && !hintShown && (
               <button className="btn ghost" type="button" onClick={() => setHintShown(true)}>
-                Hinweis (halbe XP)
+                {tr('Hinweis (halbe XP)', 'Підказка (половина XP)')}
               </button>
             )}
           </div>
         ) : (
           <div className={`feedback ${submitted.correct ? 'is-correct' : 'is-wrong'}`}>
-            <strong>{submitted.correct ? `✔ Richtig! +${submitted.xp} XP` : '✘ Leider falsch.'}</strong>
+            <strong>{submitted.correct ? `✔ ${tr('Richtig!', 'Правильно!')} +${submitted.xp} XP` : tr('✘ Leider falsch.', '✘ На жаль, неправильно.')}</strong>
             {!submitted.correct && (
               <p>
-                Richtige Antwort: <RichText text={correctText} />
+                {tr('Richtige Antwort', 'Правильна відповідь')}: <RichText text={correctText} />
               </p>
             )}
             <p>
               <RichText text={q.explanation} />
             </p>
             <button className="btn primary" type="button" onClick={next} autoFocus>
-              {index + 1 >= questions.length ? 'Auswertung' : 'Weiter →'}
+              {index + 1 >= questions.length ? tr('Auswertung', 'Результати') : tr('Weiter →', 'Далі →')}
             </button>
           </div>
         )}

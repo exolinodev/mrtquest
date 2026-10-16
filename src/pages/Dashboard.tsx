@@ -7,10 +7,13 @@ import { SCENARIOS } from '../content/scenarios';
 import { BADGES, BADGE_BY_ID } from '../game/badges';
 import { useGame } from '../game/GameContext';
 import { levelProgress } from '../game/levels';
+import { numberLocale } from '../i18n/format';
+import { useLang } from '../i18n/LanguageContext';
 
 export function Dashboard() {
   const { state, dispatch } = useGame();
-  const lp = levelProgress(state.xp);
+  const { lang, tr, loc } = useLang();
+  const lp = levelProgress(state.xp, lang);
   const [name, setName] = useState(state.playerName);
   const mastered = MODULES.filter((m) => (state.modules[m.id]?.bestScore ?? 0) >= 0.8).length;
   const nextModule = MODULES.find((m) => (state.modules[m.id]?.bestScore ?? 0) < 0.8);
@@ -21,16 +24,23 @@ export function Dashboard() {
     .filter(Boolean);
   const accuracy = state.stats.answered > 0 ? Math.round((state.stats.correct / state.stats.answered) * 100) : 0;
   const examUnlocked = MODULES.every((m) => (state.modules[m.id]?.attempts ?? 0) > 0);
+  const questionCount = totalQuestionCount();
 
   return (
     <div className="page">
       <section className="hero">
         <div>
-          <p className="eyebrow">MRT-Physik & Gerätetechnik · Hochschulniveau</p>
-          <h1>{state.playerName ? `Willkommen zurück, ${state.playerName}!` : 'Willkommen bei MRT-Quest'}</h1>
+          <p className="eyebrow">{tr('MRT-Physik & Gerätetechnik · Hochschulniveau', 'Фізика МРТ і апаратура · університетський рівень')}</p>
+          <h1>
+            {state.playerName
+              ? tr(`Willkommen zurück, ${state.playerName}!`, `З поверненням, ${state.playerName}!`)
+              : tr('Willkommen bei MRT-Quest', 'Ласкаво просимо до MRT-Quest')}
+          </h1>
           <p className="lead">
-            Vom Kernspin bis zum klinischen Protokoll: Erarbeite die Physik der Magnetresonanztomographie mit {MODULES.length} Modulen, 8 interaktiven Simulatoren, {totalQuestionCount()} Aufgabentypen
-            (viele davon mit zufällig generierten Werten) und {SCENARIOS.length} klinischen Trade-off-Fällen.
+            {tr(
+              `Vom Kernspin bis zum klinischen Protokoll: Erarbeite die Physik der Magnetresonanztomographie mit ${MODULES.length} Modulen, 8 interaktiven Simulatoren, ${questionCount} Aufgabentypen (viele davon mit zufällig generierten Werten) und ${SCENARIOS.length} klinischen Trade-off-Fällen.`,
+              `Від ядерного спіну до клінічного протоколу: опануй фізику магнітно-резонансної томографії за допомогою ${MODULES.length} модулів, 8 інтерактивних симуляторів, ${questionCount} типів завдань (багато з них із випадково згенерованими значеннями) та ${SCENARIOS.length} клінічних випадків із компромісами.`,
+            )}
           </p>
           {!state.playerName && (
             <form
@@ -40,55 +50,60 @@ export function Dashboard() {
                 if (name.trim()) dispatch({ type: 'SET_NAME', name: name.trim() });
               }}
             >
-              <input className="text-field" placeholder="Dein Name (optional)" value={name} onChange={(e) => setName(e.target.value)} aria-label="Name" maxLength={40} />
+              <input
+                className="text-field"
+                placeholder={tr('Dein Name (optional)', 'Твоє ім’я (необов’язково)')}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                aria-label={tr('Name', 'Ім’я')}
+                maxLength={40}
+              />
               <button className="btn" type="submit">
-                Speichern
+                {tr('Speichern', 'Зберегти')}
               </button>
             </form>
           )}
           {nextModule && (
             <Link to={`/modul/${nextModule.id}`} className="btn primary big">
-              {state.stats.answered === 0 ? '▶ Jetzt starten:' : '▶ Weiter mit'} {nextModule.icon} {nextModule.title}
+              {state.stats.answered === 0 ? tr('▶ Jetzt starten:', '▶ Почати:') : tr('▶ Weiter mit', '▶ Продовжити:')} {nextModule.icon} {loc(nextModule.title)}
             </Link>
           )}
         </div>
         <div className="hero-card">
           <div className="level-ring" style={{ ['--p' as string]: lp.ratio }}>
-            <span>Lv</span>
+            <span>{tr('Lv', 'Рів.')}</span>
             <strong>{lp.level}</strong>
           </div>
           <p className="hero-title">{lp.title}</p>
-          <ProgressBar value={lp.ratio} label="Level-Fortschritt" />
-          <p className="small muted">
-            {lp.needed - lp.current} XP bis Level {lp.level + 1}
-          </p>
+          <ProgressBar value={lp.ratio} label={tr('Level-Fortschritt', 'Прогрес рівня')} />
+          <p className="small muted">{tr(`${lp.needed - lp.current} XP bis Level ${lp.level + 1}`, `${lp.needed - lp.current} XP до рівня ${lp.level + 1}`)}</p>
         </div>
       </section>
 
       <section className="kpi-row">
         <div className="kpi">
-          <span className="kpi-value">{state.xp.toLocaleString('de-DE')}</span>
-          <span className="kpi-label">Erfahrungspunkte</span>
+          <span className="kpi-value">{state.xp.toLocaleString(numberLocale(lang))}</span>
+          <span className="kpi-label">{tr('Erfahrungspunkte', 'Очки досвіду')}</span>
         </div>
         <div className="kpi">
           <span className="kpi-value">
             {mastered}/{MODULES.length}
           </span>
-          <span className="kpi-label">Module gemeistert</span>
+          <span className="kpi-label">{tr('Module gemeistert', 'Модулів опановано')}</span>
         </div>
         <div className="kpi">
           <span className="kpi-value">{accuracy} %</span>
-          <span className="kpi-label">Trefferquote ({state.stats.answered} Antworten)</span>
+          <span className="kpi-label">{tr(`Trefferquote (${state.stats.answered} Antworten)`, `Влучність (${state.stats.answered} відповідей)`)}</span>
         </div>
         <div className="kpi">
           <span className="kpi-value">
             {Object.keys(state.badges).length}/{BADGES.length}
           </span>
-          <span className="kpi-label">Abzeichen</span>
+          <span className="kpi-label">{tr('Abzeichen', 'Відзнаки')}</span>
         </div>
       </section>
 
-      <h2 className="section-title">Lernpfad</h2>
+      <h2 className="section-title">{tr('Lernpfad', 'Навчальний шлях')}</h2>
       <div className="module-grid">
         {MODULES.map((m) => {
           const prog = state.modules[m.id];
@@ -97,27 +112,29 @@ export function Dashboard() {
           const recDone = !rec || (state.modules[rec.id]?.bestScore ?? 0) >= 0.6;
           return (
             <Link key={m.id} to={`/modul/${m.id}`} className="module-card" style={{ ['--accent' as string]: m.accent }}>
-              <span className="module-index">Modul {m.index}</span>
+              <span className="module-index">
+                {tr('Modul', 'Модуль')} {m.index}
+              </span>
               <span className="module-icon" aria-hidden="true">
                 {m.icon}
               </span>
-              <strong>{m.title}</strong>
-              <span className="module-sub">{m.subtitle}</span>
-              <ProgressBar value={best} label={`Bestwert ${m.title}`} color={m.accent} />
+              <strong>{loc(m.title)}</strong>
+              <span className="module-sub">{loc(m.subtitle)}</span>
+              <ProgressBar value={best} label={`${tr('Bestwert', 'Найкращий результат')} ${loc(m.title)}`} color={m.accent} />
               <span className="module-meta">
                 {prog?.theoryRead ? '📖 ✓' : '📖'} · {state.simulatorsVisited.includes(m.simulator) ? '🔬 ✓' : '🔬'} · {best > 0 ? `🏁 ${Math.round(best * 100)} %` : '🏁 –'}
               </span>
-              {!recDone && rec && <span className="module-rec">Empfohlen nach „{rec.title}“</span>}
+              {!recDone && rec && <span className="module-rec">{tr(`Empfohlen nach „${rec.title.de}“`, `Рекомендовано після «${rec.title.uk}»`)}</span>}
             </Link>
           );
         })}
         <Link to="/klinik" className="module-card clinic" style={{ ['--accent' as string]: '#f97316' }}>
-          <span className="module-index">Praxis</span>
+          <span className="module-index">{tr('Praxis', 'Практика')}</span>
           <span className="module-icon" aria-hidden="true">
             🩺
           </span>
-          <strong>Klinische Fälle</strong>
-          <span className="module-sub">Protokolle unter realen Randbedingungen optimieren</span>
+          <strong>{tr('Klinische Fälle', 'Клінічні випадки')}</strong>
+          <span className="module-sub">{tr('Protokolle unter realen Randbedingungen optimieren', 'Оптимізація протоколів у реальних умовах')}</span>
           <span className="module-meta">
             {SCENARIOS.map((s) => (
               <Stars key={s.id} count={state.scenarios[s.id]?.stars ?? 0} max={3} />
@@ -125,23 +142,29 @@ export function Dashboard() {
           </span>
         </Link>
         <Link to="/pruefung" className={`module-card exam${examUnlocked ? '' : ' locked'}`} style={{ ['--accent' as string]: '#eab308' }}>
-          <span className="module-index">Finale</span>
+          <span className="module-index">{tr('Finale', 'Фінал')}</span>
           <span className="module-icon" aria-hidden="true">
             🎓
           </span>
-          <strong>Abschlussprüfung</strong>
-          <span className="module-sub">{examUnlocked ? `${state.examBest > 0 ? `Bestwert ${Math.round(state.examBest * 100)} %` : 'Bereit, wenn du es bist.'}` : 'Freischaltung: jede Modul-Challenge einmal spielen'}</span>
+          <strong>{tr('Abschlussprüfung', 'Підсумковий іспит')}</strong>
+          <span className="module-sub">
+            {examUnlocked
+              ? state.examBest > 0
+                ? tr(`Bestwert ${Math.round(state.examBest * 100)} %`, `Найкращий результат ${Math.round(state.examBest * 100)} %`)
+                : tr('Bereit, wenn du es bist.', 'Усе готово – починай, коли захочеш.')
+              : tr('Freischaltung: jede Modul-Challenge einmal spielen', 'Відкриття: пройди завдання кожного модуля хоча б раз')}
+          </span>
         </Link>
       </div>
 
       {recentBadges.length > 0 && (
         <>
-          <h2 className="section-title">Zuletzt freigeschaltet</h2>
+          <h2 className="section-title">{tr('Zuletzt freigeschaltet', 'Нещодавно отримано')}</h2>
           <div className="badge-row">
             {recentBadges.map((b) => (
               <div key={b.id} className={`badge-mini tier-${b.tier}`}>
                 <span aria-hidden="true">{b.icon}</span>
-                <span>{b.title}</span>
+                <span>{loc(b.title)}</span>
               </div>
             ))}
           </div>

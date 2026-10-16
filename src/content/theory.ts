@@ -1,7 +1,10 @@
 /**
  * Theorie-Kapitel der Module. Texte unterstützen **fett** und Inline-Formeln in $…$.
  */
+import type { Lang } from '../i18n/format';
 import type { ModuleId } from './modules';
+import { THEORY_UK_A } from './theory.uk-a';
+import { THEORY_UK_B } from './theory.uk-b';
 
 export type TheoryBlock =
   | { type: 'p'; text: string }
@@ -15,7 +18,7 @@ export interface TheorySection {
   blocks: TheoryBlock[];
 }
 
-export const THEORY: Record<ModuleId, TheorySection[]> = {
+const THEORY_DE: Record<ModuleId, TheorySection[]> = {
   kernspin: [
     {
       title: 'Spin und magnetisches Moment',
@@ -623,4 +626,9 @@ export const THEORY: Record<ModuleId, TheorySection[]> = {
       ],
     },
   ],
+};
+
+export const THEORY: Record<Lang, Record<ModuleId, TheorySection[]>> = {
+  de: THEORY_DE,
+  uk: { ...THEORY_UK_A, ...THEORY_UK_B },
 };
