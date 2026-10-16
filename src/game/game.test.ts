@@ -76,14 +76,17 @@ describe('Reducer & Abzeichen', () => {
   });
 });
 
+/** Buchstaben, die es im Ukrainischen, aber nicht im Russischen gibt (inkl. Apostroph ’). */
+const UKRAINIAN_ONLY = /[іїєґІЇЄҐ’]/;
+
 describe('Fragenkatalog', () => {
   it('jede Quelle liefert gültige Fragen in beiden Sprachen (inkl. Generatoren, viele Seeds)', () => {
     const cyrillic = /[\u0400-\u04FF]/;
     for (const id of Object.keys(QUESTION_BANK) as Array<keyof typeof QUESTION_BANK>) {
       for (const src of QUESTION_BANK[id]) {
         for (let seed = 1; seed < 30; seed++) {
-          const [de, uk] = LANGS.map((lang) => resolveQuestion(src, seededRandom(seed), lang));
-          for (const q of [de, uk]) {
+          const [de, ru] = LANGS.map((lang) => resolveQuestion(src, seededRandom(seed), lang));
+          for (const q of [de, ru]) {
             expect(q.prompt.length).toBeGreaterThan(10);
             expect(q.explanation.length).toBeGreaterThan(10);
             if (q.kind === 'numeric') {
@@ -97,11 +100,14 @@ describe('Fragenkatalog', () => {
             }
           }
           // Gleicher Seed ⇒ gleiche Aufgabe in beiden Sprachen
-          expect(uk.kind).toBe(de.kind);
-          if (de.kind === 'numeric' && uk.kind === 'numeric') expect(uk.answer).toBe(de.answer);
-          if (de.kind === 'mc' && uk.kind === 'mc') expect(uk.answer).toBe(de.answer);
-          if (de.kind !== 'numeric' && uk.kind !== 'numeric') expect(uk.options.length).toBe(de.options.length);
-          expect(cyrillic.test(uk.prompt), `uk-Text fehlt: ${src.id}`).toBe(true);
+          expect(ru.kind).toBe(de.kind);
+          if (de.kind === 'numeric' && ru.kind === 'numeric') expect(ru.answer).toBe(de.answer);
+          if (de.kind === 'mc' && ru.kind === 'mc') expect(ru.answer).toBe(de.answer);
+          if (de.kind !== 'numeric' && ru.kind !== 'numeric') expect(ru.options.length).toBe(de.options.length);
+          expect(cyrillic.test(ru.prompt), `ru-Text fehlt: ${src.id}`).toBe(true);
+          for (const text of [ru.prompt, ru.explanation, ru.hint ?? '', ...(ru.kind === 'numeric' ? [ru.unit] : ru.options)]) {
+            expect(UKRAINIAN_ONLY.test(text), `ukrainische Zeichen in ru-Text (${src.id}): ${text.slice(0, 80)}`).toBe(false);
+          }
           expect(cyrillic.test(de.prompt), `de-Text enthält Kyrillisch: ${src.id}`).toBe(false);
           if (!('generate' in src)) break;
         }
@@ -116,9 +122,9 @@ describe('Fragenkatalog', () => {
       // Sprachwechsel ändert weder Optionsreihenfolge noch Lösung
       for (const ref of refs) {
         const de = materialize(ref, 'de');
-        const uk = materialize(ref, 'uk');
-        if (de.kind === 'mc' && uk.kind === 'mc') expect(uk.answer).toBe(de.answer);
-        if (de.kind === 'multi' && uk.kind === 'multi') expect(uk.answers).toEqual(de.answers);
+        const ru = materialize(ref, 'ru');
+        if (de.kind === 'mc' && ru.kind === 'mc') expect(ru.answer).toBe(de.answer);
+        if (de.kind === 'multi' && ru.kind === 'multi') expect(ru.answers).toEqual(de.answers);
       }
     }
     expect(drawExam(seededRandom(9))).toHaveLength(21);
@@ -157,15 +163,16 @@ describe('Klinische Szenarien', () => {
   }
 });
 
-describe('Theorie zweisprachig', () => {
-  it('ukrainische Kapitel haben dieselbe Struktur wie die deutschen', () => {
+describe('Theorie zweisprachig (DE/RU)', () => {
+  it('russische Kapitel haben dieselbe Struktur wie die deutschen', () => {
     for (const m of MODULES) {
       const de = THEORY.de[m.id];
-      const uk = THEORY.uk[m.id];
-      expect(uk.length).toBe(de.length);
+      const ru = THEORY.ru[m.id];
+      expect(ru.length).toBe(de.length);
       de.forEach((sec, i) => {
-        expect(uk[i].blocks.map((b) => b.type)).toEqual(sec.blocks.map((b) => b.type));
-        expect(/[\u0400-\u04FF]/.test(uk[i].title)).toBe(true);
+        expect(ru[i].blocks.map((b) => b.type)).toEqual(sec.blocks.map((b) => b.type));
+        expect(/[\u0400-\u04FF]/.test(ru[i].title)).toBe(true);
+        expect(UKRAINIAN_ONLY.test(JSON.stringify(ru[i])), `ukrainische Zeichen in Theorie ${m.id}/${i}`).toBe(false);
       });
     }
   });

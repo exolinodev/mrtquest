@@ -21,9 +21,9 @@ interface ParamSpec {
   appliesTo?: SequenceType[];
 }
 
-const same = (s: string): Loc => ({ de: s, uk: s });
-const MS: Loc = { de: 'ms', uk: 'мс' };
-const MM: Loc = { de: 'mm', uk: 'мм' };
+const same = (s: string): Loc => ({ de: s, ru: s });
+const MS: Loc = { de: 'ms', ru: 'мс' };
+const MM: Loc = { de: 'mm', ru: 'мм' };
 const DEG = same('°');
 
 function specFor(key: NumericKey, seq: SequenceType): ParamSpec {
@@ -33,35 +33,35 @@ function specFor(key: NumericKey, seq: SequenceType): ParamSpec {
     case 'te':
       return seq === 'GRE'
         ? { label: same('TE'), min: 1, max: 40, step: 0.1, unit: MS }
-        : { label: seq === 'TSE' || seq === 'IR' ? { de: 'TE (effektiv)', uk: 'TE (ефективний)' } : same('TE'), min: 5, max: 250, step: 1, unit: MS };
+        : { label: seq === 'TSE' || seq === 'IR' ? { de: 'TE (effektiv)', ru: 'TE (эффективное)' } : same('TE'), min: 5, max: 250, step: 1, unit: MS };
     case 'ti':
-      return { label: { de: 'Inversionszeit TI', uk: 'Час інверсії TI' }, min: 50, max: 3500, step: 5, unit: MS, appliesTo: ['IR'] };
+      return { label: { de: 'Inversionszeit TI', ru: 'Время инверсии TI' }, min: 50, max: 3500, step: 5, unit: MS, appliesTo: ['IR'] };
     case 'flip':
-      return { label: { de: 'Flipwinkel α', uk: 'Кут відхилення α' }, min: 5, max: 90, step: 1, unit: DEG, appliesTo: ['GRE'] };
+      return { label: { de: 'Flipwinkel α', ru: 'Угол отклонения α' }, min: 5, max: 90, step: 1, unit: DEG, appliesTo: ['GRE'] };
     case 'refocusFlip':
-      return { label: { de: 'Refokussierungswinkel', uk: 'Кут рефокусування' }, min: 90, max: 180, step: 5, unit: DEG, appliesTo: ['SE', 'TSE', 'IR', 'EPI'] };
+      return { label: { de: 'Refokussierungswinkel', ru: 'Угол рефокусировки' }, min: 90, max: 180, step: 5, unit: DEG, appliesTo: ['SE', 'TSE', 'IR', 'EPI'] };
     case 'etl':
-      return { label: { de: 'Echozuglänge ETL', uk: 'Довжина ехо-послідовності ETL' }, min: 2, max: 64, step: 1, appliesTo: ['TSE', 'IR'] };
+      return { label: { de: 'Echozuglänge ETL', ru: 'Длина эхо-цепочки ETL' }, min: 2, max: 64, step: 1, appliesTo: ['TSE', 'IR'] };
     case 'fovRead':
-      return { label: { de: 'FOV Auslese', uk: 'FOV зчитування' }, min: 100, max: 450, step: 10, unit: MM };
+      return { label: { de: 'FOV Auslese', ru: 'FOV считывания' }, min: 100, max: 450, step: 10, unit: MM };
     case 'fovPhase':
-      return { label: { de: 'FOV Phase', uk: 'FOV фазове' }, min: 100, max: 450, step: 10, unit: MM };
+      return { label: { de: 'FOV Phase', ru: 'FOV фазовое' }, min: 100, max: 450, step: 10, unit: MM };
     case 'matrixRead':
-      return { label: { de: 'Matrix Auslese', uk: 'Матриця зчитування' }, min: 64, max: 512, step: 32 };
+      return { label: { de: 'Matrix Auslese', ru: 'Матрица считывания' }, min: 64, max: 512, step: 32 };
     case 'matrixPhase':
-      return { label: { de: 'Matrix Phase', uk: 'Матриця фазова' }, min: 64, max: 512, step: 16 };
+      return { label: { de: 'Matrix Phase', ru: 'Матрица фазовая' }, min: 64, max: 512, step: 16 };
     case 'sliceThickness':
-      return { label: { de: 'Schichtdicke', uk: 'Товщина зрізу' }, min: 1, max: 10, step: 0.5, unit: MM };
+      return { label: { de: 'Schichtdicke', ru: 'Толщина среза' }, min: 1, max: 10, step: 0.5, unit: MM };
     case 'slices':
-      return { label: { de: 'Schichtanzahl', uk: 'Кількість зрізів' }, min: 1, max: 60, step: 1 };
+      return { label: { de: 'Schichtanzahl', ru: 'Число срезов' }, min: 1, max: 60, step: 1 };
     case 'nex':
-      return { label: { de: 'Mittelungen NEX', uk: 'Усереднення NEX' }, min: 1, max: 8, step: 1 };
+      return { label: { de: 'Mittelungen NEX', ru: 'Усреднения NEX' }, min: 1, max: 8, step: 1 };
     case 'bandwidthPerPixel':
-      return { label: { de: 'Bandbreite', uk: 'Смуга пропускання' }, min: 50, max: 2500, step: 10, unit: { de: 'Hz/px', uk: 'Гц/пікс.' } };
+      return { label: { de: 'Bandbreite', ru: 'Полоса пропускания' }, min: 50, max: 2500, step: 10, unit: { de: 'Hz/px', ru: 'Гц/пикс.' } };
     case 'acceleration':
-      return { label: { de: 'Parallele Bildgebung R', uk: 'Паралельна візуалізація R' }, min: 1, max: 4, step: 1 };
+      return { label: { de: 'Parallele Bildgebung R', ru: 'Параллельная визуализация R' }, min: 1, max: 4, step: 1 };
     case 'phaseOversampling':
-      return { label: { de: 'Phasen-Oversampling', uk: 'Фазова передискретизація' }, min: 0, max: 100, step: 10, unit: same('%') };
+      return { label: { de: 'Phasen-Oversampling', ru: 'Фазовая передискретизация' }, min: 0, max: 100, step: 10, unit: same('%') };
   }
 }
 
@@ -81,9 +81,9 @@ interface Props {
 }
 
 function sarModeLabel(mode: 'normal' | 'first-level' | 'unzulässig', lang: Lang): string {
-  if (mode === 'normal') return lang === 'uk' ? 'Нормальний режим' : 'Normal Mode';
-  if (mode === 'first-level') return lang === 'uk' ? 'Режим First Level' : 'First Level';
-  return lang === 'uk' ? 'неприпустимо' : 'unzulässig';
+  if (mode === 'normal') return lang === 'ru' ? 'Нормальный режим' : 'Normal Mode';
+  if (mode === 'first-level') return lang === 'ru' ? 'Режим First Level' : 'First Level';
+  return lang === 'ru' ? 'недопустимо' : 'unzulässig';
 }
 
 export function ProtocolConsole({ scenario }: Props) {
@@ -119,14 +119,14 @@ export function ProtocolConsole({ scenario }: Props) {
 
   const tone = (ok: boolean) => (ok ? 'good' : 'bad');
   const ms = tr('ms', 'мс');
-  const px = tr('px', 'пікс.');
+  const px = tr('px', 'пикс.');
 
   return (
     <div className="console">
       <Panel title={tr('Protokoll', 'Протокол')} className="console-controls">
         {editable.includes('sequence') && (
           <Segmented<SequenceType>
-            label={tr('Sequenz', 'Послідовність')}
+            label={tr('Sequenz', 'Последовательность')}
             value={protocol.sequence}
             options={allowedSeq.map((s) => ({ value: s, label: s }))}
             onChange={(seq) => {
@@ -137,12 +137,12 @@ export function ProtocolConsole({ scenario }: Props) {
         )}
         {!editable.includes('sequence') && (
           <p className="small">
-            {tr('Sequenz', 'Послідовність')}: <strong>{loc(SEQUENCE_LABELS[protocol.sequence])}</strong>
+            {tr('Sequenz', 'Последовательность')}: <strong>{loc(SEQUENCE_LABELS[protocol.sequence])}</strong>
           </p>
         )}
         {editable.includes('field') ? (
           <Segmented<FieldStrength>
-            label={tr('Feldstärke', 'Індукція поля')}
+            label={tr('Feldstärke', 'Индукция поля')}
             value={protocol.field}
             options={[
               { value: 1.5, label: tr('1,5 T', '1,5 Тл') },
@@ -152,7 +152,7 @@ export function ProtocolConsole({ scenario }: Props) {
           />
         ) : (
           <p className="small">
-            {tr('Feldstärke', 'Індукція поля')}:{' '}
+            {tr('Feldstärke', 'Индукция поля')}:{' '}
             <strong>
               {fmt(protocol.field)} {tr('T', 'Тл')}
             </strong>
@@ -160,12 +160,12 @@ export function ProtocolConsole({ scenario }: Props) {
         )}
         {!scenario && (
           <Segmented<PhantomId>
-            label={tr('Anatomie', 'Анатомія')}
+            label={tr('Anatomie', 'Анатомия')}
             value={freeAnatomy}
             options={[
               { value: 'brain', label: tr('Kopf', 'Голова') },
-              { value: 'knee', label: tr('Knie', 'Коліно') },
-              { value: 'abdomen', label: tr('Abdomen', 'Живіт') },
+              { value: 'knee', label: tr('Knie', 'Колено') },
+              { value: 'abdomen', label: tr('Abdomen', 'Живот') },
             ]}
             onChange={setFreeAnatomy}
           />
@@ -187,7 +187,7 @@ export function ProtocolConsole({ scenario }: Props) {
             />
           );
         })}
-        {editable.includes('fatSat') && <Toggle label={tr('Spektrale Fettsättigung', 'Спектральне жиропригнічення')} checked={protocol.fatSat} onChange={(v) => set('fatSat', v)} />}
+        {editable.includes('fatSat') && <Toggle label={tr('Spektrale Fettsättigung', 'Спектральное жироподавление')} checked={protocol.fatSat} onChange={(v) => set('fatSat', v)} />}
         {scenario && (
           <button
             className="btn ghost small"
@@ -197,23 +197,23 @@ export function ProtocolConsole({ scenario }: Props) {
               setResult(null);
             }}
           >
-            {tr('Protokoll zurücksetzen', 'Скинути протокол')}
+            {tr('Protokoll zurücksetzen', 'Сбросить протокол')}
           </button>
         )}
       </Panel>
 
       <div className="console-center">
-        <Panel title={tr('Vorschau', 'Попередній перегляд')}>
-          <MRImage data={image} label={tr('Simulierte Aufnahme', 'Змодельоване зображення')} overlay={loc(metrics.weighting)} />
+        <Panel title={tr('Vorschau', 'Предпросмотр')}>
+          <MRImage data={image} label={tr('Simulierte Aufnahme', 'Смоделированное изображение')} overlay={loc(metrics.weighting)} />
         </Panel>
-        <Panel title={tr('Kennzahlen', 'Показники')}>
+        <Panel title={tr('Kennzahlen', 'Показатели')}>
           <div className="stat-grid">
             <Stat
-              label={tr('Messzeit', 'Час сканування')}
+              label={tr('Messzeit', 'Время сканирования')}
               value={fmtDuration(metrics.scanTimeS)}
-              sub={metrics.timing.concatenations > 1 ? tr(`${metrics.timing.concatenations} Konkatenationen`, `${metrics.timing.concatenations} конкатенації`) : undefined}
+              sub={metrics.timing.concatenations > 1 ? tr(`${metrics.timing.concatenations} Konkatenationen`, `${metrics.timing.concatenations} конкатенации`) : undefined}
             />
-            <Stat label={tr('SNR (rel.)', 'SNR (відн.)')} value={fmt(metrics.snr, 1)} tone={metrics.snr >= 15 ? 'good' : metrics.snr >= 8 ? 'warn' : 'bad'} />
+            <Stat label={tr('SNR (rel.)', 'SNR (отн.)')} value={fmt(metrics.snr, 1)} tone={metrics.snr >= 15 ? 'good' : metrics.snr >= 8 ? 'warn' : 'bad'} />
             <Stat
               label="SAR"
               value={fmt(metrics.sar, 2)}
@@ -223,16 +223,16 @@ export function ProtocolConsole({ scenario }: Props) {
             />
             <Stat label={tr('Voxel', 'Воксель')} value={`${fmt(metrics.pixelRead, 2)}×${fmt(metrics.pixelPhase, 2)}×${fmt(protocol.sliceThickness, 1)}`} unit={tr('mm', 'мм')} />
             <Stat
-              label={tr('Chem. Verschiebung', 'Хім. зсув')}
+              label={tr('Chem. Verschiebung', 'Хим. сдвиг')}
               value={fmt(metrics.chemicalShiftPx, 2)}
               unit={px}
               tone={metrics.chemicalShiftPx <= 1.5 ? 'good' : metrics.chemicalShiftPx <= 3 ? 'warn' : 'bad'}
             />
             {protocol.sequence === 'EPI' && (
-              <Stat label={tr('EPI-Verzerrung', 'EPI-спотворення')} value={fmt(metrics.epiDistortionPx, 1)} unit={px} tone={metrics.epiDistortionPx <= 3 ? 'good' : 'bad'} />
+              <Stat label={tr('EPI-Verzerrung', 'EPI-искажение')} value={fmt(metrics.epiDistortionPx, 1)} unit={px} tone={metrics.epiDistortionPx <= 3 ? 'good' : 'bad'} />
             )}
-            <Stat label={tr('min. TE / TR', 'мін. TE / TR')} value={`${fmt(metrics.timing.minTE, 1)} / ${fmt(metrics.timing.minTR, 0)}`} unit={ms} />
-            <Stat label={tr('Schichten pro TR', 'Зрізів за TR')} value={metrics.timing.maxSlicesPerTR} />
+            <Stat label={tr('min. TE / TR', 'мин. TE / TR')} value={`${fmt(metrics.timing.minTE, 1)} / ${fmt(metrics.timing.minTR, 0)}`} unit={ms} />
+            <Stat label={tr('Schichten pro TR', 'Срезов за TR')} value={metrics.timing.maxSlicesPerTR} />
           </div>
           {metrics.issues.length > 0 && (
             <ul className="issues">
@@ -247,7 +247,7 @@ export function ProtocolConsole({ scenario }: Props) {
       </div>
 
       {scenario && evaluation && (
-        <Panel title={tr('Anforderungen', 'Вимоги')} className="console-reqs">
+        <Panel title={tr('Anforderungen', 'Требования')} className="console-reqs">
           <ul className="req-list">
             {evaluation.results.map(({ req, ok }) => (
               <li key={req.id} className={ok ? 'ok' : 'nok'}>
@@ -265,20 +265,20 @@ export function ProtocolConsole({ scenario }: Props) {
           <div className="req-summary">
             {evaluation.passed ? (
               <>
-                <span>{tr('Aktuelle Bewertung:', 'Поточна оцінка:')}</span> <Stars count={evaluation.stars} />
+                <span>{tr('Aktuelle Bewertung:', 'Текущая оценка:')}</span> <Stars count={evaluation.stars} />
               </>
             ) : (
-              <span className="bad-text">{tr('Pflichtkriterien noch nicht erfüllt.', 'Обов’язкові критерії ще не виконано.')}</span>
+              <span className="bad-text">{tr('Pflichtkriterien noch nicht erfüllt.', 'Обязательные критерии ещё не выполнены.')}</span>
             )}
           </div>
           <button className="btn primary block" type="button" disabled={!evaluation.passed} onClick={submit}>
-            {tr('Protokoll an MTR übergeben', 'Передати протокол рентгенлаборанту')}
+            {tr('Protokoll an MTR übergeben', 'Передать протокол рентгенолаборанту')}
           </button>
           {result && (
             <div className="feedback is-correct">
               <strong>
-                {tr('Messung durchgeführt:', 'Сканування виконано:')} <Stars count={result.stars} />{' '}
-                {result.xp > 0 ? `+${result.xp} XP` : tr('(keine Verbesserung – keine neuen XP)', '(без покращення – нових XP немає)')}
+                {tr('Messung durchgeführt:', 'Сканирование выполнено:')} <Stars count={result.stars} />{' '}
+                {result.xp > 0 ? `+${result.xp} XP` : tr('(keine Verbesserung – keine neuen XP)', '(без улучшения – новых XP нет)')}
               </strong>
               <p>{loc(scenario.debrief)}</p>
             </div>

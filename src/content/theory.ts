@@ -3,8 +3,8 @@
  */
 import type { Lang } from '../i18n/format';
 import type { ModuleId } from './modules';
-import { THEORY_UK_A } from './theory.uk-a';
-import { THEORY_UK_B } from './theory.uk-b';
+import { THEORY_RU_A } from './theory.ru-a';
+import { THEORY_RU_B } from './theory.ru-b';
 
 export type TheoryBlock =
   | { type: 'p'; text: string }
@@ -630,5 +630,5 @@ const THEORY_DE: Record<ModuleId, TheorySection[]> = {
 
 export const THEORY: Record<Lang, Record<ModuleId, TheorySection[]>> = {
   de: THEORY_DE,
-  uk: { ...THEORY_UK_A, ...THEORY_UK_B },
+  ru: { ...THEORY_RU_A, ...THEORY_RU_B },
 };

@@ -36,9 +36,9 @@ Dazu kommen:
 
 ## Sprachen
 
-Die gesamte App ist auf Deutsch und Ukrainisch verfügbar: Oberfläche, Theorie, Fragen, Simulatoren, klinische Fälle und Abzeichen. Der Umschalter DE | УКР sitzt oben in der Kopfleiste; alternativ wechselt **Alt+L** die Sprache. Der Wechsel wirkt sofort und jederzeit, auch mitten in einer Challenge: Fragen werden aus einem gespeicherten Seed in der neuen Sprache neu erzeugt, mit denselben Zahlenwerten, derselben Optionsreihenfolge und derselben Auswahl. Die gewählte Sprache wird lokal gespeichert; beim ersten Besuch entscheidet die Browsersprache.
+Die gesamte App ist auf Deutsch und Russisch verfügbar: Oberfläche, Theorie, Fragen, Simulatoren, klinische Fälle und Abzeichen. Der Umschalter 🇩🇪 DE | 🇺🇦 РУС sitzt oben in der Kopfleiste; alternativ wechselt **Alt+L** die Sprache. Der Wechsel wirkt sofort und jederzeit, auch mitten in einer Challenge: Fragen werden aus einem gespeicherten Seed in der neuen Sprache neu erzeugt, mit denselben Zahlenwerten, derselben Optionsreihenfolge und derselben Auswahl. Die gewählte Sprache wird lokal gespeichert; beim ersten Besuch entscheidet die Browsersprache.
 
-Technisch liegen alle Inhalte als zweisprachige Datensätze (`{ de, uk }`) vor; Rechen-Puzzles erhalten die Sprache als Parameter. Die Tests prüfen, dass jede Frage in beiden Sprachen existiert und bei gleichem Seed identische Lösungen liefert und dass die ukrainischen Theorie-Kapitel strukturgleich zu den deutschen sind.
+Technisch liegen alle Inhalte als zweisprachige Datensätze (`{ de, ru }`) vor; Rechen-Puzzles erhalten die Sprache als Parameter. Die Tests prüfen, dass jede Frage in beiden Sprachen existiert und bei gleichem Seed identische Lösungen liefert dass die russischen Theorie-Kapitel strukturgleich zu den deutschen sind und dass in den russischen Texten keine ukrainischen Buchstaben stehen.
 
 ## Gamification
 
@@ -55,7 +55,7 @@ src/
   physics/      reine Funktionen: Formeln (mri.ts), FFT, Phantome, Protokoll- und Bildmodell
   content/      Module, Theorie, Fragenkataloge (inkl. Generatoren), klinische Szenarien
   game/         Zustand (Reducer), Level, Abzeichen, Persistenz, React-Context
-  i18n/         Sprachkontext (DE/UK), Zahlenformat, Typ für zweisprachige Texte
+  i18n/         Sprachkontext (DE/RU), Zahlenformat, Typ für zweisprachige Texte
   simulators/   die acht interaktiven Simulatoren + Registry
   components/   UI-Bausteine, Challenge-Engine, KaTeX-Rendering, Router, Layout
   pages/        Übersicht, Modulseiten, Klinik, Labor, Prüfung, Profil

@@ -95,7 +95,7 @@ describe('Protokollmodell', () => {
   it('Standard-T2-TSE ist plausibel', () => {
     const m = computeMetrics(DEFAULT_PROTOCOL, ANATOMY.brain);
     expect(m.weighting.de).toContain('T2');
-    expect(m.weighting.uk).toContain('T2');
+    expect(m.weighting.ru).toContain('T2');
     expect(m.scanTimeS).toBeGreaterThan(30);
     expect(m.scanTimeS).toBeLessThan(180);
     expect(m.sar).toBeGreaterThan(0.5);

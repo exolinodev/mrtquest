@@ -24,14 +24,14 @@ function NavItem({ to, active, icon, label, sub }: { to: string; active: boolean
 
 const LANG_OPTIONS: Array<{ value: Lang; flag: string; short: string; name: string }> = [
   { value: 'de', flag: '🇩🇪', short: 'DE', name: 'Deutsch' },
-  { value: 'uk', flag: '🇺🇦', short: 'УКР', name: 'Українська' },
+  { value: 'ru', flag: '🇺🇦', short: 'РУС', name: 'Русский' },
 ];
 
 /** Sprachumschalter: ein Klick wechselt sofort, ohne Neuladen (Tastatur: Alt+L). */
 export function LanguageToggle() {
   const { lang, setLang, tr } = useLang();
   return (
-    <div className="lang-toggle" role="group" aria-label={tr('Sprache wählen (Alt+L)', 'Вибір мови (Alt+L)')} title={tr('Sprache wechseln – Tastenkürzel Alt+L', 'Змінити мову – комбінація клавіш Alt+L')}>
+    <div className="lang-toggle" role="group" aria-label={tr('Sprache wählen (Alt+L)', 'Выбор языка (Alt+L)')} title={tr('Sprache wechseln – Tastenkürzel Alt+L', 'Сменить язык – сочетание клавиш Alt+L')}>
       {LANG_OPTIONS.map((o) => (
         <button key={o.value} type="button" lang={o.value} aria-pressed={lang === o.value} aria-label={o.name} className={lang === o.value ? 'active' : ''} onClick={() => setLang(o.value)}>
           <span aria-hidden="true">{o.flag}</span> {o.short}
@@ -63,12 +63,12 @@ export function Layout({ route, children }: { route: string[]; children: ReactNo
           </span>
           <span>
             <strong>MRT-Quest</strong>
-            <small>{tr('Physik & Gerätetechnik', 'Фізика й апаратура')}</small>
+            <small>{tr('Physik & Gerätetechnik', 'Физика и оборудование')}</small>
           </span>
         </Link>
-        <nav aria-label={tr('Hauptnavigation', 'Головна навігація')}>
-          <NavItem to="/" active={section === ''} icon="🏠" label={tr('Übersicht', 'Огляд')} />
-          <div className="nav-group">{tr('Lernmodule', 'Навчальні модулі')}</div>
+        <nav aria-label={tr('Hauptnavigation', 'Главная навигация')}>
+          <NavItem to="/" active={section === ''} icon="🏠" label={tr('Übersicht', 'Обзор')} />
+          <div className="nav-group">{tr('Lernmodule', 'Учебные модули')}</div>
           {MODULES.map((m) => {
             const best = state.modules[m.id]?.bestScore ?? 0;
             return (
@@ -78,42 +78,42 @@ export function Layout({ route, children }: { route: string[]; children: ReactNo
                 active={section === 'modul' && route[1] === m.id}
                 icon={m.icon}
                 label={`${m.index}. ${loc(m.title)}`}
-                sub={best > 0 ? `${tr('Bestwert', 'Найкращий результат')} ${Math.round(best * 100)} %` : undefined}
+                sub={best > 0 ? `${tr('Bestwert', 'Лучший результат')} ${Math.round(best * 100)} %` : undefined}
               />
             );
           })}
           <div className="nav-group">{tr('Praxis', 'Практика')}</div>
-          <NavItem to="/klinik" active={section === 'klinik'} icon="🩺" label={tr('Klinische Fälle', 'Клінічні випадки')} sub={tr('Protokoll-Trade-offs', 'Компроміси протоколів')} />
-          <NavItem to="/labor" active={section === 'labor'} icon="🔬" label={tr('Simulator-Labor', 'Лабораторія симуляторів')} sub={tr('Alle Simulatoren', 'Усі симулятори')} />
-          <NavItem to="/pruefung" active={section === 'pruefung'} icon="🎓" label={tr('Abschlussprüfung', 'Підсумковий іспит')} />
+          <NavItem to="/klinik" active={section === 'klinik'} icon="🩺" label={tr('Klinische Fälle', 'Клинические случаи')} sub={tr('Protokoll-Trade-offs', 'Компромиссы протоколов')} />
+          <NavItem to="/labor" active={section === 'labor'} icon="🔬" label={tr('Simulator-Labor', 'Лаборатория симуляторов')} sub={tr('Alle Simulatoren', 'Все симуляторы')} />
+          <NavItem to="/pruefung" active={section === 'pruefung'} icon="🎓" label={tr('Abschlussprüfung', 'Итоговый экзамен')} />
           <NavItem
             to="/profil"
             active={section === 'profil'}
             icon="🏅"
-            label={tr('Profil & Abzeichen', 'Профіль і відзнаки')}
-            sub={`${badgeCount}/${BADGES.length} ${tr('Abzeichen', 'відзнак')}`}
+            label={tr('Profil & Abzeichen', 'Профиль и награды')}
+            sub={`${badgeCount}/${BADGES.length} ${tr('Abzeichen', 'наград')}`}
           />
         </nav>
       </aside>
       <div className="main-col">
         <header className="topbar">
-          <button className="menu-btn" type="button" aria-label={tr('Navigation öffnen', 'Відкрити навігацію')} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+          <button className="menu-btn" type="button" aria-label={tr('Navigation öffnen', 'Открыть навигацию')} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
             ☰
           </button>
-          <Link to="/profil" className="level-chip" title={tr('Zum Profil', 'До профілю')}>
-            <span className="level-badge">{tr('Lv', 'Рів.')} {lp.level}</span>
+          <Link to="/profil" className="level-chip" title={tr('Zum Profil', 'К профилю')}>
+            <span className="level-badge">{tr('Lv', 'Ур.')} {lp.level}</span>
             <span className="level-info">
               <span className="level-title">{lp.title}</span>
-              <ProgressBar value={lp.ratio} label={tr('Fortschritt zum nächsten Level', 'Прогрес до наступного рівня')} />
+              <ProgressBar value={lp.ratio} label={tr('Fortschritt zum nächsten Level', 'Прогресс до следующего уровня')} />
               <span className="level-xp">
                 {nf(lp.current)} / {nf(lp.needed)} XP
               </span>
             </span>
           </Link>
           <div className="topbar-stats">
-            <span title={tr('Gesamt-XP', 'Загальний XP')}>✨ {nf(state.xp)} XP</span>
-            <span title={tr('Aktuelle Serie richtiger Antworten', 'Поточна серія правильних відповідей')}>🔥 {state.stats.streak}</span>
-            <span title={tr('Abzeichen', 'Відзнаки')}>🏅 {badgeCount}</span>
+            <span title={tr('Gesamt-XP', 'Всего XP')}>✨ {nf(state.xp)} XP</span>
+            <span title={tr('Aktuelle Serie richtiger Antworten', 'Текущая серия правильных ответов')}>🔥 {state.stats.streak}</span>
+            <span title={tr('Abzeichen', 'Награды')}>🏅 {badgeCount}</span>
           </div>
           <LanguageToggle />
         </header>
@@ -123,7 +123,7 @@ export function Layout({ route, children }: { route: string[]; children: ReactNo
         <footer className="footer">
           {tr(
             'MRT-Quest · Lernsoftware für Medizininformatik · Werte didaktisch vereinfacht, kein Medizinprodukt · Fortschritt wird lokal im Browser gespeichert',
-            'MRT-Quest · навчальна програма з медичної інформатики · значення дидактично спрощені, не є медичним виробом · прогрес зберігається локально в браузері',
+            'MRT-Quest · учебная программа по медицинской информатике · значения дидактически упрощены, не является медицинским изделием · прогресс сохраняется локально в браузере',
           )}
         </footer>
       </div>

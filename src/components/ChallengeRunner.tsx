@@ -60,29 +60,29 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
       <div className="challenge-summary">
         <div className="summary-score" data-tone={pct >= 80 ? 'good' : pct >= 60 ? 'warn' : 'bad'}>
           <span className="summary-pct">{pct} %</span>
-          <span>{tr(`${correctCount} von ${questions.length} richtig`, `${correctCount} з ${questions.length} правильно`)}</span>
+          <span>{tr(`${correctCount} von ${questions.length} richtig`, `${correctCount} из ${questions.length} правильно`)}</span>
         </div>
         <p className="summary-text">
           {pct === 100
-            ? tr('Perfekt! Kohärenter geht es nicht.', 'Ідеально! Когерентніше не буває.')
+            ? tr('Perfekt! Kohärenter geht es nicht.', 'Идеально! Когерентнее не бывает.')
             : pct >= 80
-              ? tr('Stark – dieses Thema sitzt.', 'Чудово – цю тему засвоєно.')
+              ? tr('Stark – dieses Thema sitzt.', 'Отлично – эта тема усвоена.')
               : pct >= 60
-                ? tr('Solide Basis. Schau dir die Erklärungen noch einmal an und versuche es erneut.', 'Міцна основа. Переглянь пояснення ще раз і спробуй знову.')
-                : tr('Hier lohnt sich ein zweiter Blick in Theorie und Simulator.', 'Варто ще раз переглянути теорію та симулятор.')}
+                ? tr('Solide Basis. Schau dir die Erklärungen noch einmal an und versuche es erneut.', 'Прочная основа. Просмотри объяснения ещё раз и попробуй снова.')
+                : tr('Hier lohnt sich ein zweiter Blick in Theorie und Simulator.', 'Стоит ещё раз заглянуть в теорию и симулятор.')}
         </p>
         <ul className="summary-xp">
           <li>
-            {tr('Antworten', 'Відповіді')}: <strong>+{earned} XP</strong>
+            {tr('Antworten', 'Ответы')}: <strong>+{earned} XP</strong>
           </li>
           <li>
-            {tr('Abschlussbonus', 'Бонус за завершення')}: <strong>+{finished.bonus} XP</strong>
+            {tr('Abschlussbonus', 'Бонус за завершение')}: <strong>+{finished.bonus} XP</strong>
           </li>
-          {replay && <li className="muted">{tr('Wiederholungsmodus: XP halbiert, da bereits gemeistert.', 'Режим повторення: XP зменшено вдвічі, бо тему вже опановано.')}</li>}
+          {replay && <li className="muted">{tr('Wiederholungsmodus: XP halbiert, da bereits gemeistert.', 'Режим повторения: XP уменьшены вдвое, так как тема уже освоена.')}</li>}
         </ul>
         <div className="row gap">
           <button className="btn primary" type="button" onClick={onRestart}>
-            {tr('Neue Runde', 'Новий раунд')}
+            {tr('Neue Runde', 'Новый раунд')}
           </button>
           <button className="btn" type="button" onClick={onExit}>
             {tr('Zurück', 'Назад')}
@@ -104,7 +104,7 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
       return isNumericCorrect(q, v);
     }
     if (selected.length === 0) {
-      setInputError(tr('Bitte eine Antwort auswählen.', 'Обери відповідь.'));
+      setInputError(tr('Bitte eine Antwort auswählen.', 'Выбери ответ.'));
       return null;
     }
     if (q.kind === 'mc') return selected[0] === q.answer;
@@ -161,26 +161,26 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
     <div className="challenge">
       <div className="challenge-head">
         <span>
-          {tr('Frage', 'Питання')} {index + 1} / {questions.length}
+          {tr('Frage', 'Вопрос')} {index + 1} / {questions.length}
         </span>
-        <span className="difficulty" title={tr('Schwierigkeit', 'Складність')}>
+        <span className="difficulty" title={tr('Schwierigkeit', 'Сложность')}>
           {'◆'.repeat(q.difficulty)}
           {'◇'.repeat(3 - q.difficulty)}
         </span>
         <span className="combo" data-active={state.stats.streak >= 3}>
-          🔥 {tr('Serie', 'Серія')} {state.stats.streak}
+          🔥 {tr('Serie', 'Серия')} {state.stats.streak}
           {state.stats.streak >= 6 ? ' · ×1,5 XP' : state.stats.streak >= 3 ? ' · ×1,2 XP' : ''}
         </span>
       </div>
-      <ProgressBar value={index / questions.length} label={tr('Fortschritt der Challenge', 'Прогрес завдання')} />
+      <ProgressBar value={index / questions.length} label={tr('Fortschritt der Challenge', 'Прогресс задания')} />
 
       <form className="question" onSubmit={submit}>
         <p className="question-kind">
           {q.kind === 'numeric'
-            ? tr('🧮 Rechen-Puzzle', '🧮 Розрахункова задача')
+            ? tr('🧮 Rechen-Puzzle', '🧮 Расчётная задача')
             : q.kind === 'multi'
-              ? tr('☑️ Mehrfachauswahl', '☑️ Кілька варіантів')
-              : tr('🔘 Einfachauswahl', '🔘 Один варіант')}
+              ? tr('☑️ Mehrfachauswahl', '☑️ Несколько вариантов')
+              : tr('🔘 Einfachauswahl', '🔘 Один вариант')}
         </p>
         <h3 className="question-prompt">
           <RichText text={q.prompt} />
@@ -192,7 +192,7 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
               type="text"
               inputMode="decimal"
               autoComplete="off"
-              aria-label={tr('Antwort', 'Відповідь')}
+              aria-label={tr('Antwort', 'Ответ')}
               placeholder={tr('Ergebnis', 'Результат')}
               value={numeric}
               disabled={!!submitted}
@@ -241,27 +241,27 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
         {!submitted ? (
           <div className="row gap">
             <button className="btn primary" type="submit">
-              {tr('Antwort prüfen', 'Перевірити відповідь')}
+              {tr('Antwort prüfen', 'Проверить ответ')}
             </button>
             {q.hint && !hintShown && (
               <button className="btn ghost" type="button" onClick={() => setHintShown(true)}>
-                {tr('Hinweis (halbe XP)', 'Підказка (половина XP)')}
+                {tr('Hinweis (halbe XP)', 'Подсказка (половина XP)')}
               </button>
             )}
           </div>
         ) : (
           <div className={`feedback ${submitted.correct ? 'is-correct' : 'is-wrong'}`}>
-            <strong>{submitted.correct ? `✔ ${tr('Richtig!', 'Правильно!')} +${submitted.xp} XP` : tr('✘ Leider falsch.', '✘ На жаль, неправильно.')}</strong>
+            <strong>{submitted.correct ? `✔ ${tr('Richtig!', 'Правильно!')} +${submitted.xp} XP` : tr('✘ Leider falsch.', '✘ К сожалению, неверно.')}</strong>
             {!submitted.correct && (
               <p>
-                {tr('Richtige Antwort', 'Правильна відповідь')}: <RichText text={correctText} />
+                {tr('Richtige Antwort', 'Правильный ответ')}: <RichText text={correctText} />
               </p>
             )}
             <p>
               <RichText text={q.explanation} />
             </p>
             <button className="btn primary" type="button" onClick={next} autoFocus>
-              {index + 1 >= questions.length ? tr('Auswertung', 'Результати') : tr('Weiter →', 'Далі →')}
+              {index + 1 >= questions.length ? tr('Auswertung', 'Результаты') : tr('Weiter →', 'Далее →')}
             </button>
           </div>
         )}

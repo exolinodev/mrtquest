@@ -235,5 +235,5 @@ export function fmtDuration(seconds: number): string {
   if (!Number.isFinite(seconds)) return '–';
   const s = Math.round(seconds);
   const m = Math.floor(s / 60);
-  return `${m}:${String(s % 60).padStart(2, '0')} ${numberLocale() === 'uk-UA' ? 'хв' : 'min'}`;
+  return `${m}:${String(s % 60).padStart(2, '0')} ${numberLocale() === 'ru-RU' ? 'мин' : 'min'}`;
 }

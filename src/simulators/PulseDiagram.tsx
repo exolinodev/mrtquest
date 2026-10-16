@@ -88,7 +88,7 @@ export function PulseDiagram({ sequence, te, ti, etl, flip }: Props) {
   if (sequence === 'SE' || sequence === 'TSE' || sequence === 'IR') {
     let t0 = LEFT + 40;
     if (sequence === 'IR') {
-      exc(t0, tr('180° inv', '180° інв'), 22);
+      exc(t0, tr('180° inv', '180° инв'), 22);
       els.push(<path key="spoil" d={trap(t0 + 30, 30, 14, y[1])} className="pd-spoil" />);
       spans.push({ x1: t0, x2: t0 + 130, text: `TI = ${Math.round(ti)} ${ms}` });
       t0 += 130;
@@ -110,7 +110,7 @@ export function PulseDiagram({ sequence, te, ti, etl, flip }: Props) {
     }
     els.push(<path key="fid" d={fid(t0 + 18, 40, 12, y[4])} className="pd-signal pd-faint" />);
     const effIdx = sequence === 'SE' ? 0 : Math.floor((echoes - 1) / 2);
-    spans.push({ x1: t0, x2: t0 + esp + effIdx * esp, text: sequence === 'SE' ? `TE = ${Math.round(te)} ${ms}` : `${tr('TE_eff', 'TE_еф')} = ${Math.round(te)} ${ms}` });
+    spans.push({ x1: t0, x2: t0 + esp + effIdx * esp, text: sequence === 'SE' ? `TE = ${Math.round(te)} ${ms}` : `${tr('TE_eff', 'TE_эфф')} = ${Math.round(te)} ${ms}` });
     if (sequence !== 'SE') labels.push({ x: t0 + esp * (echoes + 0.3), text: `… ETL = ${etl}`, row: 4 });
   } else if (sequence === 'GRE') {
     const t0 = LEFT + 70;
@@ -142,18 +142,18 @@ export function PulseDiagram({ sequence, te, ti, etl, flip }: Props) {
       els.push(<path key={`s${i}`} d={echo(x + lw / 2, lw - 6, 13, y[4], Math.exp(-Math.abs(i - center) * 0.18))} className={i === center ? 'pd-signal pd-eff' : 'pd-signal'} />);
       x += lw;
     }
-    spans.push({ x1: t0, x2: t0 + 110 + lw * 4.5, text: `TE = ${te} ${ms} ${tr('(k-Raum-Zentrum)', '(центр k-простору)')}` });
-    labels.push({ x: t0 + 110 + lw * 1.5, text: tr('Blips', 'Бліпи'), row: 2 });
+    spans.push({ x1: t0, x2: t0 + 110 + lw * 4.5, text: `TE = ${te} ${ms} ${tr('(k-Raum-Zentrum)', '(центр k-пространства)')}` });
+    labels.push({ x: t0 + 110 + lw * 1.5, text: tr('Blips', 'Блипы'), row: 2 });
   }
 
   const h = 20 + ROWS.length * ROW + 48;
   return (
-    <svg viewBox={`0 0 ${W} ${h}`} className="pulse-diagram" role="img" aria-label={`${tr('Schematisches Pulssequenzdiagramm', 'Схематична діаграма імпульсної послідовності')} ${sequence}`}>
+    <svg viewBox={`0 0 ${W} ${h}`} className="pulse-diagram" role="img" aria-label={`${tr('Schematisches Pulssequenzdiagramm', 'Схематическая диаграмма импульсной последовательности')} ${sequence}`}>
       {ROWS.map((r, i) => (
         <g key={r}>
           <line x1={LEFT - 6} x2={W - 6} y1={y[i]} y2={y[i]} className="pd-baseline" />
           <text x={8} y={y[i] + 4} className="pd-rowlabel">
-            {r === 'G_S' ? tr('G Schicht', 'G зрізу') : r === 'G_P' ? tr('G Phase', 'G фази') : r === 'G_R' ? tr('G Auslese', 'G зчит.') : r === 'HF' ? tr('HF', 'РЧ') : tr('Signal', 'Сигнал')}
+            {r === 'G_S' ? tr('G Schicht', 'G среза') : r === 'G_P' ? tr('G Phase', 'G фазы') : r === 'G_R' ? tr('G Auslese', 'G считыв.') : r === 'HF' ? tr('HF', 'РЧ') : tr('Signal', 'Сигнал')}
           </text>
         </g>
       ))}

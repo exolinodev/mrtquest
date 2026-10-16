@@ -24,35 +24,35 @@ const SEQ_INFO: Record<SequenceType, { tex: string; text: Loc }> = {
     tex: 'S \\propto \\rho(1-e^{-TR/T_1})\\,e^{-TE/T_2}',
     text: {
       de: '90°–180°: refokussiert statische Inhomogenitäten. Robust, Goldstandard für T1w – aber eine k-Raum-Zeile pro TR.',
-      uk: '90°–180°: рефокусує статичні неоднорідності. Надійна, «золотий стандарт» для T1w – але лише один рядок k-простору за TR.',
+      ru: '90°–180°: рефокусирует статические неоднородности. Надёжная, «золотой стандарт» для T1w – но лишь одна строка k-пространства за TR.',
     },
   },
   TSE: {
     tex: 'TA = \\frac{TR\\cdot N_y\\cdot NEX}{ETL}',
     text: {
       de: 'Echozug aus ETL Refokussierungspulsen, jedes Echo anders phasenkodiert. Das ins k-Raum-Zentrum sortierte Echo bestimmt $TE_{\\text{eff}}$. Fett erscheint hell.',
-      uk: 'Ехо-послідовність з ETL рефокусувальних імпульсів, кожне ехо закодоване по фазі інакше. Ехо, розміщене в центрі k-простору, визначає $TE_{\\text{еф}}$. Жир виглядає яскравим.',
+      ru: 'Эхо-цепочка из ETL рефокусирующих импульсов, каждое эхо кодируется по фазе по-своему. Эхо, помещённое в центр k-пространства, определяет $TE_{\\text{эфф}}$. Жир выглядит ярким.',
     },
   },
   IR: {
     tex: 'S \\propto \\rho\\,|1-2e^{-TI/T_1}+e^{-TR/T_1}|\\,e^{-TE/T_2}',
     text: {
       de: 'Inversion vor der Anregung. Gewebe im Nulldurchgang ($M_z = 0$) verschwinden: STIR (Fett) oder FLAIR (Liquor).',
-      uk: 'Інверсія перед збудженням. Тканини в точці переходу через нуль ($M_z = 0$) зникають: STIR (жир) або FLAIR (ліквор).',
+      ru: 'Инверсия перед возбуждением. Ткани в точке перехода через ноль ($M_z = 0$) исчезают: STIR (жир) или FLAIR (ликвор).',
     },
   },
   GRE: {
     tex: 'S \\propto \\rho\\sin\\alpha\\frac{1-E_1}{1-\\cos\\alpha E_1}e^{-TE/T_2^*}',
     text: {
       de: 'Gradientenumkehr statt 180°-Puls: T2*-Empfindlichkeit, sehr kurze TR mit kleinem Flipwinkel → schnell, wenig SAR.',
-      uk: 'Реверс градієнта замість 180°-імпульсу: чутливість до T2*, дуже короткий TR з малим кутом відхилення → швидко, низький SAR.',
+      ru: 'Реверс градиента вместо 180°-импульса: чувствительность к T2*, очень короткий TR с малым углом отклонения → быстро, низкий SAR.',
     },
   },
   EPI: {
     tex: 'BW_{\\text{PE}} = \\frac{1}{ESP\\cdot N_y/R}',
     text: {
       de: 'Kompletter k-Raum nach einer Anregung. Basis für DWI/fMRT. Geringe Phasenbandbreite → Verzerrung und Fettverschiebung in Phasenrichtung.',
-      uk: 'Увесь k-простір після одного збудження. Основа DWI/фМРТ. Вузька смуга у фазовому напрямку → спотворення та зсув жиру у фазовому напрямку.',
+      ru: 'Всё k-пространство после одного возбуждения. Основа DWI/фМРТ. Узкая полоса в фазовом направлении → искажения и сдвиг жира в фазовом направлении.',
     },
   },
 };
@@ -88,7 +88,7 @@ export function SequenceSimulator() {
 
   return (
     <div className="sim-grid">
-      <Panel title={tr('Sequenz wählen', 'Виберіть послідовність')} className="span-3">
+      <Panel title={tr('Sequenz wählen', 'Выбери последовательность')} className="span-3">
         <div className="row wrap gap">
           <Segmented<SequenceType> value={s} options={(Object.keys(SEQUENCE_LABELS) as SequenceType[]).map((k) => ({ value: k, label: loc(SEQUENCE_LABELS[k]) }))} onChange={chooseSequence} />
         </div>
@@ -103,12 +103,12 @@ export function SequenceSimulator() {
             onChange={(v) => set('field', v)}
           />
           <Segmented<PhantomId>
-            label={tr('Anatomie', 'Анатомія')}
+            label={tr('Anatomie', 'Анатомия')}
             value={phantom}
             options={[
               { value: 'brain', label: tr('Kopf', 'Голова') },
-              { value: 'knee', label: tr('Knie', 'Коліно') },
-              { value: 'abdomen', label: tr('Abdomen', 'Живіт') },
+              { value: 'knee', label: tr('Knie', 'Колено') },
+              { value: 'abdomen', label: tr('Abdomen', 'Живот') },
             ]}
             onChange={setPhantom}
           />
@@ -119,50 +119,50 @@ export function SequenceSimulator() {
         <TeX block tex={SEQ_INFO[s].tex} />
       </Panel>
 
-      <Panel title={tr('Pulssequenzdiagramm (schematisch)', 'Діаграма імпульсної послідовності (схематично)')} className="span-2">
+      <Panel title={tr('Pulssequenzdiagramm (schematisch)', 'Диаграмма импульсной последовательности (схематично)')} className="span-2">
         <PulseDiagram sequence={s} te={protocol.te} ti={protocol.ti} etl={protocol.etl} flip={protocol.flip} />
       </Panel>
 
-      <Panel title={tr('Parameter', 'Параметри')}>
+      <Panel title={tr('Parameter', 'Параметры')}>
         <Slider label="TR" value={protocol.tr} min={s === 'GRE' ? 5 : 200} max={s === 'GRE' ? 1000 : 12000} step={s === 'GRE' ? 5 : 50} unit={ms} onChange={(v) => set('tr', v)} />
-        <Slider label={hasEtl ? tr('TE (effektiv)', 'TE (ефективний)') : 'TE'} value={protocol.te} min={s === 'GRE' ? 2 : 8} max={s === 'GRE' ? 40 : 200} step={s === 'GRE' ? 0.1 : 1} unit={ms} onChange={(v) => set('te', v)} format={(v) => fmt(v, 1)} />
+        <Slider label={hasEtl ? tr('TE (effektiv)', 'TE (эффективное)') : 'TE'} value={protocol.te} min={s === 'GRE' ? 2 : 8} max={s === 'GRE' ? 40 : 200} step={s === 'GRE' ? 0.1 : 1} unit={ms} onChange={(v) => set('te', v)} format={(v) => fmt(v, 1)} />
         {s === 'IR' && (
           <Slider
-            label={tr('Inversionszeit TI', 'Час інверсії TI')}
+            label={tr('Inversionszeit TI', 'Время инверсии TI')}
             value={protocol.ti}
             min={50}
             max={3500}
             step={5}
             unit={ms}
             onChange={(v) => set('ti', v)}
-            hint={tr(`Nullpunkte: Fett ≈ ${fmt(fatNull, 0)} ms · Liquor ≈ ${fmt(csfNull, 0)} ms`, `Нульові точки: жир ≈ ${fmt(fatNull, 0)} мс · ліквор ≈ ${fmt(csfNull, 0)} мс`)}
+            hint={tr(`Nullpunkte: Fett ≈ ${fmt(fatNull, 0)} ms · Liquor ≈ ${fmt(csfNull, 0)} ms`, `Нулевые точки: жир ≈ ${fmt(fatNull, 0)} мс · ликвор ≈ ${fmt(csfNull, 0)} мс`)}
           />
         )}
         {s === 'GRE' && (
           <Slider
-            label={tr('Flipwinkel α', 'Кут відхилення α')}
+            label={tr('Flipwinkel α', 'Угол отклонения α')}
             value={protocol.flip}
             min={2}
             max={90}
             step={1}
             unit="°"
             onChange={(v) => set('flip', v)}
-            hint={tr(`Ernst-Winkel (WM): ${fmt(ernst, 1)}°`, `Кут Ернста (БР): ${fmt(ernst, 1)}°`)}
+            hint={tr(`Ernst-Winkel (WM): ${fmt(ernst, 1)}°`, `Угол Эрнста (БВ): ${fmt(ernst, 1)}°`)}
           />
         )}
-        {hasEtl && <Slider label={tr('Echozuglänge ETL', 'Довжина ехо-послідовності ETL')} value={protocol.etl} min={2} max={32} step={1} onChange={(v) => set('etl', v)} />}
+        {hasEtl && <Slider label={tr('Echozuglänge ETL', 'Длина эхо-цепочки ETL')} value={protocol.etl} min={2} max={32} step={1} onChange={(v) => set('etl', v)} />}
         <p className="weighting-tag">{loc(metrics.weighting)}</p>
       </Panel>
 
-      <Panel title={tr('Synthetisches Bild', 'Синтетичне зображення')}>
+      <Panel title={tr('Synthetisches Bild', 'Синтетическое изображение')}>
         <MRImage
           data={image}
-          label={tr(`Synthetisches Bild: ${loc(metrics.weighting)}`, `Синтетичне зображення: ${loc(metrics.weighting)}`)}
+          label={tr(`Synthetisches Bild: ${loc(metrics.weighting)}`, `Синтетическое изображение: ${loc(metrics.weighting)}`)}
           overlay={`${loc(SEQUENCE_LABELS[s])} · ${fmt(protocol.field)} ${tr('T', 'Тл')}`}
         />
       </Panel>
 
-      <Panel title={tr('Gewebesignale', 'Сигнали тканин')}>
+      <Panel title={tr('Gewebesignale', 'Сигналы тканей')}>
         <div className="bars">
           {shownTissues.map((t) => (
             <div key={t} className="bar-row">
@@ -176,12 +176,12 @@ export function SequenceSimulator() {
         </div>
       </Panel>
 
-      <Panel title={tr('Timing & Belastung', 'Час і навантаження')}>
+      <Panel title={tr('Timing & Belastung', 'Время и нагрузка')}>
         <div className="stat-grid two">
-          <Stat label={tr('Messzeit', 'Час сканування')} value={fmtDuration(metrics.scanTimeS)} />
+          <Stat label={tr('Messzeit', 'Время сканирования')} value={fmtDuration(metrics.scanTimeS)} />
           <Stat label="SAR" value={fmt(metrics.sar, 2)} unit={tr('W/kg', 'Вт/кг')} tone={metrics.sar > 4 ? 'bad' : metrics.sar > 2 ? 'warn' : 'good'} />
-          <Stat label={tr('min. TE', 'мін. TE')} value={fmt(metrics.timing.minTE, 1)} unit={ms} />
-          <Stat label={tr('Schichten/TR', 'Зрізів/TR')} value={metrics.timing.maxSlicesPerTR} />
+          <Stat label={tr('min. TE', 'мин. TE')} value={fmt(metrics.timing.minTE, 1)} unit={ms} />
+          <Stat label={tr('Schichten/TR', 'Срезов/TR')} value={metrics.timing.maxSlicesPerTR} />
         </div>
         <ul className="issues">
           {metrics.issues

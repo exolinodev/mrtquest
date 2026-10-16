@@ -7,8 +7,8 @@ interface LanguageContextValue {
   lang: Lang;
   setLang: (lang: Lang) => void;
   toggle: () => void;
-  /** Inline-Übersetzung: tr('Deutsch', 'Українська') */
-  tr: (de: string, uk: string) => string;
+  /** Inline-Übersetzung: tr('Deutsch', 'Русский') */
+  tr: (de: string, ru: string) => string;
   /** Übersetzung eines zweisprachigen Datensatzes */
   loc: (text: Loc) => string;
 }
@@ -18,11 +18,14 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 function initialLang(): Lang {
   try {
     const stored = globalThis.localStorage?.getItem(STORAGE_KEY);
-    if (stored === 'de' || stored === 'uk') return stored;
+    if (stored === 'de' || stored === 'ru') return stored;
+    // Frühere Version speicherte den Schlüssel 'uk' für die zweite Sprache
+    if (stored === 'uk') return 'ru';
   } catch {
     // Speicher nicht verfügbar – Standardsprache verwenden
   }
-  return globalThis.navigator?.language?.toLowerCase().startsWith('uk') ? 'uk' : 'de';
+  const browser = globalThis.navigator?.language?.toLowerCase() ?? '';
+  return browser.startsWith('ru') || browser.startsWith('uk') ? 'ru' : 'de';
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
@@ -37,7 +40,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     setLangState(next);
   }, []);
 
-  const toggle = useCallback(() => setLang(lang === 'de' ? 'uk' : 'de'), [lang, setLang]);
+  const toggle = useCallback(() => setLang(lang === 'de' ? 'ru' : 'de'), [lang, setLang]);
 
   useEffect(() => {
     try {
@@ -46,7 +49,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       // ignorieren
     }
     document.documentElement.lang = lang;
-    document.title = lang === 'uk' ? 'MRT-Quest · Фізика МРТ у грі' : 'MRT-Quest · MRT-Physik spielerisch meistern';
+    document.title = lang === 'ru' ? 'MRT-Quest · Физика МРТ в игровой форме' : 'MRT-Quest · MRT-Physik spielerisch meistern';
   }, [lang]);
 
   // Schnellumschaltung per Tastatur: Alt+L
@@ -66,7 +69,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       lang,
       setLang,
       toggle,
-      tr: (de, uk) => (lang === 'uk' ? uk : de),
+      tr: (de, ru) => (lang === 'ru' ? ru : de),
       loc: (text) => pickLoc(text, lang),
     }),
     [lang, setLang, toggle],

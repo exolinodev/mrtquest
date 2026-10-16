@@ -35,66 +35,66 @@ export const NUCLEI: Nucleus[] = [
   {
     id: 'H1',
     symbol: '¹H',
-    label: { de: '¹H (Proton)', uk: '¹H (протон)' },
+    label: { de: '¹H (Proton)', ru: '¹H (протон)' },
     gammaBar: 42.577,
     spin: '1/2',
     abundance: 99.98,
     relSensitivity: 1,
     note: {
       de: 'Standard der klinischen MRT: in Wasser und Fett allgegenwärtig, höchstes γ aller stabilen Kerne.',
-      uk: 'Стандарт клінічної МРТ: присутній усюди у воді та жирі, найвище γ серед стабільних ядер.',
+      ru: 'Стандарт клинической МРТ: повсеместно присутствует в воде и жире, наибольшее γ среди стабильных ядер.',
     },
   },
   {
     id: 'F19',
     symbol: '¹⁹F',
-    label: { de: '¹⁹F', uk: '¹⁹F' },
+    label: { de: '¹⁹F', ru: '¹⁹F' },
     gammaBar: 40.052,
     spin: '1/2',
     abundance: 100,
     relSensitivity: 0.83,
     note: {
       de: 'Kaum endogen vorhanden – ideal für Kontrastmittel- und Tracer-Bildgebung ohne Hintergrund.',
-      uk: 'Майже відсутній в організмі – ідеальний для візуалізації контрастних речовин і трейсерів без фону.',
+      ru: 'Почти отсутствует в организме – идеален для визуализации контрастных веществ и трейсеров без фона.',
     },
   },
   {
     id: 'P31',
     symbol: '³¹P',
-    label: { de: '³¹P', uk: '³¹P' },
+    label: { de: '³¹P', ru: '³¹P' },
     gammaBar: 17.235,
     spin: '1/2',
     abundance: 100,
     relSensitivity: 0.066,
     note: {
       de: 'Spektroskopie des Energiestoffwechsels (ATP, Phosphokreatin), z. B. im Muskel.',
-      uk: "Спектроскопія енергетичного обміну (АТФ, фосфокреатин), напр. у м’язах.",
+      ru: 'Спектроскопия энергетического обмена (АТФ, фосфокреатин), напр. в мышцах.',
     },
   },
   {
     id: 'Na23',
     symbol: '²³Na',
-    label: { de: '²³Na', uk: '²³Na' },
+    label: { de: '²³Na', ru: '²³Na' },
     gammaBar: 11.262,
     spin: '3/2',
     abundance: 100,
     relSensitivity: 0.093,
     note: {
       de: 'Natrium-Bildgebung: Marker für Zellintegrität, sehr kurze T2-Komponenten.',
-      uk: 'Натрієва візуалізація: маркер цілісності клітин, дуже короткі T2-компоненти.',
+      ru: 'Натриевая визуализация: маркер целостности клеток, очень короткие T2-компоненты.',
     },
   },
   {
     id: 'C13',
     symbol: '¹³C',
-    label: { de: '¹³C', uk: '¹³C' },
+    label: { de: '¹³C', ru: '¹³C' },
     gammaBar: 10.708,
     spin: '1/2',
     abundance: 1.1,
     relSensitivity: 0.016,
     note: {
       de: 'Geringe natürliche Häufigkeit; mit Hyperpolarisation für Stoffwechsel-Bildgebung nutzbar.',
-      uk: 'Низька природна поширеність; з гіперполяризацією придатний для метаболічної візуалізації.',
+      ru: 'Низкая естественная распространённость; с гиперполяризацией пригоден для метаболической визуализации.',
     },
   },
 ];
@@ -124,7 +124,7 @@ export interface Tissue {
 export const TISSUES: Record<TissueId, Tissue> = {
   wm: {
     id: 'wm',
-    label: { de: 'Weiße Substanz', uk: 'Біла речовина' },
+    label: { de: 'Weiße Substanz', ru: 'Белое вещество' },
     color: '#e2e8f0',
     params: {
       1.5: { t1: 780, t2: 80, t2star: 55, pd: 0.69 },
@@ -133,7 +133,7 @@ export const TISSUES: Record<TissueId, Tissue> = {
   },
   gm: {
     id: 'gm',
-    label: { de: 'Graue Substanz', uk: 'Сіра речовина' },
+    label: { de: 'Graue Substanz', ru: 'Серое вещество' },
     color: '#94a3b8',
     params: {
       1.5: { t1: 1100, t2: 95, t2star: 65, pd: 0.8 },
@@ -142,7 +142,7 @@ export const TISSUES: Record<TissueId, Tissue> = {
   },
   csf: {
     id: 'csf',
-    label: { de: 'Liquor (CSF)', uk: 'Ліквор (СМР)' },
+    label: { de: 'Liquor (CSF)', ru: 'Ликвор (ЦСЖ)' },
     color: '#38bdf8',
     params: {
       1.5: { t1: 4000, t2: 2000, t2star: 1000, pd: 1.0 },
@@ -151,7 +151,7 @@ export const TISSUES: Record<TissueId, Tissue> = {
   },
   fat: {
     id: 'fat',
-    label: { de: 'Fettgewebe', uk: 'Жирова тканина' },
+    label: { de: 'Fettgewebe', ru: 'Жировая ткань' },
     color: '#facc15',
     params: {
       1.5: { t1: 260, t2: 85, t2star: 40, pd: 0.9 },
@@ -160,7 +160,7 @@ export const TISSUES: Record<TissueId, Tissue> = {
   },
   muscle: {
     id: 'muscle',
-    label: { de: 'Muskel', uk: "М’яз" },
+    label: { de: 'Muskel', ru: 'Мышца' },
     color: '#f87171',
     params: {
       1.5: { t1: 1000, t2: 44, t2star: 30, pd: 0.75 },
@@ -169,7 +169,7 @@ export const TISSUES: Record<TissueId, Tissue> = {
   },
   liver: {
     id: 'liver',
-    label: { de: 'Leber', uk: 'Печінка' },
+    label: { de: 'Leber', ru: 'Печень' },
     color: '#fb923c',
     params: {
       1.5: { t1: 580, t2: 46, t2star: 30, pd: 0.75 },
@@ -178,7 +178,7 @@ export const TISSUES: Record<TissueId, Tissue> = {
   },
   lesion: {
     id: 'lesion',
-    label: { de: 'Läsion / Ödem', uk: 'Вогнище / набряк' },
+    label: { de: 'Läsion / Ödem', ru: 'Очаг / отёк' },
     color: '#c084fc',
     params: {
       1.5: { t1: 1350, t2: 180, t2star: 110, pd: 0.86 },
@@ -187,7 +187,7 @@ export const TISSUES: Record<TissueId, Tissue> = {
   },
   blood: {
     id: 'blood',
-    label: { de: 'Blut (venös)', uk: 'Кров (венозна)' },
+    label: { de: 'Blut (venös)', ru: 'Кровь (венозная)' },
     color: '#fb7185',
     params: {
       1.5: { t1: 1440, t2: 180, t2star: 60, pd: 0.85 },

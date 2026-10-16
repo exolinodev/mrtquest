@@ -18,7 +18,7 @@ function SpinEchoFan({ te }: { te: number }) {
   const coherence = Math.abs(offsets.reduce((s, dw) => s + Math.cos((phaseAt(dw) * Math.PI) / 180), 0)) / offsets.length;
   return (
     <div className="spin-fan">
-      <svg viewBox="-110 -110 220 220" role="img" aria-label={tr('Phasenfächer der Spins', 'Фазове віяло спінів')}>
+      <svg viewBox="-110 -110 220 220" role="img" aria-label={tr('Phasenfächer der Spins', 'Фазовый веер спинов')}>
         <circle r="95" className="fan-circle" />
         {offsets.map((dw, i) => {
           const ph = ((phaseAt(dw) - 90) * Math.PI) / 180;
@@ -30,18 +30,18 @@ function SpinEchoFan({ te }: { te: number }) {
         <circle r="5" fill="#f8fafc" />
       </svg>
       <div>
-        <Slider label={tr('Zeit nach 90°-Puls', 'Час після 90°-імпульсу')} value={t} min={0} max={te * 1.5} step={1} unit={tr('ms', 'мс')} onChange={setT} />
+        <Slider label={tr('Zeit nach 90°-Puls', 'Время после 90°-импульса')} value={t} min={0} max={te * 1.5} step={1} unit={tr('ms', 'мс')} onChange={setT} />
         <p className="small">
           {t < te / 2
-            ? tr('Dephasierung durch statische Off-Resonanzen (T2′).', 'Дефазування через статичні нерезонансні відхилення (T2′).')
+            ? tr('Dephasierung durch statische Off-Resonanzen (T2′).', 'Дефазировка из-за статических отклонений от резонанса (T2′).')
             : t < te - 1
-              ? tr('180°-Puls bei TE/2 hat die Phasen gespiegelt – die Spins laufen wieder zusammen.', '180°-імпульс у момент TE/2 віддзеркалив фази – спіни знову сходяться.')
+              ? tr('180°-Puls bei TE/2 hat die Phasen gespiegelt – die Spins laufen wieder zusammen.', '180°-импульс в момент TE/2 зеркально отразил фазы – спины снова сходятся.')
               : t <= te + 1
-                ? tr('✔ Spin-Echo: Phasenkohärenz wiederhergestellt!', '✔ Спін-ехо: фазову когерентність відновлено!')
-                : tr('Nach dem Echo fächern die Spins erneut auf.', 'Після ехо спіни знову розходяться віялом.')}
+                ? tr('✔ Spin-Echo: Phasenkohärenz wiederhergestellt!', '✔ Спин-эхо: фазовая когерентность восстановлена!')
+                : tr('Nach dem Echo fächern die Spins erneut auf.', 'После эха спины снова расходятся веером.')}
         </p>
         <p className="small muted">
-          {tr('Kohärenz (Betrag des Summenvektors)', 'Когерентність (модуль сумарного вектора)')}: {fmt(coherence * 100, 0)} %
+          {tr('Kohärenz (Betrag des Summenvektors)', 'Когерентность (модуль суммарного вектора)')}: {fmt(coherence * 100, 0)} %
         </p>
       </div>
     </div>
@@ -98,10 +98,10 @@ export function RelaxationSimulator() {
 
   return (
     <div className="sim-grid">
-      <Panel title={tr('Gewebe & Feld', 'Тканини та поле')} className="span-3">
+      <Panel title={tr('Gewebe & Feld', 'Ткани и поле')} className="span-3">
         <div className="row wrap gap">
           <Segmented<FieldStrength>
-            label={tr('Feldstärke', 'Індукція поля')}
+            label={tr('Feldstärke', 'Индукция поля')}
             value={field}
             options={[
               { value: 1.5, label: tr('1,5 T', '1,5 Тл') },
@@ -110,16 +110,16 @@ export function RelaxationSimulator() {
             onChange={setField}
           />
           <Segmented<'90' | '180'>
-            label={tr('Anregung', 'Збудження')}
+            label={tr('Anregung', 'Возбуждение')}
             value={mode}
             options={[
-              { value: '90', label: tr('90°-Puls (Sättigung)', '90°-імпульс (насичення)') },
-              { value: '180', label: tr('180°-Puls (Inversion)', '180°-імпульс (інверсія)') },
+              { value: '90', label: tr('90°-Puls (Sättigung)', '90°-импульс (насыщение)') },
+              { value: '180', label: tr('180°-Puls (Inversion)', '180°-импульс (инверсия)') },
             ]}
             onChange={setMode}
           />
         </div>
-        <div className="chips" role="group" aria-label={tr('Gewebe auswählen', 'Виберіть тканини')}>
+        <div className="chips" role="group" aria-label={tr('Gewebe auswählen', 'Выбери ткани')}>
           {SELECTABLE.map((id) => (
             <button key={id} type="button" className={`chip${selected.includes(id) ? ' on' : ''}`} style={{ ['--chip' as string]: TISSUES[id].color }} onClick={() => toggle(id)} aria-pressed={selected.includes(id)}>
               {loc(TISSUES[id].label)}
@@ -128,13 +128,13 @@ export function RelaxationSimulator() {
         </div>
       </Panel>
 
-      <Panel title={tr('Längsmagnetisierung Mz(t) – T1-Erholung', 'Поздовжня намагніченість Mz(t) – T1-відновлення')} className="span-2">
+      <Panel title={tr('Längsmagnetisierung Mz(t) – T1-Erholung', 'Продольная намагниченность Mz(t) – T1-восстановление')} className="span-2">
         <LineChart
-          ariaLabel={tr('T1-Relaxationskurven', 'Криві T1-релаксації')}
+          ariaLabel={tr('T1-Relaxationskurven', 'Кривые T1-релаксации')}
           series={mzSeries}
           xDomain={[0, tMax]}
           yDomain={mode === '90' ? [0, 1.05] : [-1.05, 1.05]}
-          xLabel={tr('Zeit [ms]', 'Час [мс]')}
+          xLabel={tr('Zeit [ms]', 'Время [мс]')}
           yLabel="Mz / M₀"
           zeroLine
           markers={[{ x: trMs, label: `${mode === '90' ? 'TR' : 't'} = ${trMs} ${tr('ms', 'мс')}` }]}
@@ -149,15 +149,15 @@ export function RelaxationSimulator() {
         />
         {mode === '180' && (
           <p className="small">
-            {tr('Nulldurchgänge (TI)', 'Точки переходу через нуль (TI)')}:{' '}
+            {tr('Nulldurchgänge (TI)', 'Точки перехода через ноль (TI)')}:{' '}
             {selected.map((id) => `${loc(TISSUES[id].label)} ${fmt(TISSUES[id].params[field].t1 * Math.LN2, 0)} ${tr('ms', 'мс')}`).join(' · ')}
           </p>
         )}
       </Panel>
 
-      <Panel title={tr('Sequenzparameter (Spin-Echo)', 'Параметри послідовності (спін-ехо)')}>
-        <Slider label={tr('Repetitionszeit TR', 'Час повторення TR')} value={trMs} min={100} max={6000} step={50} unit={tr('ms', 'мс')} onChange={setTr} />
-        <Slider label={tr('Echozeit TE', 'Час відлуння TE')} value={te} min={5} max={250} step={1} unit={tr('ms', 'мс')} onChange={setTe} />
+      <Panel title={tr('Sequenzparameter (Spin-Echo)', 'Параметры последовательности (спин-эхо)')}>
+        <Slider label={tr('Repetitionszeit TR', 'Время повторения TR')} value={trMs} min={100} max={6000} step={50} unit={tr('ms', 'мс')} onChange={setTr} />
+        <Slider label={tr('Echozeit TE', 'Время эха TE')} value={te} min={5} max={250} step={1} unit={tr('ms', 'мс')} onChange={setTe} />
         <div className="row wrap gap">
           {presets.map((p) => (
             <button
@@ -177,7 +177,7 @@ export function RelaxationSimulator() {
       </Panel>
 
       <Panel
-        title={tr('Quermagnetisierung Mxy(t) – T2 / T2*', 'Поперечна намагніченість Mxy(t) – T2 / T2*')}
+        title={tr('Quermagnetisierung Mxy(t) – T2 / T2*', 'Поперечная намагниченность Mxy(t) – T2 / T2*')}
         className="span-2"
         actions={
           <label className="small">
@@ -186,17 +186,17 @@ export function RelaxationSimulator() {
         }
       >
         <LineChart
-          ariaLabel={tr('T2-Relaxationskurven', 'Криві T2-релаксації')}
+          ariaLabel={tr('T2-Relaxationskurven', 'Кривые T2-релаксации')}
           series={mxySeries}
           xDomain={[0, 300]}
           yDomain={[0, 1.05]}
-          xLabel={tr('Zeit [ms]', 'Час [мс]')}
+          xLabel={tr('Zeit [ms]', 'Время [мс]')}
           yLabel="Mxy / M₀"
           markers={[{ x: te, label: `TE = ${te} ${tr('ms', 'мс')}` }]}
         />
       </Panel>
 
-      <Panel title={tr('Spin-Echo-Signal', 'Сигнал спін-ехо')}>
+      <Panel title={tr('Spin-Echo-Signal', 'Сигнал спин-эха')}>
         <TeX block tex="S = \rho\,(1 - e^{-TR/T_1})\,e^{-TE/T_2}" />
         <div className="bars">
           {signals
@@ -213,11 +213,11 @@ export function RelaxationSimulator() {
             ))}
         </div>
         <p className="small muted">
-          {tr('Die Balkenlänge entspricht der Helligkeit im Bild (relativ zum hellsten Gewebe).', 'Довжина стовпчика відповідає яскравості на зображенні (відносно найяскравішої тканини).')}
+          {tr('Die Balkenlänge entspricht der Helligkeit im Bild (relativ zum hellsten Gewebe).', 'Длина столбца соответствует яркости на изображении (относительно самой яркой ткани).')}
         </p>
       </Panel>
 
-      <Panel title={tr('Spin-Echo verstehen: Dephasierung & Refokussierung', 'Зрозуміти спін-ехо: дефазування та рефокусування')} className="span-3">
+      <Panel title={tr('Spin-Echo verstehen: Dephasierung & Refokussierung', 'Понять спин-эхо: дефазировка и рефокусировка')} className="span-3">
         <SpinEchoFan te={Math.max(20, te)} />
       </Panel>
     </div>

@@ -74,140 +74,140 @@ const brain = (p: Partial<Protocol>): Protocol => ({ ...DEFAULT_PROTOCOL, ...p }
 export const ARTIFACT_CASES: ArtifactCase[] = [
   {
     id: 'alias',
-    name: { de: 'Einfaltung (Aliasing / Wrap-around)', uk: 'Загортання (аліасинг / wrap-around)' },
+    name: { de: 'Einfaltung (Aliasing / Wrap-around)', ru: 'Артефакт наложения (aliasing / wrap-around)' },
     anatomy: 'brain',
     broken: brain({ fovPhase: 150 }),
     fixed: brain({ fovPhase: 150, phaseOversampling: 60 }),
     remedy: {
       de: 'Phasen-Oversampling aktivieren bzw. FOV in Phasenrichtung vergrößern',
-      uk: 'Увімкнути фазовий оверсемплінг або збільшити FOV у фазовому напрямку',
+      ru: 'Включить фазовую передискретизацию (oversampling) или увеличить FOV в фазовом направлении',
     },
     explanation: {
       de: 'Das Objekt (220 mm) ist größer als das Phasen-FOV (150 mm). Gewebe außerhalb erhält Phasen, die sich nicht von Phasen innerhalb unterscheiden (2π-Periodizität) und wird auf die Gegenseite gefaltet.',
-      uk: 'Об’єкт (220 мм) більший за фазове FOV (150 мм). Тканина поза ним отримує фази, які не відрізняються від фаз усередині (2π-періодичність), і загортається на протилежний бік.',
+      ru: 'Объект (220 мм) больше фазового FOV (150 мм). Ткань за его пределами получает фазы, неотличимые от фаз внутри (2π-периодичность), и заворачивается на противоположную сторону.',
     },
   },
   {
     id: 'chemshift',
-    name: { de: 'Chemische Verschiebung (1. Art)', uk: 'Хімічний зсув (1-го роду)' },
+    name: { de: 'Chemische Verschiebung (1. Art)', ru: 'Химический сдвиг (1-го рода)' },
     anatomy: 'knee',
     broken: { ...DEFAULT_PROTOCOL, field: 3, sequence: 'TSE', tr: 3000, te: 30, fovRead: 180, fovPhase: 180, bandwidthPerPixel: 60 },
     fixed: { ...DEFAULT_PROTOCOL, field: 3, sequence: 'TSE', tr: 3000, te: 30, fovRead: 180, fovPhase: 180, bandwidthPerPixel: 450 },
     remedy: {
       de: 'Empfangsbandbreite pro Pixel erhöhen (oder Fettsättigung)',
-      uk: 'Збільшити смугу приймання на піксель (або жиропригнічення)',
+      ru: 'Увеличить полосу приёма на пиксель (или жироподавление)',
     },
     explanation: {
       de: 'Bei 3 T präzediert Fett ≈ 447 Hz langsamer als Wasser. Bei nur 60 Hz/Pixel wird das Fettsignal um ≈ 7 Pixel in Ausleserichtung verschoben – helle und dunkle Säume an Fett-Wasser-Grenzen (Knochenmark/Kortikalis).',
-      uk: 'При 3 Тл жир прецесує на ≈ 447 Гц повільніше за воду. За лише 60 Гц/піксель сигнал жиру зсувається на ≈ 7 пікселів у напрямку зчитування – світлі й темні облямівки на межах жир–вода (кістковий мозок/кортикальний шар).',
+      ru: 'При 3 Тл жир прецессирует на ≈ 447 Гц медленнее воды. При всего 60 Гц/пиксель сигнал жира смещается на ≈ 7 пикселей в направлении считывания – светлые и тёмные каймы на границах жир–вода (костный мозг/кортикальный слой).',
     },
   },
   {
     id: 'motion',
-    name: { de: 'Bewegungsartefakt (Atmung, Geisterbilder)', uk: 'Артефакт руху (дихання, фантомні зображення)' },
+    name: { de: 'Bewegungsartefakt (Atmung, Geisterbilder)', ru: 'Артефакт движения (дыхание, фантомные изображения)' },
     anatomy: 'abdomen',
     broken: { ...DEFAULT_PROTOCOL, sequence: 'GRE', tr: 200, te: 4.6, flip: 70, fovRead: 400, fovPhase: 400, matrixPhase: 256, slices: 18 },
     fixed: { ...DEFAULT_PROTOCOL, sequence: 'GRE', tr: 200, te: 4.6, flip: 70, fovRead: 400, fovPhase: 400, matrixPhase: 160, slices: 18, acceleration: 2 },
     remedy: {
       de: 'Messzeit auf einen Atemanhalt verkürzen (parallele Bildgebung, weniger Phasenzeilen) bzw. Triggerung',
-      uk: 'Скоротити час сканування до однієї затримки дихання (паралельна візуалізація, менше фазових рядків) або синхронізація (тригерування)',
+      ru: 'Сократить время сканирования до одной задержки дыхания (параллельная визуализация, меньше фазовых строк) или синхронизация (триггеринг)',
     },
     explanation: {
       de: 'Die Messung dauert länger als ein Atemanhalt. Die Leber verschiebt sich zwischen den Phasenkodierschritten – inkonsistente Phasen erzeugen Geister in Phasenrichtung (vertikal).',
-      uk: 'Вимірювання триває довше за одну затримку дихання. Печінка зміщується між кроками фазового кодування – неузгоджені фази створюють фантоми у фазовому напрямку (вертикально).',
+      ru: 'Измерение длится дольше одной задержки дыхания. Печень смещается между шагами фазового кодирования – несогласованные фазы создают фантомы в фазовом направлении (вертикально).',
     },
   },
   {
     id: 'gibbs',
-    name: { de: 'Gibbs-/Trunkationsartefakt', uk: 'Артефакт Гіббса / обрізання' },
+    name: { de: 'Gibbs-/Trunkationsartefakt', ru: 'Артефакт Гиббса / усечения' },
     anatomy: 'brain',
     broken: brain({ matrixRead: 64, matrixPhase: 64 }),
     fixed: brain({ matrixRead: 256, matrixPhase: 256 }),
     remedy: {
       de: 'Matrix erhöhen (k-Raum weiter abtasten) bzw. Apodisationsfilter',
-      uk: 'Збільшити матрицю (ширше вибирати k-простір) або аподизаційний фільтр',
+      ru: 'Увеличить матрицу (шире выбирать k-пространство) или аподизирующий фильтр',
     },
     explanation: {
       de: 'Der k-Raum endet abrupt bei kleinem k_max. Die Rekonstruktion entspricht einer Faltung mit einem sinc → Überschwinger parallel zu scharfen Kanten (Liquor/Kortex) und Unschärfe.',
-      uk: 'K-простір різко обривається при малому k_max. Реконструкція відповідає згортці з функцією sinc → осциляції паралельно до різких меж (ліквор/кора) та розмиття.',
+      ru: 'K-пространство резко обрывается при малом k_max. Реконструкция соответствует свёртке с функцией sinc → осцилляции параллельно резким границам (ликвор/кора) и размытие.',
     },
   },
   {
     id: 'epi',
-    name: { de: 'EPI-Suszeptibilitätsverzerrung', uk: 'Спотворення EPI через магнітну сприйнятливість' },
+    name: { de: 'EPI-Suszeptibilitätsverzerrung', ru: 'Искажения EPI из-за магнитной восприимчивости' },
     anatomy: 'brain',
     broken: { ...DEFAULT_PROTOCOL, sequence: 'EPI', tr: 3000, te: 90, matrixRead: 128, matrixPhase: 128, bandwidthPerPixel: 800, acceleration: 1, fatSat: true },
     fixed: { ...DEFAULT_PROTOCOL, sequence: 'EPI', tr: 3000, te: 70, matrixRead: 128, matrixPhase: 128, bandwidthPerPixel: 1800, acceleration: 3, fatSat: true },
     remedy: {
       de: 'Parallele Bildgebung (kürzerer Echozug) und höhere Bandbreite einsetzen',
-      uk: 'Застосувати паралельну візуалізацію (коротша ехо-послідовність) та ширшу смугу пропускання',
+      ru: 'Применить параллельную визуализацию (более короткий эхо-поезд) и более широкую полосу пропускания',
     },
     explanation: {
       de: 'An der Grenze Nasennebenhöhlen–Frontalhirn ändert sich die Suszeptibilität. Bei der winzigen Phasenbandbreite der EPI wird das Gewebe dort um viele Pixel in Phasenrichtung gestaucht oder gedehnt.',
-      uk: 'На межі приносові пазухи–лобова частка змінюється магнітна сприйнятливість. За мізерної фазової смуги EPI тканина там стискається або розтягується на багато пікселів у фазовому напрямку.',
+      ru: 'На границе придаточные пазухи носа–лобная доля меняется магнитная восприимчивость. При ничтожно малой фазовой полосе EPI ткань там сжимается или растягивается на много пикселей в фазовом направлении.',
     },
   },
   {
     id: 'spike',
-    name: { de: 'Spike / Fischgrätmuster', uk: 'Спайк / візерунок «ялинка»' },
+    name: { de: 'Spike / Fischgrätmuster', ru: 'Спайк / узор «ёлочка»' },
     anatomy: 'brain',
     broken: brain({}),
     fixed: brain({}),
     post: addSpike,
     remedy: {
       de: 'Ursache der Entladung beseitigen (Service: lose Kontakte, Statik), Spike-Korrektur in den Rohdaten',
-      uk: 'Усунути причину розряду (сервіс: незакріплені контакти, статика), корекція спайків у сирих даних',
+      ru: 'Устранить причину разряда (сервис: незакреплённые контакты, статика), коррекция спайков в сырых данных',
     },
     explanation: {
       de: 'Ein einzelner fehlerhafter Rohdatenpunkt (z. B. elektrostatische Entladung) ist im Bild eine ebene Welle → gleichmäßiges Streifenmuster über das gesamte Bild.',
-      uk: 'Одна хибна точка сирих даних (напр. електростатичний розряд) у зображенні є плоскою хвилею → рівномірний смугастий візерунок на все зображення.',
+      ru: 'Одна ошибочная точка сырых данных (напр. электростатический разряд) в изображении является плоской волной → равномерный полосатый узор по всему изображению.',
     },
   },
   {
     id: 'zipper',
-    name: { de: 'Zipper-Artefakt (HF-Einstreuung)', uk: 'Артефакт «блискавка» (РЧ-наведення)' },
+    name: { de: 'Zipper-Artefakt (HF-Einstreuung)', ru: 'Zipper-артефакт (РЧ-наводка)' },
     anatomy: 'knee',
     broken: { ...DEFAULT_PROTOCOL, fovRead: 180, fovPhase: 180 },
     fixed: { ...DEFAULT_PROTOCOL, fovRead: 180, fovPhase: 180 },
     post: addZipper,
     remedy: {
       de: 'Kabinentür schließen, elektronische Störquellen aus dem Raum entfernen',
-      uk: 'Зачинити двері кабіни, прибрати з кімнати електронні джерела завад',
+      ru: 'Закрыть дверь кабины, убрать из помещения электронные источники помех',
     },
     explanation: {
       de: 'Eine externe Störfrequenz wird an genau einer Frequenzposition (Ausleseort) in jeder Phasenzeile mitgemessen → punktierte Linie in Phasenrichtung.',
-      uk: 'Зовнішня частота завади реєструється в одній частотній позиції (місці зчитування) у кожному фазовому рядку → пунктирна лінія у фазовому напрямку.',
+      ru: 'Внешняя частота помехи регистрируется в одной частотной позиции (месте считывания) в каждой фазовой строке → пунктирная линия в фазовом направлении.',
     },
   },
   {
     id: 'noise',
-    name: { de: 'Zu geringes SNR (Rauschen)', uk: 'Замале SNR (шум)' },
+    name: { de: 'Zu geringes SNR (Rauschen)', ru: 'Слишком низкое SNR (шум)' },
     anatomy: 'brain',
     broken: brain({ matrixRead: 512, matrixPhase: 512, sliceThickness: 1.5, bandwidthPerPixel: 600, etl: 24, te: 100 }),
     fixed: brain({ matrixRead: 320, matrixPhase: 320, sliceThickness: 4, bandwidthPerPixel: 180, nex: 2, etl: 24, te: 100 }),
     remedy: {
       de: 'Voxel vergrößern, Bandbreite senken oder NEX erhöhen',
-      uk: 'Збільшити воксель, звузити смугу пропускання або збільшити NEX',
+      ru: 'Увеличить воксель, сузить полосу пропускания или увеличить NEX',
     },
     explanation: {
       de: 'Kleine Voxel (0,45 × 0,45 × 1,5 mm) bei hoher Bandbreite: Das Signal pro Voxel ist winzig, das Rauschen dominiert. SNR ∝ V·√(N_y·NEX/BW).',
-      uk: 'Малі вокселі (0,45 × 0,45 × 1,5 мм) за широкої смуги: сигнал на воксель мізерний, домінує шум. SNR ∝ V·√(N_y·NEX/BW).',
+      ru: 'Малые воксели (0,45 × 0,45 × 1,5 мм) при широкой полосе: сигнал на воксель ничтожно мал, доминирует шум. SNR ∝ V·√(N_y·NEX/BW).',
     },
   },
   {
     id: 'metal',
-    name: { de: 'Suszeptibilitätsartefakt durch Metall', uk: 'Артефакт магнітної сприйнятливості від металу' },
+    name: { de: 'Suszeptibilitätsartefakt durch Metall', ru: 'Артефакт магнитной восприимчивости от металла' },
     anatomy: 'brain',
     broken: { ...DEFAULT_PROTOCOL, sequence: 'GRE', tr: 500, te: 20, flip: 20 },
     fixed: { ...DEFAULT_PROTOCOL, sequence: 'TSE', tr: 4000, te: 90, bandwidthPerPixel: 500 },
     post: addMetal,
     remedy: {
       de: 'TSE statt GRE, hohe Bandbreite, kurzes TE (ggf. Metall-Artefakt-Reduktionssequenz)',
-      uk: 'TSE замість GRE, широка смуга, короткий TE (за потреби послідовність зменшення металевих артефактів)',
+      ru: 'TSE вместо GRE, широкая полоса, короткое TE (при необходимости последовательность подавления металлических артефактов)',
     },
     explanation: {
       de: 'Ein ferromagnetischer Fremdkörper (z. B. Clip) erzeugt eine starke lokale Feldstörung: Signalauslöschung durch Dephasierung (T2*) und geometrische Verzerrung mit hellem Saum (Signalaufstau).',
-      uk: 'Феромагнітне стороннє тіло (напр. кліпса) створює сильне локальне збурення поля: втрату сигналу через дефазування (T2*) та геометричне спотворення зі світлою облямівкою (накопичення сигналу).',
+      ru: 'Ферромагнитное инородное тело (напр. клипса) создаёт сильное локальное возмущение поля: потерю сигнала из-за дефазировки (T2*) и геометрическое искажение со светлой каймой (накопление сигнала).',
     },
   },
 ];
@@ -287,42 +287,42 @@ export function ArtifactLab() {
     return 'option dim';
   };
 
-  const anatomyLabel = c.anatomy === 'brain' ? tr('Kopf', 'Голова') : c.anatomy === 'knee' ? tr('Knie', 'Коліно') : tr('Abdomen', 'Живіт');
+  const anatomyLabel = c.anatomy === 'brain' ? tr('Kopf', 'Голова') : c.anatomy === 'knee' ? tr('Knie', 'Колено') : tr('Abdomen', 'Живот');
 
   return (
     <div className="sim-grid">
       <Panel
-        title={tr('🕵️ Fall: Was stimmt mit diesem Bild nicht?', '🕵️ Випадок: що не так із цим зображенням?')}
+        title={tr('🕵️ Fall: Was stimmt mit diesem Bild nicht?', '🕵️ Случай: что не так с этим изображением?')}
         className="span-2"
         actions={
           <span className="small muted">
-            {tr('Gelöst', 'Розв’язано')}: {score.solved}/{score.total}
+            {tr('Gelöst', 'Решено')}: {score.solved}/{score.total}
           </span>
         }
       >
         <div className="image-pair">
-          <MRImage data={broken.img} label={tr('Bild mit Artefakt', 'Зображення з артефактом')} overlay={tr('Befund', 'Знахідка')} />
+          <MRImage data={broken.img} label={tr('Bild mit Artefakt', 'Изображение с артефактом')} overlay={tr('Befund', 'Находка')} />
           {checked ? (
-            <MRImage data={fixed.img} label={tr('Korrigiertes Bild', 'Виправлене зображення')} overlay={tr('nach Korrektur', 'після корекції')} />
+            <MRImage data={fixed.img} label={tr('Korrigiertes Bild', 'Исправленное изображение')} overlay={tr('nach Korrektur', 'после коррекции')} />
           ) : (
-            <div className="image-placeholder">{tr('Korrektur wird nach der Diagnose angezeigt', 'Корекцію буде показано після діагнозу')}</div>
+            <div className="image-placeholder">{tr('Korrektur wird nach der Diagnose angezeigt', 'Коррекция будет показана после диагноза')}</div>
           )}
         </div>
-        <p className="small muted">{tr('Phasenrichtung vertikal, Ausleserichtung horizontal.', 'Фазовий напрямок вертикальний, напрямок зчитування горизонтальний.')}</p>
+        <p className="small muted">{tr('Phasenrichtung vertikal, Ausleserichtung horizontal.', 'Фазовое направление вертикальное, направление считывания горизонтальное.')}</p>
       </Panel>
-      <Panel title={tr('Protokolldaten', 'Дані протоколу')}>
+      <Panel title={tr('Protokolldaten', 'Данные протокола')}>
         <div className="stat-grid two">
-          <Stat label={tr('Sequenz', 'Послідовність')} value={c.broken.sequence} />
+          <Stat label={tr('Sequenz', 'Последовательность')} value={c.broken.sequence} />
           <Stat label={tr('Feld', 'Поле')} value={`${fmt(c.broken.field)} ${tr('T', 'Тл')}`} />
-          <Stat label={tr('FOV R×P', 'FOV З×Ф')} value={`${c.broken.fovRead}×${c.broken.fovPhase}`} unit={tr('mm', 'мм')} />
-          <Stat label={tr('Matrix', 'Матриця')} value={`${c.broken.matrixRead}×${c.broken.matrixPhase}`} />
-          <Stat label="BW" value={c.broken.bandwidthPerPixel} unit={tr('Hz/px', 'Гц/пікс.')} />
-          <Stat label={tr('Messzeit', 'Час сканування')} value={fmtDuration(broken.metrics.scanTimeS)} />
+          <Stat label={tr('FOV R×P', 'FOV С×Ф')} value={`${c.broken.fovRead}×${c.broken.fovPhase}`} unit={tr('mm', 'мм')} />
+          <Stat label={tr('Matrix', 'Матрица')} value={`${c.broken.matrixRead}×${c.broken.matrixPhase}`} />
+          <Stat label="BW" value={c.broken.bandwidthPerPixel} unit={tr('Hz/px', 'Гц/пикс.')} />
+          <Stat label={tr('Messzeit', 'Время сканирования')} value={fmtDuration(broken.metrics.scanTimeS)} />
           <Stat label="SNR" value={fmt(broken.metrics.snr, 1)} />
-          <Stat label={tr('Anatomie', 'Анатомія')} value={anatomyLabel} />
+          <Stat label={tr('Anatomie', 'Анатомия')} value={anatomyLabel} />
         </div>
       </Panel>
-      <Panel title={tr('1. Diagnose', '1. Діагноз')}>
+      <Panel title={tr('1. Diagnose', '1. Диагноз')}>
         <div className="options compact">
           {round.diagnosisOptions.map((id) => (
             <button key={id} type="button" className={optClass(id, diag)} onClick={() => !checked && setDiag(id)} aria-pressed={diag === id}>
@@ -331,7 +331,7 @@ export function ArtifactLab() {
           ))}
         </div>
       </Panel>
-      <Panel title={tr('2. Gegenmaßnahme', '2. Захід усунення')} className="span-2">
+      <Panel title={tr('2. Gegenmaßnahme', '2. Мера устранения')} className="span-2">
         <div className="options compact">
           {round.remedyOptions.map((id) => (
             <button key={id} type="button" className={optClass(id, remedy)} onClick={() => !checked && setRemedy(id)} aria-pressed={remedy === id}>
@@ -341,24 +341,24 @@ export function ArtifactLab() {
         </div>
         {!checked ? (
           <button className="btn primary" type="button" disabled={!diag || !remedy} onClick={check}>
-            {tr('Befund abgeben', 'Надіслати висновок')}
+            {tr('Befund abgeben', 'Отправить заключение')}
           </button>
         ) : (
           <div className={`feedback ${diagOk && remedyOk ? 'is-correct' : 'is-wrong'}`}>
             <strong>
               {diagOk && remedyOk
-                ? tr('✔ Fall gelöst! +20 XP', '✔ Випадок розв’язано! +20 XP')
+                ? tr('✔ Fall gelöst! +20 XP', '✔ Случай решён! +20 XP')
                 : diagOk
-                  ? tr('◐ Diagnose richtig, Maßnahme falsch.', '◐ Діагноз правильний, захід хибний.')
+                  ? tr('◐ Diagnose richtig, Maßnahme falsch.', '◐ Диагноз верный, мера неверна.')
                   : remedyOk
-                    ? tr('◐ Maßnahme richtig, Diagnose falsch.', '◐ Захід правильний, діагноз хибний.')
-                    : tr('✘ Leider daneben.', '✘ На жаль, мимо.')}
+                    ? tr('◐ Maßnahme richtig, Diagnose falsch.', '◐ Мера верна, диагноз неверен.')
+                    : tr('✘ Leider daneben.', '✘ К сожалению, мимо.')}
             </strong>
             <p>
               <strong>{loc(c.name)}:</strong> {loc(c.explanation)}
             </p>
             <button className="btn primary" type="button" onClick={next}>
-              {tr('Nächster Fall →', 'Наступний випадок →')}
+              {tr('Nächster Fall →', 'Следующий случай →')}
             </button>
           </div>
         )}

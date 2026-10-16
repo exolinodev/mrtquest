@@ -128,7 +128,7 @@ export function ProgressBar({ value, label, color }: { value: number; label?: st
 export function Stars({ count, max = 3 }: { count: number; max?: number }) {
   const { tr } = useLang();
   return (
-    <span className="stars" aria-label={tr(`${count} von ${max} Sternen`, `${count} з ${max} зірок`)}>
+    <span className="stars" aria-label={tr(`${count} von ${max} Sternen`, `${count} из ${max} звёзд`)}>
       {Array.from({ length: max }, (_, i) => (
         <span key={i} className={i < count ? 'star on' : 'star'}>
           ★

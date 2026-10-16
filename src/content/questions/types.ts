@@ -1,7 +1,7 @@
 /**
  * Fragetypen der Challenges. Texte unterstützen Inline-Formeln in $…$ (KaTeX).
  *
- * Feste Fragen speichern zweisprachige Texte ({ de, uk }). Generatoren erhalten
+ * Feste Fragen speichern zweisprachige Texte ({ de, ru }). Generatoren erhalten
  * die Sprache als Parameter und müssen den Zufallsgenerator unabhängig von der
  * Sprache identisch konsumieren – so liefert derselbe Seed in beiden Sprachen
  * dieselben Zahlenwerte, und ein Sprachwechsel mitten in der Challenge ist möglich.
@@ -63,9 +63,9 @@ export interface GeneratedQuestion {
 /** Entweder eine feste zweisprachige Frage oder ein Generator für parametrisierte Rechen-Puzzles. */
 export type QuestionSource = FixedQuestion | GeneratedQuestion;
 
-/** Liefert für Generatoren eine kompakte Auswahlfunktion: t('deutsch', 'українська'). */
-export function tl(lang: Lang): (de: string, uk: string) => string {
-  return (de, uk) => (lang === 'uk' ? uk : de);
+/** Liefert für Generatoren eine kompakte Auswahlfunktion: t('deutsch', 'русский'). */
+export function tl(lang: Lang): (de: string, ru: string) => string {
+  return (de, ru) => (lang === 'ru' ? ru : de);
 }
 
 export function pick<T>(rng: Rng, items: readonly T[]): T {

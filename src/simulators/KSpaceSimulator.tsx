@@ -152,8 +152,8 @@ export function KSpaceSimulator() {
   const presets: Array<{ id: string; label: string; text: string; apply: () => void }> = [
     {
       id: 'center',
-      label: tr('Nur Zentrum', 'Лише центр'),
-      text: tr('Tiefpass: Kontrast bleibt, Details verschwinden, Gibbs-Ringing an Kanten.', 'Фільтр низьких частот: контраст зберігається, деталі зникають, на краях – кільця Гіббса.'),
+      label: tr('Nur Zentrum', 'Только центр'),
+      text: tr('Tiefpass: Kontrast bleibt, Details verschwinden, Gibbs-Ringing an Kanten.', 'Фильтр нижних частот: контраст сохраняется, детали исчезают, на краях – звон Гиббса.'),
       apply: () => {
         reset();
         setFilter('lowpass');
@@ -162,8 +162,8 @@ export function KSpaceSimulator() {
     },
     {
       id: 'periphery',
-      label: tr('Nur Peripherie', 'Лише периферія'),
-      text: tr('Hochpass: nur Kanten bleiben – Kontrast und Flächen fehlen.', 'Фільтр високих частот: залишаються лише краї – контраст і площини зникають.'),
+      label: tr('Nur Peripherie', 'Только периферия'),
+      text: tr('Hochpass: nur Kanten bleiben – Kontrast und Flächen fehlen.', 'Фильтр верхних частот: остаются только края – контраст и площади исчезают.'),
       apply: () => {
         reset();
         setFilter('highpass');
@@ -172,8 +172,8 @@ export function KSpaceSimulator() {
     },
     {
       id: 'skip',
-      label: tr('Jede 2. Zeile', 'Кожен 2-й рядок'),
-      text: tr('Δk verdoppelt → FOV halbiert → Einfaltung in Phasenrichtung.', 'Δk подвоюється → FOV зменшується вдвічі → загортання у фазовому напрямку.'),
+      label: tr('Jede 2. Zeile', 'Каждая 2-я строка'),
+      text: tr('Δk verdoppelt → FOV halbiert → Einfaltung in Phasenrichtung.', 'Δk удваивается → FOV уменьшается вдвое → заворот в фазовом направлении.'),
       apply: () => {
         reset();
         setSkip(2);
@@ -184,7 +184,7 @@ export function KSpaceSimulator() {
       label: tr('Partial Fourier 5/8', 'Partial Fourier 5/8'),
       text: tr(
         'Fehlende Hälfte wird hier ohne Symmetrie-Rekonstruktion mit Nullen gefüllt → leichte Unschärfe/Phasenfehler.',
-        'Відсутню частину тут заповнено нулями без симетричної реконструкції → легка розмитість/фазові похибки.',
+        'Недостающая часть здесь заполнена нулями без симметричной реконструкции → лёгкая размытость/фазовые ошибки.',
       ),
       apply: () => {
         reset();
@@ -194,7 +194,7 @@ export function KSpaceSimulator() {
     {
       id: 'spike',
       label: tr('Spike', 'Спайк'),
-      text: tr('Ein einziger fehlerhafter Datenpunkt → Streifenmuster über das gesamte Bild.', 'Одна-єдина хибна точка даних → смугастий візерунок по всьому зображенню.'),
+      text: tr('Ein einziger fehlerhafter Datenpunkt → Streifenmuster über das gesamte Bild.', 'Одна-единственная ошибочная точка данных → полосатый узор по всему изображению.'),
       apply: () => {
         reset();
         setSpike(true);
@@ -202,10 +202,10 @@ export function KSpaceSimulator() {
     },
     {
       id: 'motion',
-      label: tr('Bewegung', 'Рух'),
+      label: tr('Bewegung', 'Движение'),
       text: tr(
         'Zufällige Verschiebung zwischen den Phasenkodierzeilen → Geister/Verschmierung in Phasenrichtung.',
-        'Випадкове зміщення між рядками фазового кодування → привиди/розмиття у фазовому напрямку.',
+        'Случайное смещение между строками фазового кодирования → фантомы/размытие в фазовом направлении.',
       ),
       apply: () => {
         reset();
@@ -218,26 +218,26 @@ export function KSpaceSimulator() {
 
   return (
     <div className="sim-grid">
-      <Panel title={tr('k-Raum (log. Betrag)', 'k-простір (лог. модуль)')} actions={<span className="small muted">{tr('Klick: Basiswelle', 'Клік: базисна хвиля')}</span>}>
-        <canvas ref={kCanvas} className="pixel-canvas clickable" onClick={onKClick} aria-label={tr('k-Raum-Darstellung, anklickbar', 'Зображення k-простору, клікабельне')} />
+      <Panel title={tr('k-Raum (log. Betrag)', 'k-пространство (лог. модуль)')} actions={<span className="small muted">{tr('Klick: Basiswelle', 'Клик: базисная волна')}</span>}>
+        <canvas ref={kCanvas} className="pixel-canvas clickable" onClick={onKClick} aria-label={tr('k-Raum-Darstellung, anklickbar', 'Изображение k-пространства, кликабельное')} />
         <p className="small muted">
-          {tr('Dunkelblau = nicht gemessene/verworfene Daten · Signalenergie erhalten', 'Темно-синій = невиміряні/відкинуті дані · збережена енергія сигналу')}:{' '}
+          {tr('Dunkelblau = nicht gemessene/verworfene Daten · Signalenergie erhalten', 'Тёмно-синий = неизмеренные/отброшенные данные · сохранённая энергия сигнала')}:{' '}
           <strong>{fmt(energyKept * 100, 1)} %</strong>
         </p>
       </Panel>
-      <Panel title={tr('Rekonstruiertes Bild (inverse 2D-FFT)', 'Реконструйоване зображення (обернене 2D-FFT)')}>
-        <canvas ref={imgCanvas} className="pixel-canvas" aria-label={tr('Rekonstruiertes MR-Bild', 'Реконструйоване МР-зображення')} />
-        <p className="small muted">{tr('Phasenrichtung: vertikal (y) · Ausleserichtung: horizontal (x)', 'Фазовий напрямок: вертикальний (y) · напрямок зчитування: горизонтальний (x)')}</p>
+      <Panel title={tr('Rekonstruiertes Bild (inverse 2D-FFT)', 'Реконструированное изображение (обратное 2D-FFT)')}>
+        <canvas ref={imgCanvas} className="pixel-canvas" aria-label={tr('Rekonstruiertes MR-Bild', 'Реконструированное МР-изображение')} />
+        <p className="small muted">{tr('Phasenrichtung: vertikal (y) · Ausleserichtung: horizontal (x)', 'Фазовое направление: вертикальное (y) · направление считывания: горизонтальное (x)')}</p>
       </Panel>
-      <Panel title={tr('Basiswelle eines k-Punkts', 'Базисна хвиля точки k-простору')}>
+      <Panel title={tr('Basiswelle eines k-Punkts', 'Базисная волна точки k-пространства')}>
         {basis ? (
           <>
-            <canvas ref={basisCanvas} className="pixel-canvas" aria-label={tr('Ortsfrequenz-Muster des gewählten k-Raum-Punkts', 'Візерунок просторової частоти вибраної точки k-простору')} />
+            <canvas ref={basisCanvas} className="pixel-canvas" aria-label={tr('Ortsfrequenz-Muster des gewählten k-Raum-Punkts', 'Узор пространственной частоты выбранной точки k-пространства')} />
             <p className="small">
               k<sub>x</sub> = {basis.kx}, k<sub>y</sub> = {basis.ky} → {fmt(Math.hypot(basis.kx, basis.ky), 1)}{' '}
               {tr(
                 'Perioden über das FOV. Ein einzelner k-Punkt ist eine ebene Welle über das ganze Bild!',
-                'періодів через FOV. Окрема точка k-простору – це плоска хвиля на все зображення!',
+                'периодов на FOV. Отдельная точка k-пространства – это плоская волна на всё изображение!',
               )}
             </p>
           </>
@@ -245,21 +245,21 @@ export function KSpaceSimulator() {
           <p className="muted">
             {tr(
               'Klicke in den k-Raum, um die zugehörige Ortsfrequenz (ebene Welle) zu sehen. Punkte nahe dem Zentrum sind langwellig, äußere Punkte fein gestreift.',
-              'Клацніть у k-просторі, щоб побачити відповідну просторову частоту (плоску хвилю). Точки поблизу центру довгохвильові, зовнішні – дрібно смугасті.',
+              'Кликни в k-пространстве, чтобы увидеть соответствующую пространственную частоту (плоскую волну). Точки вблизи центра длинноволновые, внешние – мелкополосатые.',
             )}
           </p>
         )}
       </Panel>
 
-      <Panel title={tr('Experimente', 'Експерименти')} className="span-3">
+      <Panel title={tr('Experimente', 'Эксперименты')} className="span-3">
         <div className="row wrap gap">
           <Segmented<PhantomId>
-            label={tr('Objekt', 'Об’єкт')}
+            label={tr('Objekt', 'Объект')}
             value={phantomId}
             options={[
               { value: 'brain', label: tr('Kopf', 'Голова') },
-              { value: 'knee', label: tr('Knie', 'Коліно') },
-              { value: 'abdomen', label: tr('Abdomen', 'Живіт') },
+              { value: 'knee', label: tr('Knie', 'Колено') },
+              { value: 'abdomen', label: tr('Abdomen', 'Живот') },
             ]}
             onChange={setPhantomId}
           />
@@ -295,25 +295,25 @@ export function KSpaceSimulator() {
               setPresetId(null);
             }}
           >
-            {tr('Zurücksetzen', 'Скинути')}
+            {tr('Zurücksetzen', 'Сбросить')}
           </button>
         </div>
         {presetText && <p className="callout callout-info small">{presetText}</p>}
         <div className="control-grid">
           <Segmented<FilterMode>
-            label={tr('k-Raum-Filter', 'Фільтр k-простору')}
+            label={tr('k-Raum-Filter', 'Фильтр k-пространства')}
             value={filter}
             options={[
-              { value: 'none', label: tr('aus', 'вимк.') },
-              { value: 'lowpass', label: tr('Tiefpass', 'Низькочастотний') },
-              { value: 'highpass', label: tr('Hochpass', 'Високочастотний') },
+              { value: 'none', label: tr('aus', 'выкл.') },
+              { value: 'lowpass', label: tr('Tiefpass', 'Нижних частот') },
+              { value: 'highpass', label: tr('Hochpass', 'Верхних частот') },
             ]}
             onChange={setFilter}
           />
-          <Slider label={tr('Filterradius', 'Радіус фільтра')} value={radius} min={2} max={60} unit={tr('k-Punkte', 'точок k')} onChange={setRadius} disabled={filter === 'none'} />
-          <Slider label={tr('Unterabtastung R (jede R-te Zeile)', 'Недодискретизація R (кожен R-й рядок)')} value={skip} min={1} max={4} onChange={setSkip} />
+          <Slider label={tr('Filterradius', 'Радиус фильтра')} value={radius} min={2} max={60} unit={tr('k-Punkte', 'точек k')} onChange={setRadius} disabled={filter === 'none'} />
+          <Slider label={tr('Unterabtastung R (jede R-te Zeile)', 'Неполная выборка R (каждая R-я строка)')} value={skip} min={1} max={4} onChange={setSkip} />
           <Slider
-            label={tr('Partial Fourier (gemessener Anteil)', 'Partial Fourier (виміряна частка)')}
+            label={tr('Partial Fourier (gemessener Anteil)', 'Частичное Фурье (измеренная доля)')}
             value={partial}
             min={0.5}
             max={1}
@@ -321,8 +321,8 @@ export function KSpaceSimulator() {
             onChange={setPartial}
             format={(v) => `${fmt(v * 8, 0)}/8`}
           />
-          <Slider label={tr('Bewegung (Verschiebung pro Zeile)', 'Рух (зміщення на рядок)')} value={motion} min={0} max={8} step={0.5} unit={tr('px', 'пікс.')} onChange={setMotion} />
-          <Toggle label={tr('Spike (fehlerhafter Datenpunkt)', 'Спайк (хибна точка даних)')} checked={spike} onChange={setSpike} />
+          <Slider label={tr('Bewegung (Verschiebung pro Zeile)', 'Движение (смещение на строку)')} value={motion} min={0} max={8} step={0.5} unit={tr('px', 'пикс.')} onChange={setMotion} />
+          <Toggle label={tr('Spike (fehlerhafter Datenpunkt)', 'Спайк (ошибочная точка данных)')} checked={spike} onChange={setSpike} />
         </div>
       </Panel>
     </div>

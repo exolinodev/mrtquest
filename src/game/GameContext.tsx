@@ -59,7 +59,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         const b = BADGE_BY_ID[id];
         if (b) {
           const description = b.description[l];
-          notify({ kind: 'badge', title: `${t('Abzeichen', 'Відзнака')}: ${b.title[l]}`, detail: b.xp ? `${description} (+${b.xp} XP)` : description, icon: b.icon });
+          notify({ kind: 'badge', title: `${t('Abzeichen', 'Награда')}: ${b.title[l]}`, detail: b.xp ? `${description} (+${b.xp} XP)` : description, icon: b.icon });
         }
       }
     }
@@ -68,8 +68,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (after > before) {
       notify({
         kind: 'level',
-        title: t(`Level ${after} erreicht!`, `Досягнуто рівня ${after}!`),
-        detail: `${t('Neuer Titel', 'Нове звання')}: ${levelTitle(after, l)}`,
+        title: t(`Level ${after} erreicht!`, `Достигнут уровень ${after}!`),
+        detail: `${t('Neuer Titel', 'Новое звание')}: ${levelTitle(after, l)}`,
         icon: '⬆️',
       });
     }
@@ -78,7 +78,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       notify({
         kind: 'xp',
         title: `+${gained} XP`,
-        detail: action.type === 'READ_THEORY' ? t('Theorie-Kapitel abgeschlossen', 'Теоретичний розділ завершено') : t('Entdeckung im Simulator', 'Відкриття в симуляторі'),
+        detail: action.type === 'READ_THEORY' ? t('Theorie-Kapitel abgeschlossen', 'Теоретическая глава завершена') : t('Entdeckung im Simulator', 'Открытие в симуляторе'),
         icon: '✨',
       });
     }

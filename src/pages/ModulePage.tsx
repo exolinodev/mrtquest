@@ -74,8 +74,8 @@ function TheoryView({ moduleId }: { moduleId: ModuleId }) {
   const read = state.modules[moduleId]?.theoryRead;
   return (
     <article className="theory">
-      <nav className="toc" aria-label={tr('Inhaltsverzeichnis', 'Зміст')}>
-        <strong>{tr('Inhalt', 'Зміст')}</strong>
+      <nav className="toc" aria-label={tr('Inhaltsverzeichnis', 'Содержание')}>
+        <strong>{tr('Inhalt', 'Содержание')}</strong>
         <ol>
           {sections.map((s, i) => (
             <li key={i}>
@@ -105,14 +105,14 @@ function TheoryView({ moduleId }: { moduleId: ModuleId }) {
         ))}
         <div className="theory-done">
           {read ? (
-            <p className="ok-text">{tr('✔ Kapitel abgeschlossen.', '✔ Розділ завершено.')}</p>
+            <p className="ok-text">{tr('✔ Kapitel abgeschlossen.', '✔ Глава завершена.')}</p>
           ) : (
             <button className="btn primary" type="button" onClick={() => dispatch({ type: 'READ_THEORY', moduleId })}>
-              {tr('Kapitel als gelesen markieren', 'Позначити розділ як прочитаний')} (+{THEORY_XP} XP)
+              {tr('Kapitel als gelesen markieren', 'Отметить главу как прочитанную')} (+{THEORY_XP} XP)
             </button>
           )}
           <Link to={`/modul/${moduleId}/simulator`} className="btn">
-            {tr('Weiter zum Simulator →', 'До симулятора →')}
+            {tr('Weiter zum Simulator →', 'К симулятору →')}
           </Link>
         </div>
       </div>
@@ -132,22 +132,22 @@ function ChallengeView({ moduleId }: { moduleId: ModuleId }) {
   if (!started) {
     return (
       <div className="challenge-intro">
-        <h2>{tr('🏁 Modul-Challenge', '🏁 Завдання модуля')}</h2>
+        <h2>{tr('🏁 Modul-Challenge', '🏁 Задание модуля')}</h2>
         <p>
           {tr(
             `${CHALLENGE_LENGTH} Aufgaben aus Verständnisfragen und Rechen-Puzzles mit zufällig generierten Werten. Jede Runde ist anders.`,
-            `${CHALLENGE_LENGTH} завдань: питання на розуміння та розрахункові задачі з випадково згенерованими значеннями. Кожен раунд інший.`,
+            `${CHALLENGE_LENGTH} заданий: вопросы на понимание и расчётные задачи со случайно сгенерированными значениями. Каждый раунд отличается.`,
           )}
         </p>
         <ul>
-          <li>{tr('XP pro richtiger Antwort', 'XP за правильну відповідь')}: ◆ 10 · ◆◆ 15 · ◆◆◆ 25</li>
-          <li>{tr('Serie ab 3 richtigen: ×1,2 XP · ab 6: ×1,5 XP', 'Серія від 3 правильних: ×1,2 XP · від 6: ×1,5 XP')}</li>
-          <li>{tr('Hinweise halbieren die XP der Frage', 'Підказка зменшує XP за питання вдвічі')}</li>
-          <li>{tr('Abschlussbonus', 'Бонус за завершення')}: 60 % → +10 · 80 % → +25 · 100 % → +40 XP</li>
+          <li>{tr('XP pro richtiger Antwort', 'XP за правильный ответ')}: ◆ 10 · ◆◆ 15 · ◆◆◆ 25</li>
+          <li>{tr('Serie ab 3 richtigen: ×1,2 XP · ab 6: ×1,5 XP', 'Серия от 3 правильных: ×1,2 XP · от 6: ×1,5 XP')}</li>
+          <li>{tr('Hinweise halbieren die XP der Frage', 'Подсказка уменьшает XP за вопрос вдвое')}</li>
+          <li>{tr('Abschlussbonus', 'Бонус за завершение')}: 60 % → +10 · 80 % → +25 · 100 % → +40 XP</li>
           <li>
             {tr(
               'Ab 80 % gilt das Modul als gemeistert (Abzeichen!) – danach Wiederholungsmodus mit halben XP.',
-              'Від 80 % модуль вважається опанованим (відзнака!) – далі режим повторення з половиною XP.',
+              'От 80 % модуль считается освоенным (награда!) – далее режим повторения с половиной XP.',
             )}
           </li>
         </ul>
@@ -155,12 +155,12 @@ function ChallengeView({ moduleId }: { moduleId: ModuleId }) {
           <p className="muted">
             {tr(
               `Bisher: ${progress.attempts} Versuch(e), Bestwert ${Math.round(progress.bestScore * 100)} %`,
-              `Досі: спроб – ${progress.attempts}, найкращий результат ${Math.round(progress.bestScore * 100)} %`,
+              `До сих пор: попыток – ${progress.attempts}, лучший результат ${Math.round(progress.bestScore * 100)} %`,
             )}
           </p>
         )}
         <button className="btn primary big" type="button" onClick={() => setStarted(true)}>
-          {tr('Challenge starten', 'Почати завдання')}
+          {tr('Challenge starten', 'Начать задание')}
         </button>
       </div>
     );
@@ -187,8 +187,8 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
   if (!meta) {
     return (
       <div className="page">
-        <h1>{tr('Modul nicht gefunden', 'Модуль не знайдено')}</h1>
-        <Link to="/">{tr('Zur Übersicht', 'До огляду')}</Link>
+        <h1>{tr('Modul nicht gefunden', 'Модуль не найден')}</h1>
+        <Link to="/">{tr('Zur Übersicht', 'К обзору')}</Link>
       </div>
     );
   }
@@ -196,9 +196,9 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
   const idx = MODULES.findIndex((m) => m.id === meta.id);
   const next = MODULES[idx + 1];
   const tabs: Array<{ id: Tab; label: string }> = [
-    { id: 'theorie', label: tr('📖 Theorie', '📖 Теорія') },
+    { id: 'theorie', label: tr('📖 Theorie', '📖 Теория') },
     { id: 'simulator', label: `🔬 ${loc(SIMULATOR_BY_ID[meta.simulator].title)}` },
-    { id: 'challenge', label: tr('🏁 Challenge', '🏁 Завдання') },
+    { id: 'challenge', label: tr('🏁 Challenge', '🏁 Задание') },
   ];
 
   return (
@@ -230,7 +230,7 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
             <SimulatorHost id={meta.simulator} />
             <div className="row gap end">
               <Link to={`/modul/${meta.id}/challenge`} className="btn primary">
-                {tr('Zur Challenge →', 'До завдання →')}
+                {tr('Zur Challenge →', 'К заданию →')}
               </Link>
             </div>
           </>
@@ -239,7 +239,7 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
       </div>
       {next && (
         <p className="next-module">
-          {tr('Nächstes Modul', 'Наступний модуль')}:{' '}
+          {tr('Nächstes Modul', 'Следующий модуль')}:{' '}
           <Link to={`/modul/${next.id}`}>
             {next.icon} {loc(next.title)}
           </Link>

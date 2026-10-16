@@ -73,7 +73,7 @@ export function LarmorSimulator() {
     window.addEventListener('resize', resize);
     // Visualisierte Präzession: Logarithmisch skaliert, damit Feldänderungen sichtbar bleiben
     const visualHz = 0.25 + Math.log10(1 + f0) * 0.35;
-    const coilLabel = lang === 'uk' ? 'Напруга котушки (M⊥)' : 'Spulenspannung (M⊥)';
+    const coilLabel = lang === 'ru' ? 'Напряжение катушки (M⊥)' : 'Spulenspannung (M⊥)';
 
     const draw = (now: number) => {
       const dt = (now - last) / 1000;
@@ -219,22 +219,22 @@ export function LarmorSimulator() {
 
   return (
     <div className="sim-grid">
-      <Panel title={tr('Präzession im rotierenden Feld', 'Прецесія в обертовому полі')} className="span-2">
-        <canvas ref={canvasRef} className="sim-canvas" aria-label={tr('3D-Darstellung der präzedierenden Magnetisierung', '3D-зображення прецесуючої намагніченості')} />
+      <Panel title={tr('Präzession im rotierenden Feld', 'Прецессия во вращающемся поле')} className="span-2">
+        <canvas ref={canvasRef} className="sim-canvas" aria-label={tr('3D-Darstellung der präzedierenden Magnetisierung', '3D-изображение прецессирующей намагниченности')} />
         <p className="muted small">
           {tr(
             `Die Darstellung ist zeitlich stark verlangsamt (reale Präzession: ${fmt(f0, 2)} Millionen Umläufe pro Sekunde). Rosa: Magnetisierung M, grün: messbare Quermagnetisierung M⊥.`,
-            `Зображення сильно сповільнене в часі (реальна прецесія: ${fmt(f0, 2)} мільйонів обертів за секунду). Рожевий: намагніченість M, зелений: вимірювана поперечна намагніченість M⊥.`,
+            `Изображение сильно замедлено во времени (реальная прецессия: ${fmt(f0, 2)} миллионов оборотов в секунду). Розовый: намагниченность M, зелёный: измеряемая поперечная намагниченность M⊥.`,
           )}
         </p>
       </Panel>
 
-      <Panel title={tr('Parameter', 'Параметри')}>
-        <Segmented label={tr('Atomkern', 'Атомне ядро')} value={nucleusId} options={NUCLEI.map((n) => ({ value: n.id, label: n.symbol }))} onChange={setNucleusId} />
-        <Slider label={tr('Feldstärke B₀', 'Індукція поля B₀')} value={b0} min={0.2} max={7} step={0.05} unit={T} onChange={setB0} format={(v) => fmt(v, 2)} />
-        <Slider label={tr('Flipwinkel α', 'Кут відхилення α')} value={flip} min={10} max={180} step={5} unit="°" onChange={setFlip} />
+      <Panel title={tr('Parameter', 'Параметры')}>
+        <Segmented label={tr('Atomkern', 'Атомное ядро')} value={nucleusId} options={NUCLEI.map((n) => ({ value: n.id, label: n.symbol }))} onChange={setNucleusId} />
+        <Slider label={tr('Feldstärke B₀', 'Индукция поля B₀')} value={b0} min={0.2} max={7} step={0.05} unit={T} onChange={setB0} format={(v) => fmt(v, 2)} />
+        <Slider label={tr('Flipwinkel α', 'Угол отклонения α')} value={flip} min={10} max={180} step={5} unit="°" onChange={setFlip} />
         <Slider
-          label={tr('Frequenzabweichung Δf des Pulses', 'Відхилення частоти імпульсу Δf')}
+          label={tr('Frequenzabweichung Δf des Pulses', 'Отклонение частоты импульса Δf')}
           value={offsetHz}
           min={-1000}
           max={1000}
@@ -243,27 +243,27 @@ export function LarmorSimulator() {
           onChange={setOffsetHz}
           hint={tr(
             'Bei Fehlabstimmung bleibt im rotierenden System eine z-Komponente des effektiven Feldes (Δω/γ) → der Vektor kippt nicht vollständig (Rechteckpuls, 1 ms).',
-            'При розстроюванні в обертовій системі залишається z-компонента ефективного поля (Δω/γ) → вектор відхиляється не повністю (прямокутний імпульс, 1 мс).',
+            'При отстройке от резонанса во вращающейся системе остаётся z-компонента эффективного поля (Δω/γ) → вектор отклоняется не полностью (прямоугольный импульс, 1 мс).',
           )}
         />
         <button className="btn primary block" type="button" onClick={pulse}>
-          {tr('⚡ HF-Puls senden', '⚡ Надіслати РЧ-імпульс')}
+          {tr('⚡ HF-Puls senden', '⚡ Подать РЧ-импульс')}
         </button>
         <p className="small muted">
-          {tr('Effektiver Flipwinkel', 'Ефективний кут відхилення')}: <strong>{fmt(effectiveFlip, 1)}°</strong>
+          {tr('Effektiver Flipwinkel', 'Эффективный угол отклонения')}: <strong>{fmt(effectiveFlip, 1)}°</strong>
         </p>
       </Panel>
 
-      <Panel title={tr('Messgrößen', 'Вимірювані величини')}>
+      <Panel title={tr('Messgrößen', 'Измеряемые величины')}>
         <div className="stat-grid">
-          <Stat label={tr('Larmor-Frequenz f₀', 'Частота Лармора f₀')} value={fmt(f0, 3)} unit={MHz} />
-          <Stat label={tr('Kreisfrequenz ω₀', 'Кутова частота ω₀')} value={fmt(larmorAngular(b0, nucleus.gammaBar) / 1e6, 1)} unit={tr('·10⁶ rad/s', '·10⁶ рад/с')} />
-          <Stat label={tr('Energiedifferenz ΔE', 'Різниця енергій ΔE')} value={fmt(zeemanEnergy(b0, nucleus.gammaBar) * 1e26, 2)} unit={tr('·10⁻²⁶ J', '·10⁻²⁶ Дж')} />
+          <Stat label={tr('Larmor-Frequenz f₀', 'Ларморова частота f₀')} value={fmt(f0, 3)} unit={MHz} />
+          <Stat label={tr('Kreisfrequenz ω₀', 'Угловая частота ω₀')} value={fmt(larmorAngular(b0, nucleus.gammaBar) / 1e6, 1)} unit={tr('·10⁶ rad/s', '·10⁶ рад/с')} />
+          <Stat label={tr('Energiedifferenz ΔE', 'Разность энергий ΔE')} value={fmt(zeemanEnergy(b0, nucleus.gammaBar) * 1e26, 2)} unit={tr('·10⁻²⁶ J', '·10⁻²⁶ Дж')} />
           <Stat
-            label={tr('Spinüberschuss (310 K)', 'Надлишок спінів (310 K)')}
+            label={tr('Spinüberschuss (310 K)', 'Избыток спинов (310 K)')}
             value={fmt(spinExcess(b0, nucleus.gammaBar) * 1e6, 2)}
             unit="ppm"
-            sub={tr(`≈ ${fmt(spinExcess(b0, nucleus.gammaBar) * 1e6, 1)} von 1 Mio. Spins`, `≈ ${fmt(spinExcess(b0, nucleus.gammaBar) * 1e6, 1)} з 1 млн спінів`)}
+            sub={tr(`≈ ${fmt(spinExcess(b0, nucleus.gammaBar) * 1e6, 1)} von 1 Mio. Spins`, `≈ ${fmt(spinExcess(b0, nucleus.gammaBar) * 1e6, 1)} из 1 млн спинов`)}
           />
         </div>
         <TeX
@@ -273,29 +273,29 @@ export function LarmorSimulator() {
         <p className="small muted">{loc(nucleus.note)}</p>
       </Panel>
 
-      <Panel title={tr('📡 Resonanz-Challenge', '📡 Резонансний виклик')} className="span-2">
+      <Panel title={tr('📡 Resonanz-Challenge', '📡 Резонансное задание')} className="span-2">
         <p>
-          {tr('Stimme den Sender ab: Welche Frequenz bringt', 'Налаштуйте передавач: яка частота приведе')} <strong>{loc(challengeNucleus.label)}</strong> {tr('bei', 'при')}{' '}
+          {tr('Stimme den Sender ab: Welche Frequenz bringt', 'Настрой передатчик: какая частота приведёт')} <strong>{loc(challengeNucleus.label)}</strong> {tr('bei', 'при')}{' '}
           <strong>
             {fmt(challenge.b0)} {T}
           </strong>{' '}
-          {tr('in Resonanz? (Toleranz ±0,5 %)', 'до резонансу? (допуск ±0,5 %)')}
+          {tr('in Resonanz? (Toleranz ±0,5 %)', 'в резонанс? (допуск ±0,5 %)')}
         </p>
-        <Slider label={tr('Sendefrequenz', 'Частота передавача')} value={guess} min={1} max={310} step={0.05} unit={MHz} onChange={setGuess} format={(v) => fmt(v, 2)} />
+        <Slider label={tr('Sendefrequenz', 'Частота передатчика')} value={guess} min={1} max={310} step={0.05} unit={MHz} onChange={setGuess} format={(v) => fmt(v, 2)} />
         <div className="row gap">
           <input
             className="num-field"
             type="number"
             step="0.01"
             value={guess}
-            aria-label={tr('Sendefrequenz in MHz', 'Частота передавача в МГц')}
+            aria-label={tr('Sendefrequenz in MHz', 'Частота передатчика в МГц')}
             onChange={(e) => setGuess(Number(e.target.value) || 0)}
           />
           <button className="btn primary" type="button" onClick={checkResonance}>
-            {tr('Puls senden', 'Надіслати імпульс')}
+            {tr('Puls senden', 'Подать импульс')}
           </button>
           <button className="btn ghost" type="button" onClick={() => setChallenge(newChallenge())}>
-            {tr('Neue Aufgabe', 'Нове завдання')}
+            {tr('Neue Aufgabe', 'Новое задание')}
           </button>
         </div>
         {resonance && (
@@ -303,12 +303,12 @@ export function LarmorSimulator() {
             {resonance.ok && resNucleus
               ? tr(
                   `✔ Resonanz! ${loc(resNucleus.label)} bei ${fmt(resonance.b0)} T präzediert mit ${fmt(resonance.f0, 3)} MHz.`,
-                  `✔ Резонанс! ${loc(resNucleus.label)} при ${fmt(resonance.b0)} Тл прецесує з частотою ${fmt(resonance.f0, 3)} МГц.`,
+                  `✔ Резонанс! ${loc(resNucleus.label)} при ${fmt(resonance.b0)} Тл прецессирует с частотой ${fmt(resonance.f0, 3)} МГц.`,
                 )
               : !resonance.ok &&
                 tr(
                   `✘ Keine Resonanz – Abweichung ${fmt(resonance.errPct, 1)} %. ${resonance.tooHigh ? 'Frequenz zu hoch.' : 'Frequenz zu niedrig.'}`,
-                  `✘ Немає резонансу – відхилення ${fmt(resonance.errPct, 1)} %. ${resonance.tooHigh ? 'Частота зависока.' : 'Частота занизька.'}`,
+                  `✘ Нет резонанса – отклонение ${fmt(resonance.errPct, 1)} %. ${resonance.tooHigh ? 'Частота слишком высокая.' : 'Частота слишком низкая.'}`,
                 )}
           </p>
         )}
