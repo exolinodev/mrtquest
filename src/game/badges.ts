@@ -1,0 +1,277 @@
+import { ALL_SIMULATORS, MODULES, type ModuleId } from '../content/modules';
+import { SCENARIOS } from '../content/scenarios';
+import { levelFromXp } from './levels';
+import type { GameState } from './types';
+
+export type BadgeTier = 'bronze' | 'silver' | 'gold';
+
+export interface BadgeDef {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  tier: BadgeTier;
+  /** Bonus-XP bei Freischaltung */
+  xp: number;
+  check: (s: GameState) => boolean;
+}
+
+const moduleMastered = (s: GameState, id: ModuleId) => (s.modules[id]?.bestScore ?? 0) >= 0.8;
+
+const MODULE_BADGES: Record<ModuleId, { title: string; icon: string }> = {
+  kernspin: { title: 'Larmor-Meister:in', icon: '🧲' },
+  relaxation: { title: 'Relaxations-Profi', icon: '⏳' },
+  ortskodierung: { title: 'Gradienten-Guru', icon: '📐' },
+  kraum: { title: 'Fourier-Flüsterer:in', icon: '🌀' },
+  sequenzen: { title: 'Sequenz-Architekt:in', icon: '📈' },
+  qualitaet: { title: 'Qualitäts-Wächter:in', icon: '🛡️' },
+  hardware: { title: 'Technik-Insider:in', icon: '🏥' },
+};
+
+export const BADGES: BadgeDef[] = [
+  {
+    id: 'erste-schritte',
+    title: 'Erste Schritte',
+    description: 'Schließe deine erste Challenge ab.',
+    icon: '👣',
+    tier: 'bronze',
+    xp: 20,
+    check: (s) => s.stats.challengesCompleted >= 1,
+  },
+  {
+    id: 'perfektionist',
+    title: 'Perfektionist:in',
+    description: 'Beende eine Modul-Challenge mit 100 %.',
+    icon: '💎',
+    tier: 'silver',
+    xp: 40,
+    check: (s) => Object.values(s.modules).some((m) => m.perfect),
+  },
+  {
+    id: 'theorie-fan',
+    title: 'Bücherwurm',
+    description: 'Lies alle Theorie-Kapitel vollständig.',
+    icon: '📚',
+    tier: 'silver',
+    xp: 40,
+    check: (s) => MODULES.every((m) => s.modules[m.id]?.theoryRead),
+  },
+  ...MODULES.map<BadgeDef>((m) => ({
+    id: `meister-${m.id}`,
+    title: MODULE_BADGES[m.id].title,
+    description: `Erreiche mindestens 80 % in der Challenge „${m.title}“.`,
+    icon: MODULE_BADGES[m.id].icon,
+    tier: 'silver',
+    xp: 30,
+    check: (s) => moduleMastered(s, m.id),
+  })),
+  {
+    id: 'grand-slam',
+    title: 'Grand Slam',
+    description: 'Meistere alle sieben Module mit mindestens 80 %.',
+    icon: '🏆',
+    tier: 'gold',
+    xp: 150,
+    check: (s) => MODULES.every((m) => moduleMastered(s, m.id)),
+  },
+  {
+    id: 'simulator-entdecker',
+    title: 'Simulator-Entdecker:in',
+    description: 'Öffne jeden virtuellen Simulator mindestens einmal.',
+    icon: '🔭',
+    tier: 'silver',
+    xp: 40,
+    check: (s) => ALL_SIMULATORS.every((id) => s.simulatorsVisited.includes(id)),
+  },
+  {
+    id: 'combo-5',
+    title: 'Im Fluss',
+    description: '5 richtige Antworten in Folge.',
+    icon: '🔥',
+    tier: 'bronze',
+    xp: 20,
+    check: (s) => s.stats.bestStreak >= 5,
+  },
+  {
+    id: 'combo-15',
+    title: 'Kohärente Präzession',
+    description: '15 richtige Antworten in Folge – keine Dephasierung!',
+    icon: '🌊',
+    tier: 'gold',
+    xp: 80,
+    check: (s) => s.stats.bestStreak >= 15,
+  },
+  {
+    id: 'fleissig',
+    title: 'Fleißige Spins',
+    description: 'Beantworte insgesamt 100 Fragen.',
+    icon: '🐝',
+    tier: 'silver',
+    xp: 50,
+    check: (s) => s.stats.answered >= 100,
+  },
+  {
+    id: 'treffsicher',
+    title: 'Treffsicher',
+    description: 'Mindestens 85 % Trefferquote bei 40 oder mehr Antworten.',
+    icon: '🎯',
+    tier: 'gold',
+    xp: 80,
+    check: (s) => s.stats.answered >= 40 && s.stats.correct / s.stats.answered >= 0.85,
+  },
+  {
+    id: 'resonanz',
+    title: 'In Resonanz',
+    description: 'Treffe im Präzessions-Labor die Resonanzfrequenz.',
+    icon: '📡',
+    tier: 'bronze',
+    xp: 20,
+    check: (s) => !!s.flags['resonance-hit'],
+  },
+  {
+    id: 'nullpunkt-jaeger',
+    title: 'Nullpunkt-Jäger:in',
+    description: 'Unterdrücke den Liquor per FLAIR-Inversionszeit (±5 %).',
+    icon: '🕳️',
+    tier: 'silver',
+    xp: 30,
+    check: (s) => !!s.flags['flair-null'],
+  },
+  {
+    id: 'fett-weg',
+    title: 'Fettfrei',
+    description: 'Finde die STIR-Inversionszeit, die Fett nullt (±5 %).',
+    icon: '🧈',
+    tier: 'silver',
+    xp: 30,
+    check: (s) => !!s.flags['stir-null'],
+  },
+  {
+    id: 'ernst',
+    title: 'Ernsthaft optimiert',
+    description: 'Stelle im GRE den Ernst-Winkel der weißen Substanz ein (±2°).',
+    icon: '📐',
+    tier: 'bronze',
+    xp: 20,
+    check: (s) => !!s.flags['ernst-angle'],
+  },
+  {
+    id: 'fischgraet',
+    title: 'Fischgrät-Künstler:in',
+    description: 'Erzeuge im K-Raum-Studio ein Spike-Artefakt.',
+    icon: '🐟',
+    tier: 'bronze',
+    xp: 15,
+    check: (s) => !!s.flags['kspace-spike'],
+  },
+  {
+    id: 'basiswelle',
+    title: 'Wellenreiter:in',
+    description: 'Untersuche einzelne k-Raum-Punkte und ihre Ortsfrequenz-Muster.',
+    icon: '〰️',
+    tier: 'bronze',
+    xp: 15,
+    check: (s) => !!s.flags['kspace-basis'],
+  },
+  {
+    id: 'schichtwerker',
+    title: 'Präzisions-Schichtwerker:in',
+    description: 'Stelle in der Gradienten-Werkbank exakt die Zielschicht ein.',
+    icon: '🔪',
+    tier: 'bronze',
+    xp: 20,
+    check: (s) => !!s.flags['slice-target'],
+  },
+  {
+    id: 'klinik-debut',
+    title: 'Klinik-Debüt',
+    description: 'Schließe dein erstes klinisches Szenario ab.',
+    icon: '🩺',
+    tier: 'bronze',
+    xp: 20,
+    check: (s) => Object.values(s.scenarios).some((sc) => sc.stars >= 1),
+  },
+  {
+    id: 'drei-sterne',
+    title: 'Optimales Protokoll',
+    description: 'Erreiche in einem Szenario alle drei Sterne.',
+    icon: '⭐',
+    tier: 'silver',
+    xp: 40,
+    check: (s) => Object.values(s.scenarios).some((sc) => sc.stars >= 3),
+  },
+  {
+    id: 'sar-waechter',
+    title: 'SAR-Wächter:in',
+    description: 'Löse ein 3-Tesla-Szenario im Normal Mode (≤ 2 W/kg).',
+    icon: '🌡️',
+    tier: 'silver',
+    xp: 40,
+    check: (s) => !!s.flags['sar-safe-3t'],
+  },
+  {
+    id: 'klinik-profi',
+    title: 'Oberärzt:in der MR',
+    description: 'Erreiche in allen Szenarien mindestens zwei Sterne.',
+    icon: '🏅',
+    tier: 'gold',
+    xp: 150,
+    check: (s) => SCENARIOS.every((sc) => (s.scenarios[sc.id]?.stars ?? 0) >= 2),
+  },
+  {
+    id: 'artefakt-detektiv',
+    title: 'Artefakt-Detektiv:in',
+    description: 'Diagnostiziere und behebe 10 Artefakte korrekt.',
+    icon: '🕵️',
+    tier: 'silver',
+    xp: 50,
+    check: (s) => s.stats.artifactsDiagnosed >= 10,
+  },
+  {
+    id: 'facharzt',
+    title: 'Prüfung bestanden',
+    description: 'Bestehe die Abschlussprüfung mit mindestens 80 %.',
+    icon: '🎓',
+    tier: 'gold',
+    xp: 150,
+    check: (s) => s.examBest >= 0.8,
+  },
+  {
+    id: 'dranbleiben',
+    title: 'Dranbleiben',
+    description: 'Lerne an 3 verschiedenen Tagen.',
+    icon: '📅',
+    tier: 'bronze',
+    xp: 25,
+    check: (s) => s.activeDays.length >= 3,
+  },
+  {
+    id: 'marathon',
+    title: 'Langzeit-T1',
+    description: 'Lerne an 7 verschiedenen Tagen.',
+    icon: '🏃',
+    tier: 'silver',
+    xp: 60,
+    check: (s) => s.activeDays.length >= 7,
+  },
+  {
+    id: 'level-5',
+    title: 'Halbzeit',
+    description: 'Erreiche Level 5.',
+    icon: '🚀',
+    tier: 'silver',
+    xp: 0,
+    check: (s) => levelFromXp(s.xp) >= 5,
+  },
+  {
+    id: 'level-10',
+    title: 'Larmor-Legende',
+    description: 'Erreiche Level 10.',
+    icon: '👑',
+    tier: 'gold',
+    xp: 0,
+    check: (s) => levelFromXp(s.xp) >= 10,
+  },
+];
+
+export const BADGE_BY_ID = Object.fromEntries(BADGES.map((b) => [b.id, b])) as Record<string, BadgeDef>;
