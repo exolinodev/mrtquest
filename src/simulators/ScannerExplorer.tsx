@@ -334,7 +334,7 @@ export function ScannerExplorer() {
           <p className="scanner-diagram-hint small muted">
             {zoom > 1
               ? tr('↔ Wische im Bild, um kleine Bauteile zu erreichen.', '↔ Перемещай схему свайпом, чтобы рассмотреть мелкие детали.')
-              : tr('Tippe ins Bild oder wechsle mit den Pfeilen. Die Erklärung folgt direkt darunter.', 'Нажми на схему или используй стрелки. Объяснение — сразу под ней.')}
+              : tr('Tippe ein Bauteil an oder erkunde den Scanner mit den Pfeilen.', 'Нажми на деталь схемы или исследуй сканер с помощью стрелок.')}
           </p>
         </Panel>
       </div>
