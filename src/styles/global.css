@@ -2094,3 +2094,24 @@ h3,
     font-size: 0.98em;
   }
 }
+
+/* Flex-Kinder mit langen Überschriften dürfen schrumpfen; Umbruch notfalls mitten im Wort
+ * (unter Linux fehlt Chrome teils das Silbentrennungs-Wörterbuch, z. B. für Russisch). */
+.module-header > div,
+.scenario-header > div {
+  min-width: 0;
+}
+.module-header h1,
+.scenario-header h1,
+.page > h1 {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 680px) {
+  .module-header {
+    gap: 0.7rem;
+    align-items: flex-start;
+  }
+  .module-icon.big {
+    font-size: 2rem;
+  }
+}
