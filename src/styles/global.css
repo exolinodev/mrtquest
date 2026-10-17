@@ -2182,6 +2182,7 @@ path.sx-focus-shape { fill: none; stroke-width: 10; }
   color: var(--scanner-color);
   font: 600 1rem var(--mono);
   text-align: center;
+  white-space: nowrap;
 }
 .scanner-visual-caption { display: flex; gap: 0.65rem; align-items: flex-start; margin-top: 0.8rem; }
 .scanner-caption-line { flex: 0 0 3px; min-height: 36px; border-radius: 3px; background: var(--scanner-color); box-shadow: 0 0 12px var(--scanner-color); }
@@ -2539,7 +2540,7 @@ path.sx-focus-shape { fill: none; stroke-width: 10; }
     background: linear-gradient(180deg, color-mix(in srgb, var(--scanner-color) 6%, transparent), transparent 160px), var(--surface);
   }
   .scanner-focus-heading h3 { font-size: 1.05rem; }
-  .scanner-symbol { flex-basis: 52px; min-height: 52px; font-size: 0.9rem; }
+  .scanner-symbol { flex-basis: 52px; min-height: 52px; font-size: 0.85rem; }
   .console-nav {
     display: flex;
     gap: 0.3rem;

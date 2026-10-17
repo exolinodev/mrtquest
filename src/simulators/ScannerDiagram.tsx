@@ -5,13 +5,13 @@ import { useLang } from '../i18n/LanguageContext';
 export type ComponentId = 'cage' | 'cryostat' | 'coils' | 'coldhead' | 'quench' | 'shim' | 'gradient' | 'body' | 'surface' | 'table' | 'patient';
 
 export const SCANNER_VISUALS: Record<ComponentId, { color: string; symbol: string; action: Loc; caption: Loc; anchor: [number, number] }> = {
-  cage: { color: '#fbbf24', symbol: 'HF', action: { de: 'Störungen bleiben draußen.', ru: 'Помехи остаются снаружи.' }, caption: { de: 'Die Kabine schirmt äußere Funksignale ab.', ru: 'Кабина экранирует внешние радиосигналы.' }, anchor: [36, 210] },
+  cage: { color: '#fbbf24', symbol: 'HF', action: { de: 'Störungen bleiben draußen.', ru: 'Помехи остаются снаружи.' }, caption: { de: 'Die Kabine schirmt äußere Funksignale ab.', ru: 'Кабина экранирует внешние радиосигналы.' }, anchor: [86, 210] },
   cryostat: { color: '#7dd3fc', symbol: '4,2 K', action: { de: 'Innen eiskalt. Außen Raumtemperatur.', ru: 'Внутри холод. Снаружи комнатная температура.' }, caption: { de: 'Vakuum und Isolationsschichten schützen das Heliumbad.', ru: 'Вакуум и слои изоляции защищают гелиевую ванну.' }, anchor: [424, 132] },
   coils: { color: '#38bdf8', symbol: 'B₀', action: { de: 'Das Hauptmagnetfeld ist immer an.', ru: 'Основное магнитное поле включено постоянно.' }, caption: { de: 'Die supraleitenden Spulen erzeugen das statische B₀-Feld.', ru: 'Сверхпроводящие катушки создают статическое поле B₀.' }, anchor: [445, 176] },
   coldhead: { color: '#67e8f9', symbol: '↓ K', action: { de: 'Helium wird wieder flüssig.', ru: 'Гелий снова становится жидким.' }, caption: { de: 'Der Kaltkopf kühlt das verdampfte Helium zurück.', ru: 'Криокулер вновь охлаждает испарившийся гелий.' }, anchor: [270, 61] },
   quench: { color: '#fb923c', symbol: 'He ↑', action: { de: 'Im Notfall: Helium sicher nach draußen.', ru: 'При квенче: гелий безопасно выходит наружу.' }, caption: { de: 'Das Rohr führt das verdampfende Helium ins Freie.', ru: 'Труба отводит испаряющийся гелий наружу.' }, anchor: [308, 38] },
   shim: { color: '#c4b5fd', symbol: 'ΔB₀', action: { de: 'Ein gleichmäßigeres Magnetfeld.', ru: 'Более однородное магнитное поле.' }, caption: { de: 'Shims korrigieren kleine Abweichungen im B₀-Feld.', ru: 'Шиммирование исправляет небольшие отклонения поля B₀.' }, anchor: [195, 156] },
-  gradient: { color: '#34d399', symbol: 'x · y · z', action: { de: 'Das Signal bekommt einen Ort.', ru: 'Сигнал получает координаты.' }, caption: { de: 'Gradienten verändern das Magnetfeld gezielt mit dem Ort.', ru: 'Градиенты изменяют магнитное поле в зависимости от координат.' }, anchor: [433, 223] },
+  gradient: { color: '#34d399', symbol: 'G', action: { de: 'Das Signal bekommt einen Ort.', ru: 'Сигнал получает координаты.' }, caption: { de: 'Gradienten verändern das Magnetfeld gezielt mit dem Ort.', ru: 'Градиенты изменяют магнитное поле в зависимости от координат.' }, anchor: [433, 223] },
   body: { color: '#f472b6', symbol: 'B₁', action: { de: 'Der HF-Puls regt die Spins an.', ru: 'РЧ-импульс возбуждает спины.' }, caption: { de: 'Die Körperspule sendet das B₁-Feld in die Untersuchungsregion.', ru: 'Катушка тела передаёт поле B₁ в область исследования.' }, anchor: [208, 198] },
   surface: { color: '#a78bfa', symbol: 'SNR ↑', action: { de: 'Nah am Körper. Starkes Empfangssignal.', ru: 'Ближе к телу. Сильнее принимаемый сигнал.' }, caption: { de: 'Lokale Spulenelemente empfangen das schwache MR-Signal.', ru: 'Локальные элементы катушки принимают слабый МР-сигнал.' }, anchor: [300, 239] },
   table: { color: '#94a3b8', symbol: '→ ◎', action: { de: 'Die Anatomie fährt ins Isozentrum.', ru: 'Анатомическая область перемещается в изоцентр.' }, caption: { de: 'Der Tisch positioniert die Untersuchungsregion in der Feldmitte.', ru: 'Стол размещает область исследования в центре поля.' }, anchor: [372, 327] },
@@ -22,7 +22,7 @@ export const SCANNER_VISUALS: Record<ComponentId, { color: string; symbol: strin
 // This keeps even narrow, nested rings visible when a component is selected.
 function Shape({ id, props }: { id: ComponentId; props?: SVGProps<SVGElement> }) {
   switch (id) {
-    case 'cage': return <rect x="22" y="18" width="556" height="438" rx="18" {...props as SVGProps<SVGRectElement>} />;
+    case 'cage': return <rect x="86" y="18" width="492" height="438" rx="18" {...props as SVGProps<SVGRectElement>} />;
     case 'cryostat': return <circle cx="300" cy="260" r="180" {...props as SVGProps<SVGCircleElement>} />;
     case 'coils': return <g>{Array.from({ length: 6 }, (_, i) => {
       const a = (i / 6) * Math.PI * 2 + Math.PI / 6;
@@ -73,15 +73,16 @@ function FunctionOverlay({ id }: { id: ComponentId }) {
     <path d="M300 120 V26 H402 m-12 -7 12 7 -12 7" /><text x="360" y="58">He ↑</text>
   </g>;
   if (id === 'cage') return <g className="sx-flow">
-    {[155, 235, 315].map((y) => <g key={y}><path d={`M60 ${y} l12 -10 12 20 12 -20 12 10`} /><path d={`M114 ${y - 15} v30`} /></g>)}
-    <text x="61" y="358">HF</text>
+    {[155, 235, 315].map((y) => <g key={y}><path d={`M25 ${y} l10 -10 10 20 10 -20 10 10`} /><path d={`M78 ${y - 15} v30`} /></g>)}
+    <text x="28" y="358">HF</text>
   </g>;
   if (id === 'table') return <g className="sx-flow">
     <path d="M233 362 H367 m-12 -7 12 7 -12 7" /><path d="M300 190 v30 m-15 -15 h30" />
   </g>;
   return <g className="sx-flow">
     <path d="M300 206 v27 M287 220 h26" />
-    {[263, 290, 317, 344].map((x) => <path key={x} d={`M${x} 295 v-23 m-4 6 4 -6 4 6`} />)}
+    <path d="M245 282 q9 -21 18 0 t18 0 t18 0 t18 0 t18 0 t18 0" />
+    <text x="286" y="306">MR</text>
   </g>;
 }
 
