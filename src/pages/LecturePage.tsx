@@ -307,7 +307,7 @@ function ExamCenter() {
       <h2 className="section-title">{tr('Quelle und Literatur', 'Источник и литература')}</h2>
       <Panel>
         <p>
-          <strong>{LECTURE_SOURCE.title}</strong> · {LECTURE_SOURCE.author}
+          <strong>{LECTURE_SOURCE.title}</strong> · {tr('Vorlesungsskript', 'лекционный конспект')}
         </p>
         <p className="small muted">
           {tr(

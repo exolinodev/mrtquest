@@ -33,7 +33,7 @@ export function Dashboard() {
     <div className="page">
       <section className="hero">
         <div>
-          <p className="eyebrow">{tr('Dein Prüfungstrainer für MRI · MBR an der ZHAW', 'Твой тренажёр к экзамену по МРТ · MBR, ZHAW')}</p>
+          <p className="eyebrow">{tr('Dein Prüfungstrainer für die MRT', 'Твой тренажёр к экзамену по МРТ')}</p>
           <h1>
             {state.playerName
               ? tr(`Willkommen zurück, ${state.playerName}!`, `С возвращением, ${state.playerName}!`)
