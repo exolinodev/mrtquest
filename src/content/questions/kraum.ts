@@ -18,10 +18,13 @@ export const kraumQuestions: QuestionSource[] = [
         answer: deltaK(fov),
         tolerance: 0.01,
         unit: t('1/m', 'м⁻¹'),
-        hint: t('Das FOV ist der Kehrwert der k-Raum-Schrittweite.', 'FOV – величина, обратная шагу дискретизации k-пространства.'),
+        hint: t(
+          'Feine Schritte im k-Raum bedeuten ein großes Bildfeld. Welcher einfache Zusammenhang passt dazu? Rechne das FOV zuerst in Meter um.',
+          'Мелкие шаги в k-пространстве означают большое поле обзора. Какая простая связь этому соответствует? Сначала переведи FOV в метры.',
+        ),
         explanation: t(
-          `$\\Delta k = 1/FOV = 1/${n(fov / 1000, 3, lang)}\\,\\text{m} = ${n(deltaK(fov), 2, lang)}$ m⁻¹. Wird Δk größer (gröbere Abtastung), wird das FOV kleiner → Einfaltung.`,
-          `$\\Delta k = 1/FOV = 1/${n(fov / 1000, 3, lang)}\\,\\text{м} = ${n(deltaK(fov), 2, lang)}$ м⁻¹. Если Δk растёт (более грубая дискретизация), FOV уменьшается → заворот (алиасинг).`,
+          `Der k-Raum-Abstand ist der Kehrwert des Bildfelds. Rechenweg: $\\Delta k = 1/FOV = 1/${n(fov / 1000, 3, lang)}\\,\\text{m} = ${n(deltaK(fov), 2, lang)}$ m⁻¹. Check: FOV mal Δk muss genau 1 ergeben. Das Bild dahinter: Je feiner du im k-Raum abtastest, desto größer ist das Bildfeld, das eindeutig hineinpasst. Tastest du gröber ab (Δk größer), schrumpft das FOV, und alles außerhalb faltet ins Bild ein.`,
+          `Шаг в k-пространстве обратен полю обзора. Расчёт: $\\Delta k = 1/FOV = 1/${n(fov / 1000, 3, lang)}\\,\\text{м} = ${n(deltaK(fov), 2, lang)}$ м⁻¹. Проверка: FOV, умноженное на Δk, должно дать ровно 1. Смысл: чем мельче шаг дискретизации в k-пространстве, тем больше поле, которое однозначно в него помещается. Если шаг грубее (Δk больше), FOV уменьшается, и всё, что снаружи, заворачивается в изображение.`,
         ),
       };
     },
@@ -44,12 +47,12 @@ export const kraumQuestions: QuestionSource[] = [
         tolerance: 0.01,
         unit: t('1/m', 'м⁻¹'),
         hint: t(
-          '$k_{\\text{max}} = N\\,\\Delta k / 2$ und $\\Delta x = 1/(2k_{\\text{max}})$.',
-          '$k_{\\text{max}} = N\\,\\Delta k / 2$ и $\\Delta x = 1/(2k_{\\text{max}})$.',
+          'Du machst N Schritte der Größe $\\Delta k = 1/FOV$, symmetrisch um das Zentrum verteilt. Wie weit reicht dann eine Seite?',
+          'Ты делаешь N шагов размером $\\Delta k = 1/FOV$, симметрично вокруг центра. Как далеко тогда простирается одна сторона?',
         ),
         explanation: t(
-          `$k_{\\text{max}} = N/(2\\,FOV) = ${N}/(2 \\cdot ${n(fov / 1000, 3, lang)}) = ${n(kMax(fov, N), 1, lang)}$ m⁻¹. Daraus folgt die Pixelgröße $\\Delta x = 1/(2k_{\\text{max}}) = ${n(fov / N, 3, lang)}$ mm.`,
-          `$k_{\\text{max}} = N/(2\\,FOV) = ${N}/(2 \\cdot ${n(fov / 1000, 3, lang)}) = ${n(kMax(fov, N), 1, lang)}$ м⁻¹. Отсюда размер пикселя $\\Delta x = 1/(2k_{\\text{max}}) = ${n(fov / N, 3, lang)}$ мм.`,
+          `$k_{\\text{max}}$ ist der halbe Weg durch den k-Raum. Du hast N Schritte der Größe 1/FOV, und die Hälfte davon liegt auf jeder Seite des Zentrums: $k_{\\text{max}} = N/(2\\,FOV) = ${N}/(2 \\cdot ${n(fov / 1000, 3, lang)}) = ${n(kMax(fov, N), 1, lang)}$ m⁻¹. Daraus folgt die Pixelgröße $\\Delta x = 1/(2k_{\\text{max}}) = ${n(fov / N, 3, lang)}$ mm. Check: FOV geteilt durch Matrix ergibt dieselbe Pixelgröße. Je weiter du nach außen misst, desto feiner werden die Details.`,
+          `$k_{\\text{max}}$: это половина пути через k-пространство. У тебя N шагов размером 1/FOV, и половина из них лежит по каждую сторону от центра: $k_{\\text{max}} = N/(2\\,FOV) = ${N}/(2 \\cdot ${n(fov / 1000, 3, lang)}) = ${n(kMax(fov, N), 1, lang)}$ м⁻¹. Отсюда размер пикселя $\\Delta x = 1/(2k_{\\text{max}}) = ${n(fov / N, 3, lang)}$ мм. Проверка: FOV, делённое на матрицу, даёт тот же размер пикселя. Чем дальше наружу ты измеряешь, тем мельче детали.`,
         ),
       };
     },
@@ -73,12 +76,12 @@ export const kraumQuestions: QuestionSource[] = [
         tolerance: 0.02,
         unit: t('1/m', 'м⁻¹'),
         hint: t(
-          '$k(t) = \\bar\\gamma \\int_0^t G(\\tau)\\,d\\tau$ – die Gradientenfläche zählt.',
-          '$k(t) = \\bar\\gamma \\int_0^t G(\\tau)\\,d\\tau$ – важна площадь под градиентом.',
+          'Im k-Raum zählt die Fläche unter dem Gradienten, wie die Strecke beim Autofahren. Rechne alles in T/m und s um.',
+          'В k-пространстве важна площадь под градиентом, как пройденный путь при езде на машине. Переведи всё в Тл/м и с.',
         ),
         explanation: t(
-          `$k = \\bar\\gamma\\,G\\,t = 42{,}577\\cdot10^6 \\cdot ${g}\\cdot10^{-3} \\cdot ${n(dt, 2, lang)}\\cdot10^{-3} = ${n(k, 1, lang)}$ m⁻¹. Gradientenfläche ⇔ Position im k-Raum: Dieselbe Fläche mit halbem Gradienten und doppelter Zeit führt zum selben Punkt.`,
-          `$k = \\bar\\gamma\\,G\\,t = 42{,}577\\cdot10^6 \\cdot ${g}\\cdot10^{-3} \\cdot ${n(dt, 2, lang)}\\cdot10^{-3} = ${n(k, 1, lang)}$ м⁻¹. Площадь градиента ⇔ позиция в k-пространстве: та же площадь при вдвое меньшем градиенте и вдвое большем времени ведёт к той же точке.`,
+          `Die k-Raum-Position ist γ̄ mal Gradientenfläche. Bei konstantem Gradienten ist die Fläche einfach G mal t: $k = \\bar\\gamma\\,G\\,t = 42{,}577\\cdot10^6 \\cdot ${g}\\cdot10^{-3} \\cdot ${n(dt, 2, lang)}\\cdot10^{-3} = ${n(k, 1, lang)}$ m⁻¹. Check: Halber Gradient und doppelte Zeit ergeben dieselbe Fläche und führen zum selben Punkt. Wie beim Autofahren zählt nur die Strecke, nicht wie du sie zurückgelegt hast.`,
+          `Позиция в k-пространстве равна γ̄, умноженному на площадь градиента. При постоянном градиенте площадь равна просто G на t: $k = \\bar\\gamma\\,G\\,t = 42{,}577\\cdot10^6 \\cdot ${g}\\cdot10^{-3} \\cdot ${n(dt, 2, lang)}\\cdot10^{-3} = ${n(k, 1, lang)}$ м⁻¹. Проверка: вдвое меньший градиент и вдвое большее время дают ту же площадь и ведут в ту же точку. Как при езде на машине, важен только путь, а не то, как ты его проехал.`,
         ),
       };
     },
@@ -103,9 +106,13 @@ export const kraumQuestions: QuestionSource[] = [
         answer: ta,
         tolerance: 0.02,
         unit: t('s', 'с'),
+        hint: t(
+          'Jede gemessene Zeile kostet ein TR. Wie viele Zeilen misst du bei Partial Fourier wirklich?',
+          'Каждая измеренная строка стоит одного TR. Сколько строк ты на самом деле измеряешь при частичном Фурье?',
+        ),
         explanation: t(
-          `Nur ${lines} von ${ny} Zeilen werden gemessen: TA = ${tr} ms · ${lines} = ${n(ta, 1, lang)} s. Die fehlenden Zeilen werden über die hermitesche Symmetrie $S(-k) = S^*(k)$ ergänzt – auf Kosten von SNR (∝ √Anzahl Zeilen).`,
-          `Измеряется лишь ${lines} из ${ny} строк: TA = ${tr} мс · ${lines} = ${n(ta, 1, lang)} с. Недостающие строки дополняются благодаря эрмитовой симметрии $S(-k) = S^*(k)$ – ценой SNR (∝ √числа строк).`,
+          `Die Messzeit ist die Zahl der gemessenen Zeilen mal TR. Gemessen werden nur ${lines} von ${ny} Zeilen: TA = ${tr} ms · ${lines} = ${n(ta, 1, lang)} s. Check: Das ist ${n(frac * 8, 0, lang)}/8 der vollen Messzeit. Die fehlenden Zeilen ergänzt die hermitesche Symmetrie $S(-k) = S^*(k)$, wie ein Spiegelbild. Der Preis ist SNR, denn das SNR wächst mit der Wurzel aus der Zahl der gemessenen Zeilen.`,
+          `Время измерения равно числу измеренных строк, умноженному на TR. Измеряется лишь ${lines} из ${ny} строк: TA = ${tr} мс · ${lines} = ${n(ta, 1, lang)} с. Проверка: это ${n(frac * 8, 0, lang)}/8 полного времени. Недостающие строки дополняет эрмитова симметрия $S(-k) = S^*(k)$, как зеркальное отражение. Цена: SNR, потому что SNR растёт как корень из числа измеренных строк.`,
         ),
       };
     },
@@ -129,8 +136,8 @@ export const kraumQuestions: QuestionSource[] = [
     ],
     answer: 0,
     explanation: {
-      de: 'Jeder k-Raum-Punkt ist eine Ortsfrequenz, die über das gesamte Bild verteilt ist. Niedrige Frequenzen (Zentrum) bestimmen Kontrast und Helligkeit, die Peripherie liefert Kanten und Auflösung. Deshalb wird in TSE das Echo mit dem gewünschten TE ins k-Raum-Zentrum gelegt.',
-      ru: 'Каждая точка k-пространства – это пространственная частота, распределённая по всему изображению. Низкие частоты (центр) определяют контраст и яркость, периферия даёт края и разрешение. Поэтому в TSE эхо с нужным TE помещают в центр k-пространства.',
+      de: 'Im Zentrum stecken Kontrast und grobe Formen. Jeder k-Raum-Punkt ist eine Welle über das ganze Bild, kein Pixel. Die niedrigen Frequenzen im Zentrum sind breite, langsame Wellen, und sie legen Helligkeit und Kontrast fest. Die hohen Frequenzen außen sind feine Wellen für Kanten und Details. Wie bei einem Bild aus der Ferne: Die groben Flächen erkennst du sofort, die Feinheiten erst aus der Nähe. Deshalb legt man bei der TSE das Echo mit dem gewünschten TE ins k-Raum-Zentrum.',
+      ru: 'В центре находятся контраст и грубые формы. Каждая точка k-пространства: это волна по всему изображению, а не пиксель. Низкие частоты в центре: широкие, медленные волны, они задают яркость и контраст. Высокие частоты на периферии: мелкие волны для краёв и деталей. Как картина издалека: крупные пятна видны сразу, а тонкости только вблизи. Поэтому в TSE эхо с нужным TE помещают в центр k-пространства.',
     },
   },
   {
@@ -143,8 +150,8 @@ export const kraumQuestions: QuestionSource[] = [
     },
     options: [
       {
-        de: 'Ein Streifenmuster (ebene Welle), das das gesamte Bild überzieht – Richtung und Frequenz durch die k-Position bestimmt.',
-        ru: 'Полосатый узор (плоская волна), покрывающий всё изображение, – направление и частота определяются позицией в k-пространстве.',
+        de: 'Ein Streifenmuster (ebene Welle), das das gesamte Bild überzieht. Richtung und Frequenz bestimmt die k-Position.',
+        ru: 'Полосатый узор (плоская волна), покрывающий всё изображение. Направление и частоту определяет позиция в k-пространстве.',
       },
       { de: 'Ein einzelner heller Pixel.', ru: 'Один яркий пиксель.' },
       { de: 'Ein heller Kreis in der Bildmitte.', ru: 'Яркий круг в центре изображения.' },
@@ -152,8 +159,8 @@ export const kraumQuestions: QuestionSource[] = [
     ],
     answer: 0,
     explanation: {
-      de: 'Die inverse Fourier-Transformation eines Delta-Peaks ist eine komplexe Exponentialwelle e^(i2π(k_x x + k_y y)). Deshalb erzeugt ein einzelner Datenfehler (Spike) ein Streifen-/Fischgrätmuster über das ganze Bild.',
-      ru: 'Обратное преобразование Фурье дельта-пика – комплексная экспоненциальная волна e^(i2π(k_x x + k_y y)). Поэтому одна ошибка в данных (спайк) создаёт полосатый узор / «ёлочку» по всему изображению.',
+      de: 'Ein einzelner k-Raum-Punkt wird zu einem Streifenmuster über das ganze Bild. Die inverse Fourier-Transformation eines einzelnen Peaks ist eine ebene Welle $e^{i2\\pi(k_x x + k_y y)}$. Ihre Richtung zeigt, in welcher Richtung der Punkt vom Zentrum liegt, und ihre Streifendichte, wie weit er entfernt ist. Wie ein einzelner Ton, der den ganzen Raum füllt und nicht nur eine Ecke. Deshalb erzeugt schon ein einzelner Datenfehler (Spike) Streifen oder ein Fischgrätmuster im ganzen Bild.',
+      ru: 'Одна точка k-пространства превращается в полосатый узор по всему изображению. Обратное преобразование Фурье одного пика: это плоская волна $e^{i2\\pi(k_x x + k_y y)}$. Её направление показывает, в какую сторону от центра лежит точка, а густота полос показывает, насколько далеко. Как один звук, который заполняет всю комнату, а не один угол. Поэтому уже одна ошибка в данных (спайк) создаёт полосы или «ёлочку» по всему изображению.',
     },
   },
   {
@@ -175,8 +182,8 @@ export const kraumQuestions: QuestionSource[] = [
     ],
     answer: 0,
     explanation: {
-      de: 'FOV = 1/Δk. Genau dieses Prinzip nutzen SENSE/GRAPPA: gezielte Unterabtastung (Faktor R) und Rekonstruktion mit Mehrkanal-Spuleninformationen.',
-      ru: 'FOV = 1/Δk. Именно этот принцип используют SENSE/GRAPPA: целенаправленная субдискретизация (фактор R) и реконструкция с использованием информации многоканальных катушек.',
+      de: 'Jede zweite Zeile wegzulassen verdoppelt Δk und halbiert das FOV, denn FOV = 1/Δk. Alles, was außerhalb des kleineren Bildfelds liegt, faltet von der Gegenseite ins Bild ein (Aliasing). Die Auflösung bleibt gleich, weil k_max gleich bleibt. Parallele Bildgebung wie SENSE oder GRAPPA nutzt genau das: Sie lässt gezielt Zeilen weg (Faktor R) und entfaltet das Bild mit den Empfindlichkeiten mehrerer Spulen.',
+      ru: 'Если пропускать каждую вторую строку, Δk удваивается, а FOV уменьшается вдвое, ведь FOV = 1/Δk. Всё, что лежит за пределами меньшего поля, заворачивается в изображение с противоположной стороны (алиасинг). Разрешение остаётся прежним, потому что k_max не меняется. Параллельная визуализация, например SENSE или GRAPPA, использует именно это: она целенаправленно пропускает строки (фактор R) и разворачивает изображение с помощью чувствительности нескольких катушек.',
     },
   },
   {
@@ -198,8 +205,8 @@ export const kraumQuestions: QuestionSource[] = [
     ],
     answer: 0,
     explanation: {
-      de: 'Die Rekonstruktion entspricht einer Faltung mit einem sinc. An scharfen Kanten (z. B. Liquor–Rückenmark) entstehen Überschwinger von ≈ 9 %, die eine Syrinx vortäuschen können. Abhilfe: größere Matrix oder Filterung (Hanning/Hamming-Fenster).',
-      ru: 'Реконструкция соответствует свёртке с функцией sinc. На резких границах (напр., ликвор – спинной мозг) возникают выбросы ≈ 9 %, которые могут имитировать сирингомиелию. Устранение: большая матрица или фильтрация (окно Ханна/Хэмминга).',
+      de: 'Es entsteht das Gibbs- oder Trunkationsartefakt. Wird der k-Raum hart abgeschnitten, fehlen die hohen Frequenzen, die eine scharfe Kante bräuchte. Mathematisch wird das Bild dann mit einer sinc-Funktion gefaltet, und die schwingt nach. An scharfen Kanten, zum Beispiel zwischen Liquor und Rückenmark, entstehen so Überschwinger von etwa 9 %. Sie können eine Syrinx vortäuschen. Abhilfe: eine größere Matrix oder ein sanftes Fenster (Hanning, Hamming) statt der harten Kante.',
+      ru: 'Возникает артефакт Гиббса, или артефакт усечения. Если k-пространство резко обрезано, не хватает высоких частот, нужных для резкого края. Математически изображение тогда сворачивается с функцией sinc, а она колеблется. На резких границах, например между ликвором и спинным мозгом, так возникают выбросы около 9 %. Они могут имитировать сирингомиелию. Что помогает: большая матрица или плавное окно (Ханна, Хэмминга) вместо резкого края.',
     },
   },
   {
@@ -218,8 +225,8 @@ export const kraumQuestions: QuestionSource[] = [
     ],
     answer: 0,
     explanation: {
-      de: 'Siehe Basiswelle eines k-Raum-Punktes. Die Ausrichtung der Streifen verrät die k-Position des Spikes.',
-      ru: 'См. базисную волну точки k-пространства. Ориентация полос указывает на позицию спайка в k-пространстве.',
+      de: 'Ein Spike wird zu Streifen im ganzen Bild. Ein k-Raum-Punkt gehört nicht zu einem Pixel, sondern zu einer Welle, die das ganze Bild überzieht. Ist dieser Punkt falsch, liegt eine falsche Welle über allem, oft als Fischgrätmuster. Richtung und Dichte der Streifen verraten dir sogar, wo im k-Raum der Spike sitzt.',
+      ru: 'Спайк превращается в полосы по всему изображению. Точка k-пространства относится не к пикселю, а к волне, которая покрывает всё изображение. Если эта точка ошибочна, поверх всего ложится неверная волна, часто в виде «ёлочки». Направление и густота полос даже подскажут, где в k-пространстве сидит спайк.',
     },
   },
   {
@@ -239,8 +246,8 @@ export const kraumQuestions: QuestionSource[] = [
     ],
     answers: [0, 1, 2, 3],
     explanation: {
-      de: 'Ohne Gradienten bewegt man sich nicht im k-Raum. Radiale und spirale Trajektorien tasten das Zentrum mehrfach ab (bewegungsrobust), erfordern aber Regridding vor der FFT. Kompressed Sensing nutzt pseudozufällige Unterabtastung – aber natürlich trotzdem mit Gradienten.',
-      ru: 'Без градиентов перемещение в k-пространстве невозможно. Радиальные и спиральные траектории многократно дискретизируют центр (устойчивость к движению), но требуют пересчёта на сетку (regridding) перед FFT. Compressed Sensing использует псевдослучайную субдискретизацию – но, конечно, тоже с помощью градиентов.',
+      de: 'Alle sind im Einsatz, nur „zufällig ohne Gradienten“ nicht. Ohne Gradienten bewegst du dich gar nicht im k-Raum, du bleibst im Zentrum stehen. Radiale und spirale Bahnen laufen mehrfach durchs Zentrum, das macht sie robust gegen Bewegung. Vor der FFT müssen ihre Punkte aber auf ein Raster umgerechnet werden (Regridding). Compressed Sensing lässt pseudozufällig Punkte weg, braucht dafür aber natürlich trotzdem Gradienten.',
+      ru: 'Используются все, кроме «случайной без градиентов». Без градиентов ты вообще не движешься в k-пространстве и остаёшься в центре. Радиальные и спиральные траектории много раз проходят через центр, поэтому они устойчивы к движению. Но перед FFT их точки нужно пересчитать на сетку (regridding). Compressed Sensing псевдослучайно пропускает точки, но, конечно, тоже с помощью градиентов.',
     },
   },
   {
@@ -253,8 +260,8 @@ export const kraumQuestions: QuestionSource[] = [
     },
     options: [
       {
-        de: 'Das 8. Echo (≈ 100 ms) – die äußeren Zeilen werden mit früheren bzw. späteren Echos gefüllt.',
-        ru: '8-е эхо (≈ 100 мс) – внешние строки заполняются более ранними или более поздними эхо.',
+        de: 'Das 8. Echo (≈ 100 ms). Die äußeren Zeilen werden mit früheren bzw. späteren Echos gefüllt.',
+        ru: '8-е эхо (≈ 100 мс). Внешние строки заполняются более ранними или более поздними эхо.',
       },
       { de: 'Das 1. Echo, da es das meiste Signal hat.', ru: '1-е эхо, так как у него наибольший сигнал.' },
       { de: 'Das 16. Echo, da es die stärkste T2-Gewichtung trägt.', ru: '16-е эхо, так как у него наиболее сильное T2-взвешивание.' },
@@ -262,8 +269,8 @@ export const kraumQuestions: QuestionSource[] = [
     ],
     answer: 0,
     explanation: {
-      de: 'Kontrast entsteht im k-Raum-Zentrum → TE_eff = Echo-Nummer · ESP = 8 · 12,5 ms. Unterschiedliche T2-Gewichtung der äußeren Zeilen wirkt wie ein k-Raum-Filter → Kantenunschärfe (Blurring) bei kurzem T2.',
-      ru: 'Контраст формируется в центре k-пространства → TE_eff = номер эхо · ESP = 8 · 12,5 мс. Разное T2-взвешивание внешних строк действует как фильтр k-пространства → размытие границ (blurring) при коротком T2.',
+      de: 'Ins Zentrum kommt das 8. Echo, denn dort entsteht der Kontrast. Das effektive TE ist Echonummer mal Echoabstand: 8 · 12,5 ms = 100 ms. Check: Das 16. Echo läge bei 200 ms, das 1. bei 12,5 ms. Beide passen nicht zum gewünschten Kontrast. Die äußeren Zeilen tragen eine andere T2-Gewichtung. Das wirkt wie ein Filter im k-Raum und macht Kanten bei kurzem T2 unscharf (Blurring).',
+      ru: 'В центр попадает 8-е эхо, потому что именно там формируется контраст. Эффективное TE равно номеру эха, умноженному на межэховый интервал: 8 · 12,5 мс = 100 мс. Проверка: 16-е эхо было бы при 200 мс, 1-е при 12,5 мс. Ни то ни другое не даёт нужного контраста. Внешние строки несут другое T2-взвешивание. Это действует как фильтр в k-пространстве и размывает края при коротком T2 (blurring).',
     },
   },
   {
@@ -276,8 +283,8 @@ export const kraumQuestions: QuestionSource[] = [
     },
     options: [
       {
-        de: 'Für reellwertige Bilder gilt Hermitesche Symmetrie: $S(-k) = S^*(k)$ – eine Hälfte lässt sich (mit Phasenkorrektur) aus der anderen berechnen.',
-        ru: 'Для вещественных изображений выполняется эрмитова симметрия: $S(-k) = S^*(k)$ – одну половину можно вычислить из другой (с фазовой коррекцией).',
+        de: 'Für reellwertige Bilder gilt Hermitesche Symmetrie: $S(-k) = S^*(k)$. Eine Hälfte lässt sich (mit Phasenkorrektur) aus der anderen berechnen.',
+        ru: 'Для вещественных изображений выполняется эрмитова симметрия: $S(-k) = S^*(k)$. Одну половину можно вычислить из другой (с фазовой коррекцией).',
       },
       { de: 'Der k-Raum ist punktsymmetrisch zu $k_{\\text{max}}$.', ru: 'k-пространство центрально-симметрично относительно $k_{\\text{max}}$.' },
       { de: 'Die Peripherie des k-Raums ist immer null.', ru: 'Периферия k-пространства всегда нулевая.' },
@@ -285,8 +292,8 @@ export const kraumQuestions: QuestionSource[] = [
     ],
     answer: 0,
     explanation: {
-      de: 'Reale Bilder sind durch B₀-Inhomogenitäten nicht exakt reell; daher misst man etwas mehr als die Hälfte (z. B. 5/8), schätzt aus dem symmetrischen Zentrum die Phase und rekonstruiert mit POCS oder Homodyne-Verfahren. HASTE nutzt dies für Single-Shot-TSE.',
-      ru: 'Реальные изображения из-за неоднородностей B₀ не являются строго вещественными; поэтому измеряют чуть больше половины (напр., 5/8), оценивают фазу по симметричному центру и реконструируют методами POCS или гомодинным. HASTE использует это для однократной (single-shot) TSE.',
+      de: 'Partial Fourier nutzt die hermitesche Symmetrie. Ist ein Bild rein reell, ist der k-Raum punktsymmetrisch zum Zentrum: Der Wert bei −k ist das komplex konjugierte Spiegelbild des Werts bei +k. Echte MR-Bilder haben wegen B₀-Inhomogenitäten aber eine kleine Phase. Deshalb misst man etwas mehr als die Hälfte, zum Beispiel 5/8, schätzt aus dem symmetrisch gemessenen Zentrum die Phase und rekonstruiert mit POCS oder Homodyne. HASTE nutzt das für eine Single-Shot-TSE.',
+      ru: 'Частичный Фурье использует эрмитову симметрию. Если изображение чисто вещественное, k-пространство центрально-симметрично: значение в −k равно комплексно сопряжённому значению в +k. Но реальные МР-изображения из-за неоднородности B₀ имеют небольшую фазу. Поэтому измеряют чуть больше половины, например 5/8, оценивают фазу по симметрично измеренному центру и реконструируют методом POCS или гомодинным методом. HASTE использует это для однократной (single-shot) TSE.',
     },
   },
 ];

@@ -29,6 +29,8 @@ export interface Scenario {
   difficulty: 1 | 2 | 3;
   anatomy: PhantomId;
   story: Loc;
+  /** Einfache Erklärung des Falls: welche Physik aus den Grundlagenmodulen dahintersteckt und warum der Trade-off schwierig ist. */
+  physicsStory?: Loc;
   task: Loc;
   start: Protocol;
   editable: ParamKey[];
@@ -122,6 +124,10 @@ export const SCENARIOS: Scenario[] = [
       de: 'Eine 29-jährige Patientin mit Sehstörungen und Kribbelparästhesien. Die Neurologie fragt nach periventrikulären Entmarkungsherden. Auf T2w liegen diese direkt neben dem ebenfalls hellen Liquor – schwer abzugrenzen.',
       ru: 'Пациентка 29 лет с нарушениями зрения и парестезиями (покалыванием). Невролог спрашивает о перивентрикулярных очагах демиелинизации. На T2w они лежат непосредственно рядом с таким же ярким ликвором – их трудно разграничить.',
     },
+    physicsStory: {
+      de: 'Bei Multipler Sklerose sitzen kleine Entzündungsherde direkt neben den Hirnkammern. Auf T2w sind Herde und Liquor beide hell, deshalb verschwimmen sie. FLAIR löscht das Liquorsignal, weil man nach dem 180°-Inversionspuls die T1-Erholung des Wassers genau bis zum Nulldurchgang abwartet und erst dann anregt (siehe Relaxation). Schwierig ist: Das passende TI hängt am T1 des Liquors, und ein langes TR für volle Erholung macht die Messung langsam.',
+      ru: 'При рассеянном склерозе маленькие очаги воспаления лежат прямо рядом с желудочками мозга. На T2w и очаги, и ликвор светлые, поэтому они сливаются. FLAIR гасит сигнал ликвора: после инвертирующего импульса 180° ждут, пока T1-восстановление воды дойдёт ровно до нуля, и только тогда возбуждают (см. релаксацию). Сложность в том, что нужное TI зависит от T1 ликвора, а длинное TR для полного восстановления делает исследование медленным.',
+    },
     task: {
       de: 'Erstelle eine FLAIR: Der Liquor muss genullt sein, die Läsionen sollen heller als die weiße Substanz erscheinen.',
       ru: 'Создай FLAIR: сигнал ликвора должен быть обнулён, а очаги должны выглядеть ярче белого вещества.',
@@ -168,6 +174,10 @@ export const SCENARIOS: Scenario[] = [
       de: 'Ein 71-jähriger Patient hält es höchstens zwei Minuten im Tunnel aus. Gefragt ist eine diagnostisch verwertbare axiale T2w des Kopfes zum Ausschluss einer Raumforderung.',
       ru: 'Пациент 71 года выдерживает в тоннеле не более двух минут. Нужно диагностически пригодное аксиальное T2w головы для исключения объёмного образования.',
     },
+    physicsStory: {
+      de: 'Hier zählt jede Sekunde, denn der Patient hält den engen Tunnel kaum aus. Die Messzeit entsteht im k-Raum: Jede Phasenkodierzeile kostet ein TR, und Mittelungen wiederholen alles noch einmal. Für den T2-Kontrast brauchst du aber ein langes TR und ein langes TE, dort kannst du also nicht sparen (siehe Relaxation). Weniger Mittelungen, längere Echozüge oder parallele Bildgebung machen schneller, kosten aber SNR oder Schärfe.',
+      ru: 'Здесь важна каждая секунда: пациент с трудом выдерживает тесный тоннель. Время складывается в k-пространстве: каждая строка фазового кодирования стоит одно TR, а усреднения повторяют всё ещё раз. Но для T2-контраста нужны длинные TR и TE, на них сэкономить нельзя (см. релаксацию). Меньше усреднений, более длинный эхо-поезд или параллельная визуализация ускоряют, но стоят SNR или чёткости.',
+    },
     task: {
       de: 'Verkürze die T2-TSE auf unter 2 min, ohne dass das SNR unter 15 fällt.',
       ru: 'Сократи T2-TSE до менее чем 2 мин так, чтобы SNR не упало ниже 15.',
@@ -210,6 +220,10 @@ export const SCENARIOS: Scenario[] = [
       de: 'Ein Fußballspieler mit Distorsionstrauma des Knies. Gesucht wird ein Knochenmarködem („bone bruise“) im Femurkondylus. Am 3-T-Gerät ist das SAR-Budget knapp – die Patientin vor ihm hatte eine erhöhte Körpertemperatur, daher wird nur der Normal Mode freigegeben.',
       ru: 'Футболист с дисторсионной травмой колена. Ищем отёк костного мозга («bone bruise») в мыщелке бедренной кости. На аппарате 3 Тл бюджет SAR ограничен – у пациентки перед ним была повышенная температура тела, поэтому разрешён только режим Normal Mode.',
     },
+    physicsStory: {
+      de: 'Ein Knochenmarködem ist Wasser im Knochenmark, das sonst voller Fett ist. STIR macht das Fett dunkel: Fett hat ein kurzes T1, und man regt genau dann an, wenn seine Längsmagnetisierung nach der Inversion durch null geht (siehe Relaxation). Das Ödem bleibt hell. Schwierig ist das 3-T-Gerät: Die SAR wächst mit B₀² und mit dem Quadrat des Flipwinkels, und die vielen 180°-Pulse heizen schnell auf. Gleichzeitig willst du feine Auflösung und ein Sichtfeld, das das ganze Knie abdeckt.',
+      ru: 'Отёк костного мозга это вода в костном мозге, который обычно полон жира. STIR делает жир тёмным: у жира короткое T1, и возбуждают ровно в тот момент, когда его продольная намагниченность после инверсии проходит через ноль (см. релаксацию). Отёк при этом остаётся светлым. Сложность в аппарате 3 Тл: SAR растёт с B₀² и с квадратом угла отклонения, а множество импульсов 180° быстро нагревают ткань. При этом нужно высокое разрешение и поле обзора, охватывающее всё колено.',
+    },
     task: {
       de: 'Erstelle eine STIR mit vollständig unterdrücktem Fettsignal im Normal Mode, Auflösung ≤ 0,6 mm.',
       ru: 'Создай STIR с полностью подавленным сигналом жира в режиме Normal Mode, разрешение ≤ 0,6 мм.',
@@ -248,6 +262,10 @@ export const SCENARIOS: Scenario[] = [
     story: {
       de: 'Im Ultraschall zeigt sich ein unklarer Leberherd. Die 58-jährige Patientin kann maximal 18 Sekunden die Luft anhalten. Atembewegung erzeugt sonst Geisterbilder in Phasenrichtung.',
       ru: 'На УЗИ выявлен неясный очаг в печени. Пациентка 58 лет может задержать дыхание не более чем на 18 секунд. Иначе дыхательные движения создают фантомные изображения в фазовом направлении.',
+    },
+    physicsStory: {
+      de: 'Die Leber bewegt sich mit jedem Atemzug. Weil die Phasenrichtung Zeile für Zeile über viele Sekunden gemessen wird, entstehen aus Atembewegung Geisterbilder (siehe k-Raum). Darum muss die ganze Messung in einen Atemanhalt passen. Ein klassisches Spin-Echo braucht pro k-Raum-Zeile ein ganzes TR und ist dafür viel zu langsam. Ein Gradientenecho mit kurzem TR schafft es, aber das Sichtfeld muss den breiten Bauch abdecken, sonst faltet Gewebe ein, und jede zusätzliche Zeile kostet wieder Zeit.',
+      ru: 'Печень двигается с каждым вдохом. Фазовое направление измеряется строка за строкой много секунд, поэтому дыхание создаёт фантомы (см. k-пространство). Значит, всё исследование должно уложиться в одну задержку дыхания. Классическое спин-эхо тратит на каждую строку k-пространства целое TR и для этого слишком медленное. Градиентное эхо с коротким TR успевает, но поле обзора должно охватить широкий живот, иначе возникнет наложение, а каждая лишняя строка снова стоит времени.',
     },
     task: {
       de: 'Wähle eine Sequenz und Parameter für eine T1-gewichtete Aufnahme in einem Atemanhalt ohne Einfaltung.',
@@ -293,6 +311,10 @@ export const SCENARIOS: Scenario[] = [
       de: 'Stroke-Alarm: 64-jähriger Patient, Symptombeginn vor 90 Minuten. Für die Lysetherapie-Entscheidung braucht es in kürzester Zeit eine diffusionsgewichtete Basis-EPI. Problem: EPI ist extrem anfällig für Verzerrungen an der Schädelbasis.',
       ru: 'Инсультная тревога: пациент 64 лет, симптомы начались 90 минут назад. Для решения о тромболизисе как можно быстрее нужна базовая EPI для диффузионно-взвешенного изображения. Проблема: EPI крайне чувствительна к искажениям у основания черепа.',
     },
+    physicsStory: {
+      de: 'Beim Schlaganfall schwellen Nervenzellen an, und das Wasser darin kann sich kaum noch bewegen. Die Diffusionsbildgebung zeigt diese eingeschränkte Bewegung als hellen Fleck, oft schon Minuten nach dem Ereignis. Damit das schnell geht, liest EPI den ganzen k-Raum nach einer einzigen Anregung aus. Dabei wird die Bandbreite in Phasenrichtung winzig: Kleine Feldstörungen an der Schädelbasis verzerren das Bild stark, und Fett rutscht um viele Pixel (siehe Ortskodierung). Kürzere Echozüge helfen, aber Zeit, Schärfe und SNR ziehen alle in andere Richtungen.',
+      ru: 'При инсульте нервные клетки набухают, и вода в них почти перестаёт двигаться. Диффузионная визуализация показывает это ограниченное движение как светлое пятно, часто уже через несколько минут после события. Чтобы это было быстро, EPI считывает всё k-пространство после одного-единственного возбуждения. При этом полоса в фазовом направлении становится крошечной: малейшие искажения поля у основания черепа сильно деформируют изображение, а жир уезжает на много пикселей (см. пространственное кодирование). Помогают более короткие эхо-поезда, но время, чёткость и SNR тянут в разные стороны.',
+    },
     task: {
       de: 'Erstelle eine EPI unter 30 s mit Verzerrung ≤ 3 px und ohne Fett-Geister.',
       ru: 'Создай EPI длительностью менее 30 с с искажением ≤ 3 пикс. и без жировых фантомов.',
@@ -336,6 +358,10 @@ export const SCENARIOS: Scenario[] = [
     story: {
       de: 'Ein Patient mit MR-bedingt sicherem Rückenmark-Stimulator benötigt eine Kopf-MRT. Laut Herstellerangaben gilt: nur 1,5 T, Ganzkörper-SAR ≤ 1,0 W/kg, Kopf-Bildgebung erlaubt. Die Radiologie wünscht eine T2w-TSE mit guter Auflösung.',
       ru: 'Пациенту с условно MR-совместимым стимулятором спинного мозга нужна МРТ головы. По данным производителя: только 1,5 Тл, SAR для всего тела ≤ 1,0 Вт/кг, визуализация головы разрешена. Радиология хочет T2w-TSE с хорошим разрешением.',
+    },
+    physicsStory: {
+      de: 'Ein Implantat mit Metallteilen und Kabeln kann sich durch die HF-Pulse erwärmen, wie eine Antenne. Deshalb gibt der Hersteller eine strenge SAR-Grenze vor. Die SAR wächst mit dem Quadrat der Feldstärke und mit dem Quadrat des Flipwinkels (siehe Kernspin, Flipwinkel), darum bringt der Wechsel von 3 T auf 1,5 T schon ein Viertel. Der Haken: Bei 1,5 T hast du nur etwa halb so viel Signal, und jede Maßnahme, die das SNR zurückholt, kostet Auflösung oder Messzeit.',
+      ru: 'Имплантат с металлическими деталями и проводами может нагреваться от РЧ-импульсов, как антенна. Поэтому производитель задаёт строгий предел SAR. SAR растёт с квадратом индукции поля и с квадратом угла отклонения (см. ядерный спин, угол отклонения), поэтому переход с 3 Тл на 1,5 Тл сразу уменьшает его в четыре раза. Загвоздка: при 1,5 Тл сигнала примерно вдвое меньше, а любая мера, возвращающая SNR, стоит разрешения или времени.',
     },
     task: {
       de: 'Optimiere die T2-TSE unter der strengen SAR-Grenze von 1,0 W/kg.',

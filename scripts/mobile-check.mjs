@@ -42,28 +42,37 @@ const ALL_VIEWPORTS = {
   1280: { width: 1280, height: 900 }, // Desktop-Kontrolle
 };
 
-const MODULES = ['kernspin', 'relaxation', 'ortskodierung', 'kraum', 'sequenzen', 'qualitaet', 'hardware'];
+const MODULES = ['kernspin', 'relaxation', 'ortskodierung', 'kraum', 'hardware', 'anwendungen', 'sequenzen', 'qualitaet'];
 const SCENARIOS = ['ms-flair', 'claustro-brain', 'knee-stir-3t', 'liver-breathhold', 'stroke-dwi', 'implant-spine'];
 const SIMULATORS = ['larmor', 'relaxation', 'gradient', 'kspace', 'sequence', 'artifact', 'scanner', 'protocol', 'signal', 'fourier', 'applications'];
-const LECTURE_IDS = [...readFileSync('src/content/lecture.ts', 'utf8').matchAll(/^  lesson\('([^']+)'/gm)].map(m=>m[1]);
 
 /** Seiten inkl. optionaler Interaktion, damit auch Zustände nach Klicks geprüft werden. */
 const PAGES = [
   { name: 'uebersicht', path: '/' },
   { name: 'vorlesung', path: '/vorlesung' },
-  ...LECTURE_IDS.map(id=>({name:`vorlesung-${id}`,path:`/vorlesung/${id}`})),
+  {
+    name: 'vorlesung-aufgeklappt', path: '/vorlesung',
+    interact: async page=>{
+      for (const summary of await page.locator('.recap-card summary, .exam-card summary').all()) await summary.click();
+    },
+  },
   { name: 'signal-spektrum', path: '/labor/signal/spectrum' },
   ...['dti','mrs','bold','contrast','cases'].map(mode=>({name:`anwendung-${mode}`,path:`/labor/applications/${mode}`})),
   {
     name: 'fourier-tabelle', path: '/labor/fourier',
-    interact: async page=>page.locator('.lecture-lab summary').click(),
+    interact: async page=>page.locator('.fourier-steps summary').click(),
   },
   {
-    name: 'vorlesung-feedback', path: '/vorlesung/dft',
+    name: 'vorlesung-alter-link', path: '/vorlesung/dft',
     interact: async page=>{
-      await page.locator('.lecture-answers button').first().click();
-      await page.getByRole('button',{name:/Antwort prüfen|Проверить ответ/}).click();
-      assert.ok(await page.locator('.callout').isVisible());
+      await page.waitForFunction(()=>location.hash==='#/modul/kraum');
+      assert.ok(await page.locator('.theory').isVisible());
+    },
+  },
+  {
+    name: 'theorie-pruefungsfrage', path: '/modul/kernspin/theorie',
+    interact: async page=>{
+      for (const summary of await page.locator('.exam-block summary').all()) await summary.click();
     },
   },
   ...MODULES.flatMap((m) => [

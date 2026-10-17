@@ -85,8 +85,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         title: `+${gained} XP`,
         detail: action.type === 'READ_THEORY'
           ? t('Theorie-Kapitel abgeschlossen', 'Теоретическая глава завершена')
-          : action.flag.startsWith('lecture-')
-            ? t('MBR-Lernmission abgeschlossen', 'Миссия MBR завершена')
+          : action.flag.startsWith('recap-') || action.flag.startsWith('exq-')
+            ? t('Prüfungsfrage gemeistert', 'Экзаменационный вопрос усвоен')
             : t('Entdeckung im Simulator', 'Открытие в симуляторе'),
         icon: '✨',
       });

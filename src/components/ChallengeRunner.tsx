@@ -96,7 +96,7 @@ export function ChallengeRunner({ questions, kind, replay: replayAtStart, onRest
           <div><dt>{tr('Zusammen', 'Итого')}</dt><dd>+{earned + finished.bonus} XP</dd></div>
         </dl>
         {replay && <p className="challenge-replay-note">{tr('Wiederholungsrunde: Die angezeigten XP sind bereits halbiert und gerundet.', 'Повторение: показанные XP уже уменьшены вдвое и округлены.')}</p>}
-        {finished.score >= MASTERY_SCORE && <p className="ok-text">{kind.type === 'module' ? tr('✓ Ziel erreicht: Modul gemeistert.', '✓ Цель достигнута: модуль освоен.') : tr('✓ Abschlussprüfung bestanden.', '✓ Итоговый экзамен сдан.')}</p>}
+        {finished.score >= MASTERY_SCORE && <p className="ok-text">{kind.type === 'module' ? tr('✓ Ziel erreicht: Modul gemeistert.', '✓ Цель достигнута: модуль освоен.') : tr('✓ Probeprüfung bestanden.', '✓ Пробный экзамен сдан.')}</p>}
         <div className="row gap summary-actions">
           <button className="btn primary" type="button" onClick={onRestart}>{tr('Neue Runde starten', 'Начать новый раунд')}</button>
           <button className="btn" type="button" onClick={onExit}>{tr('Zurück zur Übersicht', 'Назад к обзору')}</button>
