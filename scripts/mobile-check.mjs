@@ -90,8 +90,9 @@ const PAGES = [
   {
     name: 'scanner-zoom', path: '/labor/scanner',
     interact: async (page) => {
-      await page.locator('.scanner-zoom button').nth(2).click();
-      await page.locator('.scanner-zoom button').nth(2).click();
+      const enlarge = page.getByRole('button', { name: /^(Vergrößern|Увеличить)$/ });
+      await enlarge.click();
+      await enlarge.click();
     },
   },
   {
