@@ -43,16 +43,16 @@ describe('Reducer & Abzeichen', () => {
   });
   it('Challenge-Abschluss schaltet Abzeichen frei', () => {
     let s = createInitialState(0);
-    s = gameReducer(s, { type: 'COMPLETE_CHALLENGE', moduleId: 'kernspin', score: 1, bonusXp: 40 });
+    s = gameReducer(s, { type: 'COMPLETE_CHALLENGE', moduleId: 'prinzip', score: 1, bonusXp: 40 });
     expect(s.badges['erste-schritte']).toBeDefined();
     expect(s.badges['perfektionist']).toBeDefined();
-    expect(s.badges['meister-kernspin']).toBeDefined();
+    expect(s.badges['meister-prinzip']).toBeDefined();
   });
   it('Theorie-XP nur einmal', () => {
     let s = createInitialState(0);
-    s = gameReducer(s, { type: 'READ_THEORY', moduleId: 'kraum' });
+    s = gameReducer(s, { type: 'READ_THEORY', moduleId: 'fourier' });
     const xp = s.xp;
-    s = gameReducer(s, { type: 'READ_THEORY', moduleId: 'kraum' });
+    s = gameReducer(s, { type: 'READ_THEORY', moduleId: 'fourier' });
     expect(s.xp).toBe(xp);
   });
   it('Szenario speichert die besten Sterne', () => {
@@ -175,5 +175,17 @@ describe('Theorie zweisprachig (DE/RU)', () => {
         expect(UKRAINIAN_ONLY.test(JSON.stringify(ru[i])), `ukrainische Zeichen in Theorie ${m.id}/${i}`).toBe(false);
       });
     }
+  });
+});
+
+describe('Migration', () => {
+  it('überträgt Fortschritt der früheren Module auf die Kapitel des Skripts', async () => {
+    const { migrateModules } = await import('./reducer');
+    const p = (bestScore: number, attempts: number, theoryRead: boolean) => ({ bestScore, attempts, perfect: false, theoryRead, xpEarned: 10 });
+    const m = migrateModules({ kernspin: p(0.5, 1, true), relaxation: p(0.9, 2, false), hardware: p(0.3, 1, false), anwendungen: p(0.7, 1, true) });
+    expect(m.prinzip).toEqual({ bestScore: 0.9, attempts: 3, perfect: false, theoryRead: true, xpEarned: 20 });
+    expect(m.bild?.bestScore).toBe(0.3);
+    expect(m.anwendungen?.bestScore).toBe(0.7);
+    expect(m.kernspin).toBeUndefined();
   });
 });

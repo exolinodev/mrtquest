@@ -189,7 +189,7 @@ export const kernspin: Chapter = {
         },
         {
           type: 'p',
-          text: 'In der echten Welt kommt noch etwas dazu: Die Magnetisierung kehrt mit der Zeit in ihren Ruhezustand zurück. Das nennt man **Relaxation**, und Felix Bloch hat dafür zwei Zusatzterme eingeführt. Der T2-Term lässt die Querkomponenten $M_x, M_y$ verschwinden, der T1-Term bringt $M_z$ zurück zu $M_0$. Wie das genau abläuft, ist das Thema von Modul 2.',
+          text: 'In der echten Welt kommt noch etwas dazu: Die Magnetisierung kehrt mit der Zeit in ihren Ruhezustand zurück. Das nennt man **Relaxation**, und Felix Bloch hat dafür zwei Zusatzterme eingeführt. Der T2-Term lässt die Querkomponenten $M_x, M_y$ verschwinden, der T1-Term bringt $M_z$ zurück zu $M_0$. Wie das genau abläuft, erfährst du weiter unten in diesem Modul.',
         },
         {
           type: 'formula',
@@ -447,7 +447,7 @@ export const kernspin: Chapter = {
         },
         {
           type: 'p',
-          text: 'В реальном мире добавляется ещё кое-что: со временем намагниченность возвращается в состояние покоя. Это называется **релаксацией**, и Феликс Блох ввёл для неё два дополнительных члена. Член с T2 гасит поперечные компоненты $M_x, M_y$, член с T1 возвращает $M_z$ к $M_0$. Как именно это происходит, тема модуля 2.',
+          text: 'В реальном мире добавляется ещё кое-что: со временем намагниченность возвращается в состояние покоя. Это называется **релаксацией**, и Феликс Блох ввёл для неё два дополнительных члена. Член с T2 гасит поперечные компоненты $M_x, M_y$, член с T1 возвращает $M_z$ к $M_0$. Как именно это происходит, ты узнаешь ниже в этом модуле.',
         },
         {
           type: 'formula',

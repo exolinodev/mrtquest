@@ -20,14 +20,13 @@ export interface BadgeDef {
 const moduleMastered = (s: GameState, id: ModuleId) => (s.modules[id]?.bestScore ?? 0) >= 0.8;
 
 const MODULE_BADGES: Record<ModuleId, { title: Loc; icon: string }> = {
-  kernspin: { title: { de: 'Larmor-Meister:in', ru: 'Мастер Лармора' }, icon: '🧲' },
-  relaxation: { title: { de: 'Relaxations-Profi', ru: 'Профи релаксации' }, icon: '⏳' },
-  ortskodierung: { title: { de: 'Gradienten-Guru', ru: 'Гуру градиентов' }, icon: '📐' },
-  kraum: { title: { de: 'Fourier-Flüsterer:in', ru: 'Заклинатель Фурье' }, icon: '🌀' },
+  einfuehrung: { title: { de: 'Klinik-Kompass', ru: 'Клинический компас' }, icon: '🏥' },
+  prinzip: { title: { de: 'Larmor-Meister:in', ru: 'Мастер Лармора' }, icon: '🧲' },
+  bild: { title: { de: 'Bild-Baumeister:in', ru: 'Строитель изображений' }, icon: '🖼️' },
+  anwendungen: { title: { de: 'Klinik-Navigator:in', ru: 'Клинический навигатор' }, icon: '🧬' },
+  fourier: { title: { de: 'Fourier-Flüsterer:in', ru: 'Заклинатель Фурье' }, icon: '〰️' },
   sequenzen: { title: { de: 'Sequenz-Architekt:in', ru: 'Архитектор последовательностей' }, icon: '📈' },
   qualitaet: { title: { de: 'Qualitäts-Wächter:in', ru: 'Страж качества' }, icon: '🛡️' },
-  hardware: { title: { de: 'Technik-Insider:in', ru: 'Знаток оборудования' }, icon: '🏥' },
-  anwendungen: { title: { de: 'Klinik-Navigator:in', ru: 'Клинический навигатор' }, icon: '🧬' },
 };
 
 export const BADGES: BadgeDef[] = [
@@ -73,7 +72,7 @@ export const BADGES: BadgeDef[] = [
   {
     id: 'grand-slam',
     title: { de: 'Grand Slam', ru: 'Большой шлем' },
-    description: { de: 'Meistere alle acht Module mit mindestens 80 %.', ru: 'Освой все восемь модулей не менее чем на 80 %.' },
+    description: { de: 'Meistere alle Module mit mindestens 80 %.', ru: 'Освой все модули не менее чем на 80 %.' },
     icon: '🏆',
     tier: 'gold',
     xp: 150,

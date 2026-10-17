@@ -11,7 +11,7 @@ export const relaxation: Chapter = {
       blocks: [
         {
           type: 'hook',
-          text: 'In Modul 1 hast du die Magnetisierung mit einem HF-Puls gekippt. Jetzt kommt die spannende Frage: **Was passiert danach?** Die Antwort darauf ist der Grund, warum ein MRT-Bild überhaupt Kontrast hat. Fett, Wasser, graue und weiße Substanz kehren unterschiedlich schnell in ihren Ruhezustand zurück. Genau diese Unterschiede macht die MRT sichtbar.',
+          text: 'Weiter oben hast du die Magnetisierung mit einem HF-Puls gekippt. Jetzt kommt die spannende Frage: **Was passiert danach?** Die Antwort darauf ist der Grund, warum ein MRT-Bild überhaupt Kontrast hat. Fett, Wasser, graue und weiße Substanz kehren unterschiedlich schnell in ihren Ruhezustand zurück. Genau diese Unterschiede macht die MRT sichtbar.',
         },
         {
           type: 'p',
@@ -35,7 +35,7 @@ export const relaxation: Chapter = {
         },
         {
           type: 'p',
-          text: 'In den Bloch-Gleichungen aus Modul 1 stecken genau diese zwei Effekte. Löst man sie nach einem 90°-Puls (im mitrotierenden Bezugssystem), bekommt man zwei einfache Kurven:',
+          text: 'In den Bloch-Gleichungen von oben stecken genau diese zwei Effekte. Löst man sie nach einem 90°-Puls (im mitrotierenden Bezugssystem), bekommt man zwei einfache Kurven:',
         },
         {
           type: 'formula',
@@ -363,7 +363,7 @@ export const relaxation: Chapter = {
       blocks: [
         {
           type: 'hook',
-          text: 'В модуле 1 ты отклонил намагниченность РЧ-импульсом. Теперь самый интересный вопрос: **что происходит потом?** Ответ на него и есть причина, по которой на МРТ-изображении вообще есть контраст. Жир, вода, серое и белое вещество возвращаются в состояние покоя с разной скоростью. Именно эти различия МРТ делает видимыми.',
+          text: 'Выше ты отклонил намагниченность РЧ-импульсом. Теперь самый интересный вопрос: **что происходит потом?** Ответ на него и есть причина, по которой на МРТ-изображении вообще есть контраст. Жир, вода, серое и белое вещество возвращаются в состояние покоя с разной скоростью. Именно эти различия МРТ делает видимыми.',
         },
         {
           type: 'p',
@@ -387,7 +387,7 @@ export const relaxation: Chapter = {
         },
         {
           type: 'p',
-          text: 'В уравнениях Блоха из модуля 1 заложены именно эти два эффекта. Если решить их после импульса 90° (во вращающейся системе отсчёта), получаются две простые кривые:',
+          text: 'В уравнениях Блоха, которые ты видел выше, заложены именно эти два эффекта. Если решить их после импульса 90° (во вращающейся системе отсчёта), получаются две простые кривые:',
         },
         {
           type: 'formula',

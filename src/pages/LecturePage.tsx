@@ -48,7 +48,7 @@ function Overview() {
       icon: '📖',
       title: tr('Module durcharbeiten', 'Пройти модули'),
       text: tr('Lies jedes Kapitel, probier den Simulator aus und spiel die Challenge.', 'Прочитай каждую главу, попробуй симулятор и пройди задание.'),
-      to: '/modul/kernspin',
+      to: '/modul/einfuehrung',
       done: Math.round(readiness.reduce((a, b) => a + b, 0)),
       total: OBJECTIVES.length,
     },

@@ -11,7 +11,7 @@ export const sequenzen: Chapter = {
       blocks: [
         {
           type: 'hook',
-          text: 'Dieses Modul ist **Bonus-Praxiswissen**. Im Skript tauchen Sequenzen nur als Schema und über die drei Gewichtungen PD, T1 und T2 auf. Wenn du aber einmal an einem echten Gerät stehst, liest du Namen wie „TSE“, „FLAIR“ oder „EPI“ auf dem Bildschirm. Hier lernst du, was dahintersteckt. Alles baut auf **Modul 2** auf: Wer T1, T2, TR und TE verstanden hat, versteht auch die Sequenzen.',
+          text: 'Dieses Modul ist **Bonus-Praxiswissen**. Im Skript tauchen Sequenzen nur als Schema und über die drei Gewichtungen PD, T1 und T2 auf. Wenn du aber einmal an einem echten Gerät stehst, liest du Namen wie „TSE“, „FLAIR“ oder „EPI“ auf dem Bildschirm. Hier lernst du, was dahintersteckt. Alles baut auf **Relaxation und Gewichtung** auf: Wer T1, T2, TR und TE verstanden hat, versteht auch die Sequenzen.',
         },
         {
           type: 'p',
@@ -21,15 +21,15 @@ export const sequenzen: Chapter = {
           type: 'list',
           items: [
             '**HF:** die Radiowellen-Pulse, die die Magnetisierung kippen (90°, 180° oder kleinere Winkel).',
-            '**Schichtwahl-Gradient:** sorgt dafür, dass nur eine Schicht angeregt wird (Modul 3).',
+            '**Schichtwahl-Gradient:** sorgt dafür, dass nur eine Schicht angeregt wird.',
             '**Phasenkodier-Gradient:** gibt jeder Zeile im Bild eine eigene Phase. Er ändert sich von Wiederholung zu Wiederholung.',
             '**Frequenzkodier- oder Auslesegradient:** gibt jeder Spalte eine eigene Frequenz, während das Signal gemessen wird.',
-            '**Signal:** das Echo, das die Spule empfängt. Es füllt eine Zeile im k-Raum (Modul 4).',
+            '**Signal:** das Echo, das die Spule empfängt. Es füllt eine Zeile im k-Raum.',
           ],
         },
         {
           type: 'p',
-          text: 'Zwei Zeiten bestimmen den Kontrast, und beide kennst du aus Modul 2. **TE** (Echozeit) ist die Zeit von der Anregung bis zur Mitte des Echos. Während TE zerfällt das Quersignal mit T2. **TR** (Repetitionszeit) ist die Zeit bis zur nächsten Anregung. Während TR erholt sich die Längsmagnetisierung mit T1. Weil ein Bild viele k-Raum-Zeilen braucht, wird dieser Ablauf sehr oft wiederholt, einmal pro Zeile.',
+          text: 'Zwei Zeiten bestimmen den Kontrast, und beide kennst du aus „Vom Signal zum Bild“. **TE** (Echozeit) ist die Zeit von der Anregung bis zur Mitte des Echos. Während TE zerfällt das Quersignal mit T2. **TR** (Repetitionszeit) ist die Zeit bis zur nächsten Anregung. Während TR erholt sich die Längsmagnetisierung mit T1. Weil ein Bild viele k-Raum-Zeilen braucht, wird dieser Ablauf sehr oft wiederholt, einmal pro Zeile.',
         },
         {
           type: 'analogy',
@@ -81,7 +81,7 @@ export const sequenzen: Chapter = {
         },
         {
           type: 'p',
-          text: 'An dieser Formel siehst du die Gewichtungen aus Modul 2 direkt. Ist TR sehr lang, wird der erste Faktor fast 1, T1 spielt keine Rolle mehr. Ist TE sehr kurz, wird der zweite Faktor fast 1, T2 spielt keine Rolle mehr. Der Haken am klassischen Spin-Echo: Pro TR wird nur **eine** k-Raum-Zeile gemessen. Die Messzeit ist deshalb:',
+          text: 'An dieser Formel siehst du die Gewichtungen direkt. Ist TR sehr lang, wird der erste Faktor fast 1, T1 spielt keine Rolle mehr. Ist TE sehr kurz, wird der zweite Faktor fast 1, T2 spielt keine Rolle mehr. Der Haken am klassischen Spin-Echo: Pro TR wird nur **eine** k-Raum-Zeile gemessen. Die Messzeit ist deshalb:',
         },
         {
           type: 'formula',
@@ -130,7 +130,7 @@ export const sequenzen: Chapter = {
         },
         {
           type: 'p',
-          text: 'Aber welches TE hat das Bild jetzt, wenn jedes Echo eine andere Echozeit hat? Hier kommt Modul 4 ins Spiel: Die Mitte des k-Raums bestimmt den Kontrast, die Ränder bestimmen die feinen Details. Deshalb zählt das Echo, das in die k-Raum-Mitte einsortiert wird. Seine Echozeit nennt man **effektives TE**. Legt man ein spätes Echo in die Mitte, wird das Bild T2-gewichtet.',
+          text: 'Aber welches TE hat das Bild jetzt, wenn jedes Echo eine andere Echozeit hat? Hier kommt der k-Raum ins Spiel: Die Mitte des k-Raums bestimmt den Kontrast, die Ränder bestimmen die feinen Details. Deshalb zählt das Echo, das in die k-Raum-Mitte einsortiert wird. Seine Echozeit nennt man **effektives TE**. Legt man ein spätes Echo in die Mitte, wird das Bild T2-gewichtet.',
         },
         {
           type: 'list',
@@ -268,7 +268,7 @@ export const sequenzen: Chapter = {
       blocks: [
         {
           type: 'hook',
-          text: 'Этот модуль это **бонусные практические знания**. В конспекте последовательности встречаются только в виде схемы и через три взвешивания: PD, T1 и T2. Но если ты окажешься у настоящего томографа, на экране будут названия вроде «TSE», «FLAIR» или «EPI». Здесь ты узнаешь, что за ними стоит. Всё строится на **модуле 2**: кто понял T1, T2, TR и TE, тот поймёт и последовательности.',
+          text: 'Этот модуль это **бонусные практические знания**. В конспекте последовательности встречаются только в виде схемы и через три взвешивания: PD, T1 и T2. Но если ты окажешься у настоящего томографа, на экране будут названия вроде «TSE», «FLAIR» или «EPI». Здесь ты узнаешь, что за ними стоит. Всё строится на **релаксации и взвешивании**: кто понял T1, T2, TR и TE, тот поймёт и последовательности.',
         },
         {
           type: 'p',
@@ -278,15 +278,15 @@ export const sequenzen: Chapter = {
           type: 'list',
           items: [
             '**РЧ:** радиоимпульсы, которые отклоняют намагниченность (90°, 180° или меньшие углы).',
-            '**Градиент выбора среза:** обеспечивает возбуждение только одного среза (модуль 3).',
+            '**Градиент выбора среза:** обеспечивает возбуждение только одного среза.',
             '**Градиент фазового кодирования:** даёт каждой строке изображения свою фазу. Он меняется от повторения к повторению.',
             '**Градиент частотного кодирования или считывания:** даёт каждому столбцу свою частоту, пока измеряется сигнал.',
-            '**Сигнал:** эхо, которое принимает катушка. Оно заполняет одну строку k-пространства (модуль 4).',
+            '**Сигнал:** эхо, которое принимает катушка. Оно заполняет одну строку k-пространства.',
           ],
         },
         {
           type: 'p',
-          text: 'Два времени определяют контраст, и оба ты знаешь из модуля 2. **TE** (время эха) это время от возбуждения до середины эха. За TE поперечный сигнал затухает с T2. **TR** (время повторения) это время до следующего возбуждения. За TR продольная намагниченность восстанавливается с T1. Поскольку изображению нужно много строк k-пространства, этот цикл повторяется очень часто, один раз на строку.',
+          text: 'Два времени определяют контраст, и оба ты знаешь из главы «От сигнала к изображению». **TE** (время эха) это время от возбуждения до середины эха. За TE поперечный сигнал затухает с T2. **TR** (время повторения) это время до следующего возбуждения. За TR продольная намагниченность восстанавливается с T1. Поскольку изображению нужно много строк k-пространства, этот цикл повторяется очень часто, один раз на строку.',
         },
         {
           type: 'analogy',
@@ -338,7 +338,7 @@ export const sequenzen: Chapter = {
         },
         {
           type: 'p',
-          text: 'В этой формуле прямо видны взвешивания из модуля 2. Если TR очень длинное, первый множитель почти 1, и T1 уже не играет роли. Если TE очень короткое, второй множитель почти 1, и T2 не играет роли. Недостаток классического спин-эхо: за один TR измеряется только **одна** строка k-пространства. Поэтому время измерения:',
+          text: 'В этой формуле прямо видны взвешивания. Если TR очень длинное, первый множитель почти 1, и T1 уже не играет роли. Если TE очень короткое, второй множитель почти 1, и T2 не играет роли. Недостаток классического спин-эхо: за один TR измеряется только **одна** строка k-пространства. Поэтому время измерения:',
         },
         {
           type: 'formula',
@@ -387,7 +387,7 @@ export const sequenzen: Chapter = {
         },
         {
           type: 'p',
-          text: 'Но какое TE у изображения, если у каждого эха своё время? Здесь вступает модуль 4: центр k-пространства определяет контраст, края определяют мелкие детали. Поэтому важно эхо, которое помещено в центр k-пространства. Его время эха называют **эффективным TE**. Если в центр положить позднее эхо, изображение будет T2-взвешенным.',
+          text: 'Но какое TE у изображения, если у каждого эха своё время? Здесь вступает k-пространство: центр k-пространства определяет контраст, края определяют мелкие детали. Поэтому важно эхо, которое помещено в центр k-пространства. Его время эха называют **эффективным TE**. Если в центр положить позднее эхо, изображение будет T2-взвешенным.',
         },
         {
           type: 'list',

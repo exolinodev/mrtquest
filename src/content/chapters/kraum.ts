@@ -12,7 +12,7 @@ export const kraum: Chapter = {
       blocks: [
         {
           type: 'hook',
-          text: 'Am Ende von Modul 3 stand eine unbequeme Wahrheit: Die Spule misst **kein Bild**. Sie misst ein einziges Summensignal, in dem alle Orte gleichzeitig mitsingen. Um daraus ein Bild zu machen, brauchst du ein Werkzeug, das ein Gemisch wieder in seine Bestandteile zerlegt. Dieses Werkzeug heißt **Fourier-Transformation**. In diesem Modul lernst du es von Grund auf kennen und verstehst dann den **k-Raum**, also die Rohdaten jeder MRT.',
+          text: 'Im Kapitel „Vom Signal zum Bild“ bist du auf eine unbequeme Wahrheit gestoßen: Die Spule misst **kein Bild**. Sie misst ein einziges Summensignal, in dem alle Orte gleichzeitig mitsingen. Um daraus ein Bild zu machen, brauchst du ein Werkzeug, das ein Gemisch wieder in seine Bestandteile zerlegt. Dieses Werkzeug heißt **Fourier-Transformation**. In diesem Modul lernst du es von Grund auf kennen und verstehst dann den **k-Raum**, also die Rohdaten jeder MRT.',
         },
         {
           type: 'analogy',
@@ -220,7 +220,7 @@ export const kraum: Chapter = {
       blocks: [
         {
           type: 'p',
-          text: 'Jetzt verbinden wir Fourier mit der MRT. Aus Modul 3 weißt du: Ein Gradient $G_x$ macht die Larmor-Frequenz vom Ort abhängig. Nach der Demodulation bleibt nur der ortsabhängige Teil $\\omega(x) = \\gamma G_x x$ übrig. Das gemessene Signal ist die Summe aller Spins entlang x, gewichtet mit der **Spindichte** $\\rho(x)$:',
+          text: 'Jetzt verbinden wir Fourier mit der MRT. Von der Frequenzkodierung weißt du: Ein Gradient $G_x$ macht die Larmor-Frequenz vom Ort abhängig. Nach der Demodulation bleibt nur der ortsabhängige Teil $\\omega(x) = \\gamma G_x x$ übrig. Das gemessene Signal ist die Summe aller Spins entlang x, gewichtet mit der **Spindichte** $\\rho(x)$:',
         },
         { type: 'formula', tex: 's(t) = \\int \\rho(x)\\, e^{i\\gamma G_x x t}\\,dx', caption: 'konstanter Gradient: jeder Ort dreht mit seiner eigenen Frequenz' },
         {
@@ -404,7 +404,7 @@ export const kraum: Chapter = {
       blocks: [
         {
           type: 'hook',
-          text: 'В конце модуля 3 осталась неудобная правда: катушка измеряет **не изображение**. Она измеряет один суммарный сигнал, в котором одновременно звучат все точки тела. Чтобы получить из него картинку, нужен инструмент, который раскладывает смесь обратно на составляющие. Этот инструмент называется **преобразованием Фурье**. В этом модуле ты разберёшь его с нуля, а затем поймёшь **k-пространство**, то есть сырые данные любой МРТ.',
+          text: 'В главе «От сигнала к изображению» ты столкнулся с неудобной правдой: катушка измеряет **не изображение**. Она измеряет один суммарный сигнал, в котором одновременно звучат все точки тела. Чтобы получить из него картинку, нужен инструмент, который раскладывает смесь обратно на составляющие. Этот инструмент называется **преобразованием Фурье**. В этом модуле ты разберёшь его с нуля, а затем поймёшь **k-пространство**, то есть сырые данные любой МРТ.',
         },
         {
           type: 'analogy',
@@ -612,7 +612,7 @@ export const kraum: Chapter = {
       blocks: [
         {
           type: 'p',
-          text: 'Теперь соединим Фурье с МРТ. Из модуля 3 ты знаешь: градиент $G_x$ делает ларморову частоту зависящей от места. После демодуляции остаётся только пространственная часть $\\omega(x) = \\gamma G_x x$. Измеренный сигнал это сумма всех спинов вдоль x, взвешенная **спиновой плотностью** $\\rho(x)$:',
+          text: 'Теперь соединим Фурье с МРТ. Из частотного кодирования ты знаешь: градиент $G_x$ делает ларморову частоту зависящей от места. После демодуляции остаётся только пространственная часть $\\omega(x) = \\gamma G_x x$. Измеренный сигнал это сумма всех спинов вдоль x, взвешенная **спиновой плотностью** $\\rho(x)$:',
         },
         { type: 'formula', tex: 's(t) = \\int \\rho(x)\\, e^{i\\gamma G_x x t}\\,dx', caption: 'постоянный градиент: каждое место вращается со своей частотой' },
         {

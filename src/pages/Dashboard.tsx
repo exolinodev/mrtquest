@@ -106,11 +106,11 @@ export function Dashboard() {
         </div>
       </section>
 
-      <h2 className="section-title">{tr('Dein Lernpfad zur Prüfung', 'Твой путь к экзамену')}</h2>
+      <h2 className="section-title">{tr('Dein Lernpfad entlang des Skripts', 'Твой путь по конспекту')}</h2>
       <p className="muted">
         {tr(
-          'Diese sechs Module decken den kompletten Prüfungsstoff des Skripts ab. Arbeite sie der Reihe nach durch: lesen, ausprobieren, Challenge spielen.',
-          'Эти шесть модулей покрывают весь экзаменационный материал конспекта. Проходи их по порядку: читай, пробуй, проходи задание.',
+          'Die fünf Module folgen genau der Gliederung deines Vorlesungsskripts: Einführung, physikalisches Prinzip, vom Signal zum Bild, klinische Anwendungen und der Fourier-Anhang. Arbeite sie der Reihe nach durch: lesen, ausprobieren, Challenge spielen.',
+          'Пять модулей точно следуют структуре твоего лекционного конспекта: введение, физический принцип, от сигнала к изображению, клиническое применение и приложение о Фурье. Проходи их по порядку: читай, пробуй, проходи задание.',
         )}
       </p>
       <div className="module-grid">

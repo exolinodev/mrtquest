@@ -1,6 +1,6 @@
 import type { Loc } from '../i18n/format';
 
-export type ModuleId = 'kernspin' | 'relaxation' | 'ortskodierung' | 'kraum' | 'hardware' | 'anwendungen' | 'sequenzen' | 'qualitaet';
+export type ModuleId = 'einfuehrung' | 'prinzip' | 'bild' | 'anwendungen' | 'fourier' | 'sequenzen' | 'qualitaet';
 
 export type SimulatorId = 'larmor' | 'relaxation' | 'gradient' | 'kspace' | 'sequence' | 'artifact' | 'scanner' | 'protocol' | 'signal' | 'fourier' | 'applications';
 
@@ -13,63 +13,84 @@ export interface ModuleMeta {
   accent: string;
   simulator: SimulatorId;
   simulatorTitle: Loc;
+  /** Startansicht des Hauptlabors, z. B. 'cases' im Anwendungs-Labor */
+  simulatorPreset?: string;
+  /** weitere Labore zum Kapitel, im Simulator-Tab wählbar */
+  labs?: SimulatorId[];
   /** exam: Stoff des MBR-Skripts und prüfungsrelevant · bonus: Praxiswissen darüber hinaus */
   track: 'exam' | 'bonus';
   /** Modul, das zuvor mit ≥ 60 % abgeschlossen sein sollte (Empfehlung, kein harter Lock) */
   recommendedAfter?: ModuleId;
 }
 
+/** Die Prüfungsmodule folgen Gliederung und Reihenfolge des Vorlesungsskripts. */
 const MODULE_LIST: ModuleMeta[] = [
   {
-    id: 'kernspin',
+    id: 'einfuehrung',
     index: 1,
-    title: { de: 'Kernspin & Resonanz', ru: 'Ядерный спин и резонанс' },
-    subtitle: { de: 'Warum Protonen ein Signal liefern: Spin, Larmor, Bloch und HF-Puls', ru: 'Почему протоны дают сигнал: спин, Лармор, Блох и РЧ-импульс' },
+    title: { de: 'Einführung: MRT in der Klinik', ru: 'Введение: МРТ в клинике' },
+    subtitle: { de: 'Wofür man MRT braucht, was sie besonders gut kann und was dich in diesem Kapitel erwartet', ru: 'Зачем нужна МРТ, что она умеет особенно хорошо и что тебя ждёт в этой главе' },
+    icon: '🏥',
+    accent: '#22d3ee',
+    simulator: 'applications',
+    simulatorTitle: { de: 'Fallbeispiele', ru: 'Клинические примеры' },
+    simulatorPreset: 'cases',
+    track: 'exam',
+  },
+  {
+    id: 'prinzip',
+    index: 2,
+    title: { de: 'Physikalisches Prinzip', ru: 'Физический принцип' },
+    subtitle: { de: 'Kernspin, Larmor-Frequenz, Bloch-Gleichung, HF-Puls und Relaxation', ru: 'Ядерный спин, частота Лармора, уравнение Блоха, РЧ-импульс и релаксация' },
     icon: '🧲',
     accent: '#38bdf8',
     simulator: 'larmor',
     simulatorTitle: { de: 'Präzessions-Labor', ru: 'Лаборатория прецессии' },
+    labs: ['signal', 'relaxation'],
     track: 'exam',
+    recommendedAfter: 'einfuehrung',
   },
   {
-    id: 'relaxation',
-    index: 2,
-    title: { de: 'Relaxation & Kontrast', ru: 'Релаксация и контраст' },
-    subtitle: { de: 'T1, T2, T2* und wie daraus PD-, T1- und T2-Bilder werden', ru: 'T1, T2, T2* и как из них получаются PD-, T1- и T2-изображения' },
-    icon: '⏳',
-    accent: '#a78bfa',
-    simulator: 'relaxation',
-    simulatorTitle: { de: 'Relaxations-Simulator', ru: 'Симулятор релаксации' },
-    track: 'exam',
-    recommendedAfter: 'kernspin',
-  },
-  {
-    id: 'ortskodierung',
+    id: 'bild',
     index: 3,
-    title: { de: 'Ortskodierung', ru: 'Пространственное кодирование' },
-    subtitle: { de: 'Wie Gradienten jedem Ort eine eigene Frequenz und Phase geben', ru: 'Как градиенты дают каждой точке свою частоту и фазу' },
-    icon: '📐',
+    title: { de: 'Vom Signal zum Bild', ru: 'От сигнала к изображению' },
+    subtitle: { de: 'Signaldetektion, Gradienten, Gerät und Spulen, k-Raum, Rekonstruktion und Gewichtung', ru: 'Регистрация сигнала, градиенты, аппарат и катушки, k-пространство, реконструкция и взвешивание' },
+    icon: '🖼️',
     accent: '#34d399',
     simulator: 'gradient',
     simulatorTitle: { de: 'Gradienten-Werkbank', ru: 'Градиентная мастерская' },
+    labs: ['scanner', 'kspace', 'signal', 'relaxation'],
     track: 'exam',
-    recommendedAfter: 'relaxation',
+    recommendedAfter: 'prinzip',
   },
   {
-    id: 'kraum',
+    id: 'anwendungen',
     index: 4,
-    title: { de: 'Fourier & k-Raum', ru: 'Фурье и k-пространство' },
-    subtitle: { de: 'Vom gemessenen Signal zum Bild: Fourier, k-Raum und Rekonstruktion', ru: 'От измеренного сигнала к изображению: Фурье, k-пространство и реконструкция' },
-    icon: '🌀',
-    accent: '#f472b6',
-    simulator: 'kspace',
-    simulatorTitle: { de: 'K-Raum-Studio', ru: 'Студия k-пространства' },
+    title: { de: 'Klinische Anwendungen', ru: 'Клиническое применение' },
+    subtitle: { de: 'Bildbeispiele, Kontrastmittel, PET/MRT, Fluss, DTI und Spektroskopie', ru: 'Примеры снимков, контрастное вещество, ПЭТ/МРТ, поток, DTI и спектроскопия' },
+    icon: '🧬',
+    accent: '#c084fc',
+    simulator: 'applications',
+    simulatorTitle: { de: 'Anwendungs-Labor', ru: 'Лаборатория применения' },
     track: 'exam',
-    recommendedAfter: 'ortskodierung',
+    recommendedAfter: 'bild',
+  },
+  {
+    id: 'fourier',
+    index: 5,
+    title: { de: 'Fourier-Transformation kompakt', ru: 'Преобразование Фурье кратко' },
+    subtitle: { de: 'Der Anhang des Skripts: Reihe, Testfunktion, Koeffizienten, DFT, Linearität und Faltung', ru: 'Приложение конспекта: ряд, тестовая функция, коэффициенты, ДПФ, линейность и свёртка' },
+    icon: '〰️',
+    accent: '#f472b6',
+    simulator: 'fourier',
+    simulatorTitle: { de: 'Fourier-Werkstatt', ru: 'Мастерская Фурье' },
+    labs: ['kspace'],
+    track: 'exam',
+    recommendedAfter: 'anwendungen',
   },
   {
     id: 'sequenzen',
-    index: 7,
+    index: 6,
     title: { de: 'Pulssequenzen', ru: 'Импульсные последовательности' },
     subtitle: { de: 'Bonus: Spin-Echo, TSE, Inversion Recovery, GRE und EPI', ru: 'Бонус: спин-эхо, TSE, инверсия-восстановление, GRE и EPI' },
     icon: '📈',
@@ -77,43 +98,19 @@ const MODULE_LIST: ModuleMeta[] = [
     simulator: 'sequence',
     simulatorTitle: { de: 'Sequenz-Designer', ru: 'Конструктор последовательностей' },
     track: 'bonus',
-    recommendedAfter: 'anwendungen',
   },
   {
     id: 'qualitaet',
-    index: 8,
+    index: 7,
     title: { de: 'SNR, SAR & Artefakte', ru: 'SNR, SAR и артефакты' },
     subtitle: { de: 'Bonus: Bildqualität, Patientensicherheit und Fehlersuche', ru: 'Бонус: качество изображения, безопасность пациента и поиск ошибок' },
     icon: '🛡️',
     accent: '#fb7185',
     simulator: 'artifact',
     simulatorTitle: { de: 'Artefakt-Detektiv', ru: 'Детектив артефактов' },
+    labs: ['protocol'],
     track: 'bonus',
     recommendedAfter: 'sequenzen',
-  },
-  {
-    id: 'hardware',
-    index: 5,
-    title: { de: 'Gerätetechnik', ru: 'Оборудование МРТ' },
-    subtitle: { de: 'Magnet, Gradienten, HF-Sender, Spulen und die Signalkette', ru: 'Магнит, градиенты, РЧ-передатчик, катушки и сигнальная цепь' },
-    icon: '🏥',
-    accent: '#22d3ee',
-    simulator: 'scanner',
-    simulatorTitle: { de: 'Scanner-Explorer', ru: 'Исследователь сканера' },
-    track: 'exam',
-    recommendedAfter: 'kraum',
-  },
-  {
-    id: 'anwendungen',
-    index: 6,
-    title: { de: 'Anwendungen & Klinik', ru: 'Применение и клиника' },
-    subtitle: { de: 'Wofür man MRT einsetzt: Indikationen, Kontrastmittel, Fluss, DTI und Spektroskopie', ru: 'Для чего применяют МРТ: показания, контраст, поток, DTI и спектроскопия' },
-    icon: '🧬',
-    accent: '#c084fc',
-    simulator: 'applications',
-    simulatorTitle: { de: 'Anwendungs-Labor', ru: 'Лаборатория применения' },
-    track: 'exam',
-    recommendedAfter: 'hardware',
   },
 ];
 

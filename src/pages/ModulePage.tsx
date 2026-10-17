@@ -6,7 +6,6 @@ import { RichText, TeX } from '../components/RichText';
 import { Link, navigate } from '../components/router';
 import { Callout } from '../components/ui';
 import { MODULES, MODULE_BY_ID, type ModuleId } from '../content/modules';
-import { LECTURE_LESSONS } from '../content/lecture';
 import { CHALLENGE_LENGTH, drawChallenge } from '../content/questions';
 import { seededRandom } from '../physics/phantom';
 import { THEORY, type TheoryBlock } from '../content/theory';
@@ -103,7 +102,11 @@ function Block({ block }: { block: TheoryBlock }) {
       return (
         <figure className="formula">
           <TeX tex={block.tex} block />
-          {block.caption && <figcaption>{block.caption}</figcaption>}
+          {block.caption && (
+            <figcaption>
+              <RichText text={block.caption} />
+            </figcaption>
+          )}
         </figure>
       );
     case 'list': {
@@ -237,7 +240,7 @@ function ChallengeView({ moduleId }: { moduleId: ModuleId }) {
   );
 }
 
-export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }) {
+export function ModulePage({ moduleId, tab, lab }: { moduleId: string; tab?: string; lab?: string }) {
   const { tr, loc } = useLang();
   const meta = MODULE_BY_ID[moduleId as ModuleId];
   if (!meta) {
@@ -253,7 +256,7 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
   const next = MODULES[idx + 1];
   const tabs: Array<{ id: Tab; label: string }> = [
     { id: 'theorie', label: tr('📖 Theorie', '📖 Теория') },
-    { id: 'simulator', label: `🔬 ${loc(SIMULATOR_BY_ID[meta.simulator].title)}` },
+    { id: 'simulator', label: meta.labs?.length ? tr(`🔬 Labore (${meta.labs.length + 1})`, `🔬 Лаборатории (${meta.labs.length + 1})`) : `🔬 ${loc(SIMULATOR_BY_ID[meta.simulator].title)}` },
     { id: 'challenge', label: tr('🏁 Challenge', '🏁 Задание') },
   ];
 
@@ -284,8 +287,7 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
         {active === 'theorie' && <TheoryView moduleId={meta.id} />}
         {active === 'simulator' && (
           <>
-            <SimulatorHost id={meta.simulator} />
-            <PanelLinks moduleId={meta.id} />
+            <LabSwitcher meta={meta} lab={lab} />
             <div className="row gap end">
               <Link to={`/modul/${meta.id}/challenge`} className="btn primary">
                 {tr('Zur Challenge →', 'К заданию →')}
@@ -307,20 +309,23 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
   );
 }
 
-function PanelLinks({ moduleId }: { moduleId: ModuleId }) {
-  const { tr, loc } = useLang();
-  const extra = [...new Set(LECTURE_LESSONS.filter((l) => l.module === moduleId).map((l) => l.simulator))].filter((id) => id !== MODULE_BY_ID[moduleId].simulator);
-  if (!extra.length) return null;
+/** Simulator-Tab: das Hauptlabor des Kapitels plus weitere passende Labore zur Auswahl. */
+function LabSwitcher({ meta, lab }: { meta: (typeof MODULES)[number]; lab?: string }) {
+  const { loc } = useLang();
+  const options = [meta.simulator, ...(meta.labs ?? [])];
+  const active = options.find((id) => id === lab) ?? meta.simulator;
   return (
-    <section className="panel">
-      <h3>{tr('Weitere Labore zu diesem Thema', 'Другие лаборатории по этой теме')}</h3>
-      <div className="lecture-links">
-        {extra.map((id) => (
-          <Link className="btn" key={id} to={`/labor/${id}`}>
-            {SIMULATOR_BY_ID[id].icon} {loc(SIMULATOR_BY_ID[id].title)} →
-          </Link>
-        ))}
-      </div>
-    </section>
+    <>
+      {options.length > 1 && (
+        <div className="lab-switcher" role="tablist">
+          {options.map((id) => (
+            <button key={id} type="button" role="tab" aria-selected={id === active} className={`chip${id === active ? ' on' : ''}`} onClick={() => navigate(`/modul/${meta.id}/simulator/${id}`)}>
+              {SIMULATOR_BY_ID[id].icon} {loc(SIMULATOR_BY_ID[id].title)}
+            </button>
+          ))}
+        </div>
+      )}
+      <SimulatorHost key={active} id={active} preset={active === meta.simulator ? meta.simulatorPreset : undefined} />
+    </>
   );
 }

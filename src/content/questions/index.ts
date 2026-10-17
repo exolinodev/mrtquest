@@ -1,6 +1,8 @@
 import { EXAM_MODULES, type ModuleId } from '../modules';
 import { LECTURE_LESSONS } from '../lecture';
 import { anwendungenQuestions } from './anwendungen';
+import { einfuehrungQuestions } from './einfuehrung';
+import { fourierQuestions } from './fourier';
 import { hardwareQuestions } from './hardware';
 import { kernspinQuestions } from './kernspin';
 import { kraumQuestions } from './kraum';
@@ -10,15 +12,15 @@ import { relaxationQuestions } from './relaxation';
 import { sequenzenQuestions } from './sequenzen';
 import { shuffle, type QuestionRef, type QuestionSource, type Rng } from './types';
 
+/** Fragenpools je Kapitel; die Themendateien sind nach den früheren Modulen benannt. */
 export const QUESTION_BANK: Record<ModuleId, QuestionSource[]> = {
-  kernspin: kernspinQuestions,
-  relaxation: relaxationQuestions,
-  ortskodierung: ortskodierungQuestions,
-  kraum: kraumQuestions,
-  sequenzen: sequenzenQuestions,
-  qualitaet: qualitaetQuestions,
-  hardware: hardwareQuestions,
-  anwendungen: anwendungenQuestions,
+  einfuehrung: [...einfuehrungQuestions],
+  prinzip: [...kernspinQuestions, ...relaxationQuestions],
+  bild: [...ortskodierungQuestions, ...kraumQuestions, ...hardwareQuestions],
+  anwendungen: [...anwendungenQuestions],
+  fourier: [...fourierQuestions],
+  sequenzen: [...sequenzenQuestions],
+  qualitaet: [...qualitaetQuestions],
 };
 
 for (const lesson of LECTURE_LESSONS) QUESTION_BANK[lesson.module].push(lesson.question);

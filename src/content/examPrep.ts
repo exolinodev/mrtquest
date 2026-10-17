@@ -55,7 +55,7 @@ export const OBJECTIVES: Objective[] = [
       de: 'Ich kann das physikalische Prinzip der MRT erklären',
       ru: 'Я могу объяснить физический принцип МРТ',
     },
-    modules: ['kernspin', 'relaxation'],
+    modules: ['prinzip'],
   },
   {
     id: 'bild',
@@ -63,7 +63,7 @@ export const OBJECTIVES: Objective[] = [
       de: 'Ich kann erklären, wie aus dem Signal ein Bild wird',
       ru: 'Я могу объяснить, как из сигнала получается изображение',
     },
-    modules: ['ortskodierung', 'kraum', 'relaxation'],
+    modules: ['bild', 'fourier'],
   },
   {
     id: 'technik',
@@ -71,7 +71,7 @@ export const OBJECTIVES: Objective[] = [
       de: 'Ich kann die Bauteile des Geräts und ihre Funktion beschreiben',
       ru: 'Я могу описать узлы томографа и их функцию',
     },
-    modules: ['hardware'],
+    modules: ['bild'],
   },
   {
     id: 'anwendung',
@@ -79,7 +79,7 @@ export const OBJECTIVES: Objective[] = [
       de: 'Ich kann typische Anwendungen und Indikationen nennen',
       ru: 'Я могу назвать типичные применения и показания',
     },
-    modules: ['anwendungen'],
+    modules: ['einfuehrung', 'anwendungen'],
   },
 ];
 
@@ -281,7 +281,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'boltzmann-nettomagnetisierung',
     objective: 'prinzip',
-    module: 'kernspin',
+    module: 'prinzip',
     question: {
       de: 'Wie entsteht im Magnetfeld eine Nettomagnetisierung, und wovon hängt ihre Größe ab?',
       ru: 'Как в магнитном поле возникает результирующая намагниченность и от чего зависит её величина?',
@@ -298,7 +298,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'spin-energieniveaus',
     objective: 'prinzip',
-    module: 'kernspin',
+    module: 'prinzip',
     question: {
       de: 'Was bedeutet „Spin-½-System“, und welche Energieniveaus hat ein Proton im Feld $B_0$?',
       ru: 'Что значит «система со спином ½» и какие энергетические уровни есть у протона в поле $B_0$?',
@@ -315,7 +315,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'larmor-rechnung',
     objective: 'prinzip',
-    module: 'kernspin',
+    module: 'prinzip',
     question: {
       de: 'Berechne die Larmor-Frequenz von ¹H bei 1,5 T und bei 3 T. Warum muss der HF-Puls genau diese Frequenz haben?',
       ru: 'Рассчитай частоту Лармора для ¹H при 1,5 Тл и при 3 Тл. Почему ВЧ-импульс должен иметь именно эту частоту?',
@@ -332,7 +332,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'bloch-terme',
     objective: 'prinzip',
-    module: 'kernspin',
+    module: 'prinzip',
     question: {
       de: 'Schreibe die Bloch-Gleichung auf und erkläre die Bedeutung ihrer Terme.',
       ru: 'Запиши уравнение Блоха и объясни смысл его членов.',
@@ -349,7 +349,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'hf-puls-fid',
     objective: 'prinzip',
-    module: 'kernspin',
+    module: 'prinzip',
     question: {
       de: 'Was bewirken ein 90°- und ein 180°-Puls, und was ist der FID?',
       ru: 'Что делают импульсы 90° и 180° и что такое ССИ (FID)?',
@@ -366,7 +366,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 't1-t2-t2stern',
     objective: 'prinzip',
-    module: 'relaxation',
+    module: 'prinzip',
     question: {
       de: 'Vergleiche T1, T2 und T2*.',
       ru: 'Сравни T1, T2 и T2*.',
@@ -383,7 +383,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'fwhm-t2',
     objective: 'prinzip',
-    module: 'relaxation',
+    module: 'bild',
     question: {
       de: 'Wie kann man T2 aus einem Spektrum bestimmen? Rechne ein Beispiel.',
       ru: 'Как определить T2 по спектру? Приведи числовой пример.',
@@ -401,7 +401,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'gewichtung-tr-te',
     objective: 'bild',
-    module: 'relaxation',
+    module: 'bild',
     question: {
       de: 'Wie stellt man mit TR und TE ein PD-, T1- oder T2-gewichtetes Bild ein?',
       ru: 'Как с помощью TR и TE получить PD-, T1- или T2-взвешенное изображение?',
@@ -418,7 +418,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'frequenzkodierung',
     objective: 'bild',
-    module: 'ortskodierung',
+    module: 'bild',
     question: {
       de: 'Erkläre das Prinzip der Frequenzkodierung.',
       ru: 'Объясни принцип частотного кодирования.',
@@ -435,7 +435,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'drei-gradientenrollen',
     objective: 'bild',
-    module: 'ortskodierung',
+    module: 'bild',
     question: {
       de: 'Welche drei Aufgaben übernehmen die Gradienten bei der Bildgebung?',
       ru: 'Какие три задачи выполняют градиенты при получении изображения?',
@@ -452,7 +452,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'signal-als-integral',
     objective: 'bild',
-    module: 'ortskodierung',
+    module: 'bild',
     question: {
       de: 'Warum kann man das gemessene MR-Signal als Integral über die Protonendichte schreiben?',
       ru: 'Почему измеренный МР-сигнал можно записать как интеграл по плотности протонов?',
@@ -469,7 +469,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'kraum-inverse-ft',
     objective: 'bild',
-    module: 'kraum',
+    module: 'bild',
     question: {
       de: 'Was ist der k-Raum, und wie kommt man von ihm zum Bild?',
       ru: 'Что такое k-пространство и как от него перейти к изображению?',
@@ -486,7 +486,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'kraum-zentrum-rand',
     objective: 'bild',
-    module: 'kraum',
+    module: 'bild',
     question: {
       de: 'Was passiert mit dem Bild, wenn man nur das Zentrum bzw. nur den Rand des k-Raums verwendet?',
       ru: 'Что происходит с изображением, если использовать только центр или только периферию k-пространства?',
@@ -503,7 +503,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'fourier-reihe-an-bn',
     objective: 'bild',
-    module: 'kraum',
+    module: 'fourier',
     question: {
       de: 'Wie bestimmt man die Fourier-Koeffizienten $a_n$ und $b_n$ eines gemessenen Signals? Erkläre die Idee der Testfunktion.',
       ru: 'Как определить коэффициенты Фурье $a_n$ и $b_n$ измеренного сигнала? Объясни идею пробной функции.',
@@ -520,7 +520,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'fourier-linearitaet-faltung',
     objective: 'bild',
-    module: 'kraum',
+    module: 'fourier',
     question: {
       de: 'Nenne zwei Eigenschaften der Fourier-Transformation und zeige, wofür man sie in der MRT braucht.',
       ru: 'Назови два свойства преобразования Фурье и покажи, зачем они нужны в МРТ.',
@@ -537,7 +537,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'dft-signalmodifikation',
     objective: 'bild',
-    module: 'kraum',
+    module: 'fourier',
     question: {
       de: 'Lab 3: Wie ändert sich das Spektrum, wenn du Frequenz, Amplitude oder Dämpfung des Signals veränderst?',
       ru: 'Лабораторная 3: как меняется спектр, если изменить частоту, амплитуду или затухание сигнала?',
@@ -555,7 +555,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'em-welle-komplexes-signal',
     objective: 'technik',
-    module: 'hardware',
+    module: 'bild',
     question: {
       de: 'Beschreibe die elektromagnetische Welle des MR-Signals und warum man das Signal komplex schreibt.',
       ru: 'Опиши электромагнитную волну МР-сигнала и объясни, почему сигнал записывают в комплексной форме.',
@@ -572,7 +572,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'magnetbauformen',
     objective: 'technik',
-    module: 'hardware',
+    module: 'bild',
     question: {
       de: 'Welche Magnetbauformen gibt es, und welche Vor- und Nachteile haben sie?',
       ru: 'Какие бывают конструкции магнитов и каковы их преимущества и недостатки?',
@@ -589,7 +589,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'spulen-als-antennen',
     objective: 'technik',
-    module: 'hardware',
+    module: 'bild',
     question: {
       de: 'Welche Rolle spielen Körper- und Kopfspulen? Warum nennt man sie Antennen?',
       ru: 'Какую роль играют катушки для тела и для головы? Почему их называют антеннами?',
@@ -606,7 +606,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'signalkette',
     objective: 'technik',
-    module: 'hardware',
+    module: 'bild',
     question: {
       de: 'Beschreibe die Signalkette vom Spin bis zum Bild.',
       ru: 'Опиши цепочку прохождения сигнала от спина до изображения.',
@@ -623,7 +623,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'gradientenspulen-funktion',
     objective: 'technik',
-    module: 'hardware',
+    module: 'bild',
     question: {
       de: 'Wie sind die Gradientenspulen aufgebaut, und was verlangt man technisch von ihnen?',
       ru: 'Как устроены градиентные катушки и какие технические требования к ним предъявляют?',
@@ -640,7 +640,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'feldstaerke-signal',
     objective: 'technik',
-    module: 'hardware',
+    module: 'bild',
     question: {
       de: 'Was ändert sich, wenn man von 1,5 T auf 3 T wechselt?',
       ru: 'Что меняется при переходе с 1,5 Тл на 3 Тл?',
@@ -658,7 +658,7 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
   {
     id: 'indikationen-weichteil-knochen',
     objective: 'anwendung',
-    module: 'anwendungen',
+    module: 'einfuehrung',
     question: {
       de: 'Nenne typische Indikationen der MRT und erkläre, warum Knochen kaum sichtbar ist.',
       ru: 'Назови типичные показания к МРТ и объясни, почему кость почти не видна.',

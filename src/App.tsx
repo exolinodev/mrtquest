@@ -12,7 +12,7 @@ function Routes({ route }: { route: string[] }) {
     case 'vorlesung':
       return <LecturePage lessonId={route[1]} />;
     case 'modul':
-      return <ModulePage key={route[1]} moduleId={route[1] ?? ''} tab={route[2]} />;
+      return <ModulePage key={route[1]} moduleId={route[1] ?? ''} tab={route[2]} lab={route[3]} />;
     case 'klinik':
       return <ClinicPage scenarioId={route[1]} />;
     case 'labor':

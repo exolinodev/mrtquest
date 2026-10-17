@@ -209,7 +209,7 @@ export const ortskodierung: Chapter = {
         },
         {
           type: 'p',
-          text: 'Während der Messung liegt der **Auslesegradient** $G_{RO}$ an, hier $G_x$. Damit gilt $\\omega(x) = \\gamma(B_0 + G_x x)$. Den großen Anteil $\\gamma B_0$ zieht der Empfänger ab, das entspricht dem **mitrotierenden Bezugssystem** aus Modul 1. Übrig bleibt nur der ortsabhängige Teil. Im Skript steht dafür kurz $\\omega(x) = \\gamma G_x x$.',
+          text: 'Während der Messung liegt der **Auslesegradient** $G_{RO}$ an, hier $G_x$. Damit gilt $\\omega(x) = \\gamma(B_0 + G_x x)$. Den großen Anteil $\\gamma B_0$ zieht der Empfänger ab, das entspricht dem **mitrotierenden Bezugssystem** aus dem physikalischen Prinzip. Übrig bleibt nur der ortsabhängige Teil. Im Skript steht dafür kurz $\\omega(x) = \\gamma G_x x$.',
         },
         {
           type: 'formula',
@@ -340,7 +340,7 @@ export const ortskodierung: Chapter = {
         },
         {
           type: 'p',
-          text: 'Die Tabelle der Messwerte $s(k_x, k_y)$ heißt **k-Raum**. Das Bild $\\rho(x, y)$ bekommt man daraus mit der **inversen Fourier-Transformation**. Wie der k-Raum aufgebaut ist und warum seine Mitte den Kontrast und sein Rand die Kanten trägt, lernst du in Modul 4.',
+          text: 'Die Tabelle der Messwerte $s(k_x, k_y)$ heißt **k-Raum**. Das Bild $\\rho(x, y)$ bekommt man daraus mit der **inversen Fourier-Transformation**. Wie der k-Raum aufgebaut ist und warum seine Mitte den Kontrast und sein Rand die Kanten trägt, lernst du gleich beim k-Raum.',
         },
         {
           type: 'mnemonic',
@@ -560,7 +560,7 @@ export const ortskodierung: Chapter = {
         },
         {
           type: 'p',
-          text: 'Во время измерения включён **градиент считывания** $G_{RO}$, здесь $G_x$. Тогда $\\omega(x) = \\gamma(B_0 + G_x x)$. Большую часть $\\gamma B_0$ приёмник вычитает, это соответствует **вращающейся системе отсчёта** из модуля 1. Остаётся только зависящая от места часть. В конспекте кратко написано $\\omega(x) = \\gamma G_x x$.',
+          text: 'Во время измерения включён **градиент считывания** $G_{RO}$, здесь $G_x$. Тогда $\\omega(x) = \\gamma(B_0 + G_x x)$. Большую часть $\\gamma B_0$ приёмник вычитает, это соответствует **вращающейся системе отсчёта** из физического принципа. Остаётся только зависящая от места часть. В конспекте кратко написано $\\omega(x) = \\gamma G_x x$.',
         },
         {
           type: 'formula',
@@ -691,7 +691,7 @@ export const ortskodierung: Chapter = {
         },
         {
           type: 'p',
-          text: 'Таблица измеренных значений $s(k_x, k_y)$ называется **k-пространством**. Изображение $\\rho(x, y)$ получают из неё **обратным преобразованием Фурье**. Как устроено k-пространство и почему его центр несёт контраст, а край несёт края, ты узнаешь в модуле 4.',
+          text: 'Таблица измеренных значений $s(k_x, k_y)$ называется **k-пространством**. Изображение $\\rho(x, y)$ получают из неё **обратным преобразованием Фурье**. Как устроено k-пространство и почему его центр несёт контраст, а край несёт края, ты узнаешь чуть дальше, в разделе о k-пространстве.',
         },
         {
           type: 'mnemonic',

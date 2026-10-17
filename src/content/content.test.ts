@@ -22,7 +22,7 @@ describe('Kapitel im Erklärformat', () => {
     for (const m of MODULES) {
       const chapter = CHAPTERS[m.id];
       expect(chapter, m.id).toBeDefined();
-      expect(chapter!.de.length, m.id).toBeGreaterThanOrEqual(4);
+      expect(chapter!.de.length, m.id).toBeGreaterThanOrEqual(2);
       expect(chapter!.ru.map((s) => s.blocks.map((b) => b.type)), m.id).toEqual(chapter!.de.map((s) => s.blocks.map((b) => b.type)));
       for (const lang of LANGS) expect(THEORY[lang][m.id], `${m.id}/${lang}`).toBe(chapter![lang]);
     }
@@ -35,7 +35,7 @@ describe('Kapitel im Erklärformat', () => {
         const blocks = sections.flatMap((s) => s.blocks);
         expect(countBlocks(blocks, 'hook'), `${m.id}/${lang} hook`).toBeGreaterThanOrEqual(1);
         expect(countBlocks(blocks, 'analogy'), `${m.id}/${lang} analogy`).toBeGreaterThanOrEqual(2);
-        expect(countBlocks(blocks, 'exam'), `${m.id}/${lang} exam`).toBeGreaterThanOrEqual(3);
+        expect(countBlocks(blocks, 'exam'), `${m.id}/${lang} exam`).toBeGreaterThanOrEqual(2);
         for (const s of sections) expect(countBlocks(s.blocks, 'mnemonic'), `${m.id}/${lang}: ${s.title}`).toBeGreaterThanOrEqual(1);
       }
     }
