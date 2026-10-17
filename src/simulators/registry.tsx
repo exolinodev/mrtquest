@@ -10,6 +10,9 @@ import { ProtocolConsole } from './ProtocolConsole';
 import { RelaxationSimulator } from './RelaxationSimulator';
 import { ScannerExplorer } from './ScannerExplorer';
 import { SequenceSimulator } from './SequenceSimulator';
+import { SignalLab } from './SignalLab';
+import { FourierLab } from './FourierLab';
+import { ApplicationsLab } from './ApplicationsLab';
 
 export interface SimulatorMeta {
   id: SimulatorId;
@@ -20,6 +23,18 @@ export interface SimulatorMeta {
 }
 
 export const SIMULATORS: SimulatorMeta[] = [
+  {
+    id: 'signal', title: { de: 'Bloch- & Spektrum-Labor', ru: 'Лаборатория Блоха и спектров' }, icon: '📡',
+    description: { de: 'Numerische Bloch-Dynamik, HF-Puls, komplexer FID und absorptive Linienbreite.', ru: 'Численная динамика Блоха, РЧ-импульс, комплексный FID и ширина линии поглощения.' }, component: SignalLab,
+  },
+  {
+    id: 'fourier', title: { de: 'Fourier-Werkstatt · Lab 3', ru: 'Мастерская Фурье · лабораторная 3' }, icon: '〰️',
+    description: { de: 'Signale mischen, DFT-Schritte nachrechnen, Orthogonalität und Faltung erleben.', ru: 'Смешивай сигналы, проверяй шаги ДПФ, исследуй ортогональность и свёртку.' }, component: FourierLab,
+  },
+  {
+    id: 'applications', title: { de: 'Anwendungs-Labor', ru: 'Лаборатория применения' }, icon: '🧬',
+    description: { de: 'Fluss und VENC, DTI, Spektroskopie, BOLD, Kontrastmittel und klinische Fallkarten.', ru: 'Поток и VENC, DTI, спектроскопия, BOLD, контрастные средства и клинические случаи.' }, component: ApplicationsLab,
+  },
   {
     id: 'larmor',
     title: { de: 'Präzessions-Labor', ru: 'Лаборатория прецессии' },

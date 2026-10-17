@@ -131,6 +131,7 @@ export function Layout({ route, children }: { route: string[]; children: ReactNo
         </div>
         <nav aria-label={tr('Hauptnavigation', 'Главная навигация')}>
           <NavItem to="/" active={section === ''} icon="🏠" label={tr('Übersicht', 'Обзор')} />
+          <NavItem to="/vorlesung" active={section === 'vorlesung'} icon="📚" label={tr('MBR-Vorlesung', 'Лекция MBR')} sub={tr('72 Seiten · Lernmissionen', '72 страницы · миссии')} />
           <div className="nav-group">{tr('Lernmodule', 'Учебные модули')}</div>
           {MODULES.map((m) => {
             const best = state.modules[m.id]?.bestScore ?? 0;

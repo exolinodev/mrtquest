@@ -2,7 +2,7 @@ import type { Loc } from '../i18n/format';
 
 export type ModuleId = 'kernspin' | 'relaxation' | 'ortskodierung' | 'kraum' | 'sequenzen' | 'qualitaet' | 'hardware';
 
-export type SimulatorId = 'larmor' | 'relaxation' | 'gradient' | 'kspace' | 'sequence' | 'artifact' | 'scanner' | 'protocol';
+export type SimulatorId = 'larmor' | 'relaxation' | 'gradient' | 'kspace' | 'sequence' | 'artifact' | 'scanner' | 'protocol' | 'signal' | 'fourier' | 'applications';
 
 export interface ModuleMeta {
   id: ModuleId;
@@ -97,4 +97,4 @@ export const MODULES: ModuleMeta[] = [
 
 export const MODULE_BY_ID = Object.fromEntries(MODULES.map((m) => [m.id, m])) as Record<ModuleId, ModuleMeta>;
 
-export const ALL_SIMULATORS: SimulatorId[] = ['larmor', 'relaxation', 'gradient', 'kspace', 'sequence', 'artifact', 'scanner', 'protocol'];
+export const ALL_SIMULATORS: SimulatorId[] = ['larmor', 'relaxation', 'gradient', 'kspace', 'sequence', 'artifact', 'scanner', 'protocol', 'signal', 'fourier', 'applications'];

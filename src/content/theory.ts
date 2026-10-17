@@ -5,6 +5,7 @@ import type { Lang } from '../i18n/format';
 import type { ModuleId } from './modules';
 import { THEORY_RU_A } from './theory.ru-a';
 import { THEORY_RU_B } from './theory.ru-b';
+import { LECTURE_LESSONS } from './lecture';
 
 export type TheoryBlock =
   | { type: 'p'; text: string }
@@ -632,3 +633,16 @@ export const THEORY: Record<Lang, Record<ModuleId, TheorySection[]>> = {
   de: THEORY_DE,
   ru: { ...THEORY_RU_A, ...THEORY_RU_B },
 };
+
+for (const lang of ['de', 'ru'] as const) {
+  for (const lesson of LECTURE_LESSONS) {
+    THEORY[lang][lesson.module].push({
+      title: `${lesson.title[lang]} · MBR ${lesson.pages.join(', ')}`,
+      blocks: [
+        { type: 'p', text: lesson.text[lang] },
+        ...(lesson.formula ? [{ type: 'formula' as const, tex: lesson.formula }] : []),
+        { type: 'callout', variant: 'vertiefung', title: lang === 'de' ? 'Selbst ausprobieren' : 'Попробуй сам', text: lesson.experiment[lang] },
+      ],
+    });
+  }
+}
