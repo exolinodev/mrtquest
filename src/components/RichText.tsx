@@ -2,7 +2,7 @@ import katex from 'katex';
 import { Fragment, memo, useMemo } from 'react';
 
 function renderTex(tex: string, displayMode: boolean): string {
-  return katex.renderToString(tex, { displayMode, throwOnError: false, strict: 'ignore', output: 'html' });
+  return katex.renderToString(tex, { displayMode, throwOnError: false, strict: 'ignore', output: 'htmlAndMathml' });
 }
 
 export const TeX = memo(function TeX({ tex, block = false }: { tex: string; block?: boolean }) {

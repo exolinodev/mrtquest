@@ -7,6 +7,11 @@ import { QUESTION_BANK } from './index';
 import { resolveQuestion } from './types';
 
 describe('Challenge-Texte und Formeln', () => {
+  it('stellt Formeln auch für Screenreader als MathML bereit', () => {
+    const html = renderToStaticMarkup(createElement(RichText, { text: 'Larmor: $f_0 = 42{,}577 B_0$' }));
+    expect(html).toContain('katex-mathml');
+    expect(html).toContain('<math');
+  });
   it('rendert den gesamten Katalog in beiden Sprachen ohne defekte Formeln oder Steuerzeichen', () => {
     for (const bank of Object.values(QUESTION_BANK)) for (const source of bank) {
       for (const lang of ['de', 'ru'] as const) for (const seed of [1, 5, 19]) {
