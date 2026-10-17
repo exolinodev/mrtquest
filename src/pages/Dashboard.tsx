@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from '../components/router';
 import { ProgressBar, Stars } from '../components/ui';
-import { MODULES, MODULE_BY_ID } from '../content/modules';
+import { ALL_SIMULATORS, MODULES, MODULE_BY_ID } from '../content/modules';
 import { totalQuestionCount } from '../content/questions';
 import { SCENARIOS } from '../content/scenarios';
 import { BADGES, BADGE_BY_ID } from '../game/badges';
@@ -38,8 +38,8 @@ export function Dashboard() {
           </h1>
           <p className="lead">
             {tr(
-              `Vom Kernspin bis zum klinischen Protokoll: Erarbeite die Physik der Magnetresonanztomographie mit ${MODULES.length} Modulen, 8 interaktiven Simulatoren, ${questionCount} Aufgabentypen (viele davon mit zufällig generierten Werten) und ${SCENARIOS.length} klinischen Trade-off-Fällen.`,
-              `От ядерного спина до клинического протокола: освой физику магнитно-резонансной томографии с помощью ${MODULES.length} модулей, 8 интерактивных симуляторов, ${questionCount} типов заданий (многие со случайно сгенерированными значениями) и ${SCENARIOS.length} клинических случаев с компромиссами.`,
+              `Vom Kernspin bis zum klinischen Protokoll: Erarbeite die Physik der Magnetresonanztomographie mit ${MODULES.length} Modulen, ${ALL_SIMULATORS.length} interaktiven Simulatoren, ${questionCount} Aufgabentypen (viele davon mit zufällig generierten Werten) und ${SCENARIOS.length} klinischen Trade-off-Fällen.`,
+              `От ядерного спина до клинического протокола: освой физику магнитно-резонансной томографии с помощью ${MODULES.length} модулей, ${ALL_SIMULATORS.length} интерактивных симуляторов, ${questionCount} типов заданий (многие со случайно сгенерированными значениями) и ${SCENARIOS.length} клинических случаев с компромиссами.`,
             )}
           </p>
           {!state.playerName && (
@@ -79,6 +79,7 @@ export function Dashboard() {
           <p className="small muted">{tr(`${lp.needed - lp.current} XP bis Level ${lp.level + 1}`, `${lp.needed - lp.current} XP до уровня ${lp.level + 1}`)}</p>
         </div>
       </section>
+      <Link to="/vorlesung" className="lecture-card"><span className="lecture-number" aria-hidden="true">📚</span><div><p className="eyebrow">MBR · MRI · ZHAW</p><h2>{tr('Deine Vorlesung als Lernspiel', 'Твоя лекция в игровой форме')}</h2><p>{tr('72 Seiten: Lernmissionen, Bloch- und Fourier-Labor, DTI, Fluss und klinische Anwendungen.', '72 страницы: миссии, лаборатории Блоха и Фурье, DTI, поток и клиническое применение.')}</p></div><span aria-hidden="true">→</span></Link>
 
       <section className="kpi-row">
         <div className="kpi">

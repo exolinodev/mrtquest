@@ -12,7 +12,7 @@
  *   VIEWPORTS=360 LANGS=ru npm run test:mobile
  */
 import { spawn } from 'node:child_process';
-import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium } from 'playwright-core';
 import assert from 'node:assert/strict';
@@ -44,11 +44,28 @@ const ALL_VIEWPORTS = {
 
 const MODULES = ['kernspin', 'relaxation', 'ortskodierung', 'kraum', 'sequenzen', 'qualitaet', 'hardware'];
 const SCENARIOS = ['ms-flair', 'claustro-brain', 'knee-stir-3t', 'liver-breathhold', 'stroke-dwi', 'implant-spine'];
-const SIMULATORS = ['larmor', 'relaxation', 'gradient', 'kspace', 'sequence', 'artifact', 'scanner', 'protocol'];
+const SIMULATORS = ['larmor', 'relaxation', 'gradient', 'kspace', 'sequence', 'artifact', 'scanner', 'protocol', 'signal', 'fourier', 'applications'];
+const LECTURE_IDS = [...readFileSync('src/content/lecture.ts', 'utf8').matchAll(/^  lesson\('([^']+)'/gm)].map(m=>m[1]);
 
 /** Seiten inkl. optionaler Interaktion, damit auch Zustände nach Klicks geprüft werden. */
 const PAGES = [
   { name: 'uebersicht', path: '/' },
+  { name: 'vorlesung', path: '/vorlesung' },
+  ...LECTURE_IDS.map(id=>({name:`vorlesung-${id}`,path:`/vorlesung/${id}`})),
+  { name: 'signal-spektrum', path: '/labor/signal/spectrum' },
+  ...['dti','mrs','bold','contrast','cases'].map(mode=>({name:`anwendung-${mode}`,path:`/labor/applications/${mode}`})),
+  {
+    name: 'fourier-tabelle', path: '/labor/fourier',
+    interact: async page=>page.locator('.lecture-lab summary').click(),
+  },
+  {
+    name: 'vorlesung-feedback', path: '/vorlesung/dft',
+    interact: async page=>{
+      await page.locator('.lecture-answers button').first().click();
+      await page.getByRole('button',{name:/Antwort prüfen|Проверить ответ/}).click();
+      assert.ok(await page.locator('.callout').isVisible());
+    },
+  },
   ...MODULES.flatMap((m) => [
     { name: `modul-${m}-theorie`, path: `/modul/${m}/theorie` },
     { name: `modul-${m}-simulator`, path: `/modul/${m}/simulator` },

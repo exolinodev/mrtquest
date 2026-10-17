@@ -4,16 +4,19 @@ import { GameProvider } from './game/GameContext';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { Dashboard } from './pages/Dashboard';
 import { ModulePage } from './pages/ModulePage';
+import { LecturePage } from './pages/LecturePage';
 import { ClinicPage, ExamPage, LabPage, ProfilePage } from './pages/OtherPages';
 
 function Routes({ route }: { route: string[] }) {
   switch (route[0]) {
+    case 'vorlesung':
+      return <LecturePage lessonId={route[1]} />;
     case 'modul':
       return <ModulePage key={route[1]} moduleId={route[1] ?? ''} tab={route[2]} />;
     case 'klinik':
       return <ClinicPage scenarioId={route[1]} />;
     case 'labor':
-      return <LabPage simulatorId={route[1]} />;
+      return <LabPage key={route.slice(1).join('/')} simulatorId={route[1]} />;
     case 'pruefung':
       return <ExamPage />;
     case 'profil':

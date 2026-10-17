@@ -5,6 +5,7 @@ import { RichText, TeX } from '../components/RichText';
 import { Link, navigate } from '../components/router';
 import { Callout } from '../components/ui';
 import { MODULES, MODULE_BY_ID, type ModuleId } from '../content/modules';
+import { LECTURE_LESSONS } from '../content/lecture';
 import { CHALLENGE_LENGTH, drawChallenge } from '../content/questions';
 import { seededRandom } from '../physics/phantom';
 import { THEORY, type TheoryBlock } from '../content/theory';
@@ -199,6 +200,7 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
           <>
             <p className="muted">{loc(SIMULATOR_BY_ID[meta.simulator].description)}</p>
             <SimulatorHost id={meta.simulator} />
+            <PanelLinks moduleId={meta.id} />
             <div className="row gap end">
               <Link to={`/modul/${meta.id}/challenge`} className="btn primary">
                 {tr('Zur Challenge →', 'К заданию →')}
@@ -218,4 +220,11 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
       )}
     </div>
   );
+}
+
+function PanelLinks({ moduleId }: { moduleId: ModuleId }) {
+  const { tr, loc } = useLang();
+  const lessons = LECTURE_LESSONS.filter(l=>l.module===moduleId);
+  const extra = [...new Set(lessons.map(l=>l.simulator))].filter(id=>id!==MODULE_BY_ID[moduleId].simulator);
+  return <section className="panel"><h3>{tr('Mehr Experimente aus der MBR-Vorlesung', 'Другие эксперименты из лекции MBR')}</h3><div className="lecture-links">{extra.map(id=><Link className="btn" key={id} to={`/labor/${id}`}>{loc(SIMULATOR_BY_ID[id].title)} →</Link>)}<Link className="btn" to="/vorlesung">{tr('Alle Lernmissionen mit Folienbezug', 'Все миссии со ссылками на слайды')} →</Link></div></section>;
 }

@@ -1,0 +1,893 @@
+{
+  "source": {
+    "file": "03_MBR_MRI.pdf",
+    "pages": 72,
+    "author": "Stephan Scheidegger, ZHAW School of Engineering",
+    "sha256": "4f6aa99e4310dc35fe1f9579a09f15eb6056176cf149da123c687c8515b569a3"
+  },
+  "scope": "All instructional PDF pages mapped to original bilingual lesson summaries, existing or new simulations, and knowledge checks. Administrative pages are classified separately. Page assignment is not a substitute for visual browser QA.",
+  "lessons": [
+    {
+      "id": "indikation",
+      "pdfPages": [
+        6
+      ],
+      "module": "qualitaet",
+      "simulator": "applications",
+      "title": {
+        "de": "Warum MRT?",
+        "ru": "Зачем нужна МРТ?"
+      },
+      "mission": "#/vorlesung/indikation",
+      "questionId": "mbr-indikation"
+    },
+    {
+      "id": "spin",
+      "pdfPages": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "module": "kernspin",
+      "simulator": "larmor",
+      "title": {
+        "de": "Vom Proton zum Nettomagneten",
+        "ru": "От протона к суммарной намагниченности"
+      },
+      "mission": "#/vorlesung/spin",
+      "questionId": "mbr-spin"
+    },
+    {
+      "id": "larmor",
+      "pdfPages": [
+        12
+      ],
+      "module": "kernspin",
+      "simulator": "larmor",
+      "title": {
+        "de": "Frequenz ist nicht Kreisfrequenz",
+        "ru": "Частота и угловая частота"
+      },
+      "mission": "#/vorlesung/larmor",
+      "questionId": "mbr-larmor"
+    },
+    {
+      "id": "bloch",
+      "pdfPages": [
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "module": "relaxation",
+      "simulator": "signal",
+      "title": {
+        "de": "Bloch-Dynamik in drei Komponenten",
+        "ru": "Динамика Блоха в трёх компонентах"
+      },
+      "mission": "#/vorlesung/bloch",
+      "questionId": "mbr-bloch"
+    },
+    {
+      "id": "pulse",
+      "pdfPages": [
+        20
+      ],
+      "module": "kernspin",
+      "simulator": "signal",
+      "title": {
+        "de": "90°, 180° und FID",
+        "ru": "90°, 180° и FID"
+      },
+      "mission": "#/vorlesung/pulse",
+      "questionId": "mbr-pulse"
+    },
+    {
+      "id": "relaxation",
+      "pdfPages": [
+        21,
+        22,
+        23,
+        46
+      ],
+      "module": "relaxation",
+      "simulator": "relaxation",
+      "title": {
+        "de": "T₁, T₂ und T₂* auseinanderhalten",
+        "ru": "Различать T₁, T₂ и T₂*"
+      },
+      "mission": "#/vorlesung/relaxation",
+      "questionId": "mbr-relaxation"
+    },
+    {
+      "id": "receiver",
+      "pdfPages": [
+        24,
+        25
+      ],
+      "module": "hardware",
+      "simulator": "signal",
+      "title": {
+        "de": "Von der Empfangsspule zum komplexen Signal",
+        "ru": "От приёмной катушки к комплексному сигналу"
+      },
+      "mission": "#/vorlesung/receiver",
+      "questionId": "mbr-receiver"
+    },
+    {
+      "id": "hardware",
+      "pdfPages": [
+        27,
+        28,
+        29
+      ],
+      "module": "hardware",
+      "simulator": "scanner",
+      "title": {
+        "de": "Die vollständige Signalkette",
+        "ru": "Полная сигнальная цепь"
+      },
+      "mission": "#/vorlesung/hardware",
+      "questionId": "mbr-hardware"
+    },
+    {
+      "id": "gradients",
+      "pdfPages": [
+        26,
+        30,
+        31
+      ],
+      "module": "ortskodierung",
+      "simulator": "gradient",
+      "title": {
+        "de": "Ein Ort bekommt Frequenz und Phase",
+        "ru": "Место получает частоту и фазу"
+      },
+      "mission": "#/vorlesung/gradients",
+      "questionId": "mbr-gradients"
+    },
+    {
+      "id": "sum",
+      "pdfPages": [
+        32,
+        33,
+        34
+      ],
+      "module": "ortskodierung",
+      "simulator": "fourier",
+      "title": {
+        "de": "Die Spule hört die Summe aller Spins",
+        "ru": "Катушка слышит сумму всех спинов"
+      },
+      "mission": "#/vorlesung/sum",
+      "questionId": "mbr-sum"
+    },
+    {
+      "id": "kspace",
+      "pdfPages": [
+        35,
+        36,
+        38
+      ],
+      "module": "kraum",
+      "simulator": "kspace",
+      "title": {
+        "de": "Vom Gradientenintegral zum Bild",
+        "ru": "От интеграла градиента к изображению"
+      },
+      "mission": "#/vorlesung/kspace",
+      "questionId": "mbr-kspace"
+    },
+    {
+      "id": "harmonics",
+      "pdfPages": [
+        37,
+        39,
+        40,
+        63,
+        64
+      ],
+      "module": "kraum",
+      "simulator": "fourier",
+      "title": {
+        "de": "Bilder und Signale aus Basiswellen",
+        "ru": "Сигналы и изображения из базисных волн"
+      },
+      "mission": "#/vorlesung/harmonics",
+      "questionId": "mbr-harmonics"
+    },
+    {
+      "id": "filters",
+      "pdfPages": [
+        41,
+        42,
+        43,
+        44
+      ],
+      "module": "kraum",
+      "simulator": "kspace",
+      "title": {
+        "de": "Zentrum, Ränder und fehlende Linien",
+        "ru": "Центр, края и отсутствующие линии"
+      },
+      "mission": "#/vorlesung/filters",
+      "questionId": "mbr-filters"
+    },
+    {
+      "id": "phase",
+      "pdfPages": [
+        45
+      ],
+      "module": "kraum",
+      "simulator": "fourier",
+      "title": {
+        "de": "Amplitude und Phase sind ein Team",
+        "ru": "Амплитуда и фаза работают вместе"
+      },
+      "mission": "#/vorlesung/phase",
+      "questionId": "mbr-phase"
+    },
+    {
+      "id": "linewidth",
+      "pdfPages": [
+        47,
+        48
+      ],
+      "module": "relaxation",
+      "simulator": "signal",
+      "title": {
+        "de": "Relaxationszeit aus der Linienbreite",
+        "ru": "Время релаксации из ширины линии"
+      },
+      "mission": "#/vorlesung/linewidth",
+      "questionId": "mbr-linewidth"
+    },
+    {
+      "id": "weighting",
+      "pdfPages": [
+        49
+      ],
+      "module": "sequenzen",
+      "simulator": "sequence",
+      "title": {
+        "de": "PD, T₁ oder T₂ gewichten",
+        "ru": "Взвешивание по PD, T₁ или T₂"
+      },
+      "mission": "#/vorlesung/weighting",
+      "questionId": "mbr-weighting"
+    },
+    {
+      "id": "brain",
+      "pdfPages": [
+        50
+      ],
+      "module": "qualitaet",
+      "simulator": "applications",
+      "title": {
+        "de": "Gehirn: anatomische Orientierung",
+        "ru": "Мозг: анатомическая ориентация"
+      },
+      "mission": "#/vorlesung/brain",
+      "questionId": "mbr-brain"
+    },
+    {
+      "id": "hybrid",
+      "pdfPages": [
+        51
+      ],
+      "module": "qualitaet",
+      "simulator": "applications",
+      "title": {
+        "de": "PET/CT und PET/MRT verbinden Informationen",
+        "ru": "ПЭТ/КТ и ПЭТ/МРТ объединяют информацию"
+      },
+      "mission": "#/vorlesung/hybrid",
+      "questionId": "mbr-hybrid"
+    },
+    {
+      "id": "gadolinium",
+      "pdfPages": [
+        52
+      ],
+      "module": "sequenzen",
+      "simulator": "applications",
+      "title": {
+        "de": "Gadolinium und KI richtig einordnen",
+        "ru": "Правильно понимать гадолиний и ИИ"
+      },
+      "mission": "#/vorlesung/gadolinium",
+      "questionId": "mbr-gadolinium"
+    },
+    {
+      "id": "knee",
+      "pdfPages": [
+        53
+      ],
+      "module": "qualitaet",
+      "simulator": "applications",
+      "title": {
+        "de": "Knie: PD und Untersuchungsebene",
+        "ru": "Колено: PD и плоскость исследования"
+      },
+      "mission": "#/vorlesung/knee",
+      "questionId": "mbr-knee"
+    },
+    {
+      "id": "pelvis",
+      "pdfPages": [
+        54
+      ],
+      "module": "qualitaet",
+      "simulator": "applications",
+      "title": {
+        "de": "Becken: Lage und Weichteilkontrast",
+        "ru": "Таз: положение и мягкотканный контраст"
+      },
+      "mission": "#/vorlesung/pelvis",
+      "questionId": "mbr-pelvis"
+    },
+    {
+      "id": "pregnancy",
+      "pdfPages": [
+        55,
+        56
+      ],
+      "module": "qualitaet",
+      "simulator": "applications",
+      "title": {
+        "de": "Fetus und Plazenta: Struktur und Funktion",
+        "ru": "Плод и плацента: структура и функция"
+      },
+      "mission": "#/vorlesung/pregnancy",
+      "questionId": "mbr-pregnancy"
+    },
+    {
+      "id": "flow",
+      "pdfPages": [
+        57
+      ],
+      "module": "ortskodierung",
+      "simulator": "applications",
+      "title": {
+        "de": "Geschwindigkeit aus Phase",
+        "ru": "Скорость из фазы"
+      },
+      "mission": "#/vorlesung/flow",
+      "questionId": "mbr-flow"
+    },
+    {
+      "id": "mrs",
+      "pdfPages": [
+        57
+      ],
+      "module": "sequenzen",
+      "simulator": "applications",
+      "title": {
+        "de": "Spektroskopie: Chemie statt Bildhelligkeit",
+        "ru": "Спектроскопия: химия вместо яркости"
+      },
+      "mission": "#/vorlesung/mrs",
+      "questionId": "mbr-mrs"
+    },
+    {
+      "id": "dti",
+      "pdfPages": [
+        58,
+        59
+      ],
+      "module": "qualitaet",
+      "simulator": "applications",
+      "title": {
+        "de": "DTI und Traktografie",
+        "ru": "DTI и трактография"
+      },
+      "mission": "#/vorlesung/dti",
+      "questionId": "mbr-dti"
+    },
+    {
+      "id": "bold",
+      "pdfPages": [
+        6
+      ],
+      "module": "qualitaet",
+      "simulator": "applications",
+      "title": {
+        "de": "fMRT: indirekte Aktivität",
+        "ru": "фМРТ: косвенная активность"
+      },
+      "mission": "#/vorlesung/bold",
+      "questionId": "mbr-bold"
+    },
+    {
+      "id": "dft",
+      "pdfPages": [
+        62,
+        65,
+        66,
+        67,
+        68,
+        69
+      ],
+      "module": "kraum",
+      "simulator": "fourier",
+      "title": {
+        "de": "Lab 3: DFT mit jedem Rechenschritt",
+        "ru": "Лабораторная 3: ДПФ по шагам"
+      },
+      "mission": "#/vorlesung/dft",
+      "questionId": "mbr-dft"
+    },
+    {
+      "id": "fourier2d",
+      "pdfPages": [
+        70
+      ],
+      "module": "kraum",
+      "simulator": "kspace",
+      "title": {
+        "de": "2D-Transformation und Konventionen",
+        "ru": "2D-преобразование и соглашения"
+      },
+      "mission": "#/vorlesung/fourier2d",
+      "questionId": "mbr-fourier2d"
+    },
+    {
+      "id": "convolution",
+      "pdfPages": [
+        71,
+        72
+      ],
+      "module": "kraum",
+      "simulator": "fourier",
+      "title": {
+        "de": "Linearität und Faltung",
+        "ru": "Линейность и свёртка"
+      },
+      "mission": "#/vorlesung/convolution",
+      "questionId": "mbr-convolution"
+    },
+    {
+      "id": "recap",
+      "pdfPages": [
+        60
+      ],
+      "module": "hardware",
+      "simulator": "scanner",
+      "title": {
+        "de": "Die fünf Leitfragen der Vorlesung",
+        "ru": "Пять главных вопросов лекции"
+      },
+      "mission": "#/vorlesung/recap",
+      "questionId": "mbr-recap"
+    }
+  ],
+  "pages": {
+    "1": {
+      "context": true,
+      "lessons": []
+    },
+    "2": {
+      "context": true,
+      "lessons": []
+    },
+    "3": {
+      "context": true,
+      "lessons": []
+    },
+    "4": {
+      "context": true,
+      "lessons": []
+    },
+    "5": {
+      "context": true,
+      "lessons": []
+    },
+    "6": {
+      "context": false,
+      "lessons": [
+        "indikation",
+        "bold"
+      ]
+    },
+    "7": {
+      "context": false,
+      "lessons": [
+        "spin"
+      ]
+    },
+    "8": {
+      "context": false,
+      "lessons": [
+        "spin"
+      ]
+    },
+    "9": {
+      "context": false,
+      "lessons": [
+        "spin"
+      ]
+    },
+    "10": {
+      "context": false,
+      "lessons": [
+        "spin"
+      ]
+    },
+    "11": {
+      "context": false,
+      "lessons": [
+        "spin"
+      ]
+    },
+    "12": {
+      "context": false,
+      "lessons": [
+        "larmor"
+      ]
+    },
+    "13": {
+      "context": false,
+      "lessons": [
+        "bloch"
+      ]
+    },
+    "14": {
+      "context": false,
+      "lessons": [
+        "bloch"
+      ]
+    },
+    "15": {
+      "context": false,
+      "lessons": [
+        "bloch"
+      ]
+    },
+    "16": {
+      "context": false,
+      "lessons": [
+        "bloch"
+      ]
+    },
+    "17": {
+      "context": false,
+      "lessons": [
+        "bloch"
+      ]
+    },
+    "18": {
+      "context": false,
+      "lessons": [
+        "bloch"
+      ]
+    },
+    "19": {
+      "context": false,
+      "lessons": [
+        "bloch"
+      ]
+    },
+    "20": {
+      "context": false,
+      "lessons": [
+        "pulse"
+      ]
+    },
+    "21": {
+      "context": false,
+      "lessons": [
+        "relaxation"
+      ]
+    },
+    "22": {
+      "context": false,
+      "lessons": [
+        "relaxation"
+      ]
+    },
+    "23": {
+      "context": false,
+      "lessons": [
+        "relaxation"
+      ]
+    },
+    "24": {
+      "context": false,
+      "lessons": [
+        "receiver"
+      ]
+    },
+    "25": {
+      "context": false,
+      "lessons": [
+        "receiver"
+      ]
+    },
+    "26": {
+      "context": false,
+      "lessons": [
+        "gradients"
+      ]
+    },
+    "27": {
+      "context": false,
+      "lessons": [
+        "hardware"
+      ]
+    },
+    "28": {
+      "context": false,
+      "lessons": [
+        "hardware"
+      ]
+    },
+    "29": {
+      "context": false,
+      "lessons": [
+        "hardware"
+      ]
+    },
+    "30": {
+      "context": false,
+      "lessons": [
+        "gradients"
+      ]
+    },
+    "31": {
+      "context": false,
+      "lessons": [
+        "gradients"
+      ]
+    },
+    "32": {
+      "context": false,
+      "lessons": [
+        "sum"
+      ]
+    },
+    "33": {
+      "context": false,
+      "lessons": [
+        "sum"
+      ]
+    },
+    "34": {
+      "context": false,
+      "lessons": [
+        "sum"
+      ]
+    },
+    "35": {
+      "context": false,
+      "lessons": [
+        "kspace"
+      ]
+    },
+    "36": {
+      "context": false,
+      "lessons": [
+        "kspace"
+      ]
+    },
+    "37": {
+      "context": false,
+      "lessons": [
+        "harmonics"
+      ]
+    },
+    "38": {
+      "context": false,
+      "lessons": [
+        "kspace"
+      ]
+    },
+    "39": {
+      "context": false,
+      "lessons": [
+        "harmonics"
+      ]
+    },
+    "40": {
+      "context": false,
+      "lessons": [
+        "harmonics"
+      ]
+    },
+    "41": {
+      "context": false,
+      "lessons": [
+        "filters"
+      ]
+    },
+    "42": {
+      "context": false,
+      "lessons": [
+        "filters"
+      ]
+    },
+    "43": {
+      "context": false,
+      "lessons": [
+        "filters"
+      ]
+    },
+    "44": {
+      "context": false,
+      "lessons": [
+        "filters"
+      ]
+    },
+    "45": {
+      "context": false,
+      "lessons": [
+        "phase"
+      ]
+    },
+    "46": {
+      "context": false,
+      "lessons": [
+        "relaxation"
+      ]
+    },
+    "47": {
+      "context": false,
+      "lessons": [
+        "linewidth"
+      ]
+    },
+    "48": {
+      "context": false,
+      "lessons": [
+        "linewidth"
+      ]
+    },
+    "49": {
+      "context": false,
+      "lessons": [
+        "weighting"
+      ]
+    },
+    "50": {
+      "context": false,
+      "lessons": [
+        "brain"
+      ]
+    },
+    "51": {
+      "context": false,
+      "lessons": [
+        "hybrid"
+      ]
+    },
+    "52": {
+      "context": false,
+      "lessons": [
+        "gadolinium"
+      ]
+    },
+    "53": {
+      "context": false,
+      "lessons": [
+        "knee"
+      ]
+    },
+    "54": {
+      "context": false,
+      "lessons": [
+        "pelvis"
+      ]
+    },
+    "55": {
+      "context": false,
+      "lessons": [
+        "pregnancy"
+      ]
+    },
+    "56": {
+      "context": false,
+      "lessons": [
+        "pregnancy"
+      ]
+    },
+    "57": {
+      "context": false,
+      "lessons": [
+        "flow",
+        "mrs"
+      ]
+    },
+    "58": {
+      "context": false,
+      "lessons": [
+        "dti"
+      ]
+    },
+    "59": {
+      "context": false,
+      "lessons": [
+        "dti"
+      ]
+    },
+    "60": {
+      "context": false,
+      "lessons": [
+        "recap"
+      ]
+    },
+    "61": {
+      "context": true,
+      "lessons": []
+    },
+    "62": {
+      "context": false,
+      "lessons": [
+        "dft"
+      ]
+    },
+    "63": {
+      "context": false,
+      "lessons": [
+        "harmonics"
+      ]
+    },
+    "64": {
+      "context": false,
+      "lessons": [
+        "harmonics"
+      ]
+    },
+    "65": {
+      "context": false,
+      "lessons": [
+        "dft"
+      ]
+    },
+    "66": {
+      "context": false,
+      "lessons": [
+        "dft"
+      ]
+    },
+    "67": {
+      "context": false,
+      "lessons": [
+        "dft"
+      ]
+    },
+    "68": {
+      "context": false,
+      "lessons": [
+        "dft"
+      ]
+    },
+    "69": {
+      "context": false,
+      "lessons": [
+        "dft"
+      ]
+    },
+    "70": {
+      "context": false,
+      "lessons": [
+        "fourier2d"
+      ]
+    },
+    "71": {
+      "context": false,
+      "lessons": [
+        "convolution"
+      ]
+    },
+    "72": {
+      "context": false,
+      "lessons": [
+        "convolution"
+      ]
+    }
+  }
+}

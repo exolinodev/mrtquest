@@ -1,4 +1,5 @@
 import type { ModuleId } from '../modules';
+import { LECTURE_LESSONS } from '../lecture';
 import { hardwareQuestions } from './hardware';
 import { kernspinQuestions } from './kernspin';
 import { kraumQuestions } from './kraum';
@@ -17,6 +18,8 @@ export const QUESTION_BANK: Record<ModuleId, QuestionSource[]> = {
   qualitaet: qualitaetQuestions,
   hardware: hardwareQuestions,
 };
+
+for (const lesson of LECTURE_LESSONS) QUESTION_BANK[lesson.module].push(lesson.question);
 
 export const CHALLENGE_LENGTH = 8;
 export const EXAM_LENGTH = 21;

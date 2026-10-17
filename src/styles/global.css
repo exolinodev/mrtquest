@@ -2673,3 +2673,52 @@ path.sx-focus-shape { fill: none; stroke-width: 10; }
     transition-duration: 0.001ms !important;
   }
 }
+
+/* MBR lecture path and interactive source-backed laboratories. */
+.lecture-lab { display: grid; gap: 1.25rem; min-width: 0; }
+.lecture-lab > *, .lecture-page, .lecture-card > div { min-width: 0; }
+.lecture-lab .stats-grid, .lecture-hero .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; }
+.lecture-page li > a { display: inline-flex; align-items: center; min-height: 44px; }
+.lecture-lab .segmented { flex-wrap: wrap; }
+.lecture-stage { background: radial-gradient(ellipse at 70% 20%, #38bdf816, transparent 65%), linear-gradient(145deg, #111e35, #0a1223); border-color: #38bdf84d; }
+.lecture-stage > svg { display: block; max-width: 720px; max-height: 410px; width: 100%; margin: auto; }
+.lecture-links, .lecture-answers { display: flex; flex-wrap: wrap; gap: .75rem; margin: 1rem 0; }
+.lecture-answers { flex-direction: column; }
+.lecture-answers .btn { text-align: left; justify-content: flex-start; white-space: normal; line-height: 1.6; padding: 1rem; }
+.lecture-hero { padding: clamp(1.25rem, 4vw, 3rem); border: 1px solid #38bdf855; border-radius: 24px; background: radial-gradient(ellipse at 90% 0, #38bdf824, transparent 60%), linear-gradient(135deg, #131d37, #0c1427); margin: 1rem 0 2rem; }
+.lecture-hero h1 { font-size: clamp(2rem, 5vw, 3.7rem); line-height: 1.12; max-width: 740px; }
+.lecture-hero .stats-grid { margin: 1.75rem 0; }
+.lecture-hero .stats-grid > div { display: grid; gap: .3rem; }
+.lecture-hero .stats-grid strong { font-size: 2rem; color: #38bdf8; }
+.lecture-hero .stats-grid span { color: var(--muted); font-size: .85rem; }
+.lecture-hero .btn { margin-top: 1.3rem; }
+.lecture-path { display: grid; gap: .85rem; margin-bottom: 2rem; }
+.lecture-card { display: grid; grid-template-columns: 3rem minmax(0,1fr) 1rem; align-items: center; gap: 1.1rem; padding: 1.3rem; border: 1px solid #263852; border-radius: 18px; background: #111c30; color: inherit; text-decoration: none; transition: border-color .2s, transform .2s; }
+.lecture-card:hover { border-color: #38bdf8; transform: translateY(-2px); }
+.lecture-card h2 { font-size: 1.2rem; margin: .25rem 0 .5rem; }
+.lecture-card p { margin: .4rem 0; }
+.lecture-card .eyebrow { font-size: .68rem; }
+.lecture-number { display: grid; place-content: center; border: 1px solid #38bdf855; border-radius: 50%; width: 3rem; height: 3rem; color: #38bdf8; font-weight: 800; }
+.lecture-card.completed .lecture-number { background: #34d39922; color: #34d399; border-color: #34d399; }
+.lecture-heading .lead { line-height: 1.85; }
+.lecture-page > .panel { margin-block: 1.5rem; }
+.lecture-mission { border-left: 3px solid #a78bfa; }
+.dft-spectrum { display: flex; align-items: end; height: 200px; gap: 3px; border-bottom: 1px solid #567; margin: 2rem .5rem 2rem; padding-top: 15px; }
+.dft-bin { flex: 1; height: 100%; position: relative; display: flex; align-items: end; min-width: 0; }
+.dft-bin span { position: absolute; bottom: -25px; font-size: 11px; color: #a6bad7; }
+.dft-bar { width: 100%; min-height: 1px; background: linear-gradient(#38bdf8, #7061d2); border-radius: 3px 3px 0 0; }
+.dft-bin.selected .dft-bar { background: #34d399; box-shadow: 0 0 14px #34d39966; }
+.lecture-lab summary { cursor: pointer; min-height: 44px; padding: .8rem 0; color: #38bdf8; }
+.lecture-lab caption { text-align: left; padding: .75rem; }
+@media(max-width: 540px) {
+  .lecture-card { grid-template-columns: 2.2rem minmax(0,1fr); padding: 1rem .75rem; gap: .7rem; }
+  .lecture-number { width: 2.2rem; height: 2.2rem; font-size: .8rem; }
+  .lecture-card > span:last-child { display: none; }
+  .lecture-card h2 { font-size: 1.05rem; }
+  .lecture-card p { font-size: .85rem; }
+  .lecture-links { flex-direction: column; }
+  .lecture-links .btn { white-space: normal; }
+  .lecture-hero .stats-grid { grid-template-columns: 1fr; }
+  .dft-spectrum { gap: 2px; height: 150px; }
+}
+@media(prefers-reduced-motion: reduce) { .lecture-card { transition: none; } }

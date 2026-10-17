@@ -83,7 +83,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
       notify({
         kind: 'xp',
         title: `+${gained} XP`,
-        detail: action.type === 'READ_THEORY' ? t('Theorie-Kapitel abgeschlossen', 'Теоретическая глава завершена') : t('Entdeckung im Simulator', 'Открытие в симуляторе'),
+        detail: action.type === 'READ_THEORY'
+          ? t('Theorie-Kapitel abgeschlossen', 'Теоретическая глава завершена')
+          : action.flag.startsWith('lecture-')
+            ? t('MBR-Lernmission abgeschlossen', 'Миссия MBR завершена')
+            : t('Entdeckung im Simulator', 'Открытие в симуляторе'),
         icon: '✨',
       });
     }
