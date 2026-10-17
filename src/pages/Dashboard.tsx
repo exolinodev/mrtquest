@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from '../components/router';
 import { ProgressBar, Stars } from '../components/ui';
+import { LECTURE_LESSONS } from '../content/lecture';
 import { ALL_SIMULATORS, MODULES, MODULE_BY_ID } from '../content/modules';
 import { totalQuestionCount } from '../content/questions';
 import { SCENARIOS } from '../content/scenarios';
@@ -14,6 +15,7 @@ export function Dashboard() {
   const { state, dispatch } = useGame();
   const { lang, tr, loc } = useLang();
   const lp = levelProgress(state.xp, lang);
+  const lectureDone = LECTURE_LESSONS.filter((l) => state.flags[`lecture-${l.id}`]).length;
   const [name, setName] = useState(state.playerName);
   const mastered = MODULES.filter((m) => (state.modules[m.id]?.bestScore ?? 0) >= 0.8).length;
   const nextModule = MODULES.find((m) => (state.modules[m.id]?.bestScore ?? 0) < 0.8);
@@ -79,7 +81,6 @@ export function Dashboard() {
           <p className="small muted">{tr(`${lp.needed - lp.current} XP bis Level ${lp.level + 1}`, `${lp.needed - lp.current} XP до уровня ${lp.level + 1}`)}</p>
         </div>
       </section>
-      <Link to="/vorlesung" className="lecture-card"><span className="lecture-number" aria-hidden="true">📚</span><div><p className="eyebrow">MBR · MRI · ZHAW</p><h2>{tr('Deine Vorlesung als Lernspiel', 'Твоя лекция в игровой форме')}</h2><p>{tr('72 Seiten: Lernmissionen, Bloch- und Fourier-Labor, DTI, Fluss und klinische Anwendungen.', '72 страницы: миссии, лаборатории Блоха и Фурье, DTI, поток и клиническое применение.')}</p></div><span aria-hidden="true">→</span></Link>
 
       <section className="kpi-row">
         <div className="kpi">
@@ -106,6 +107,20 @@ export function Dashboard() {
 
       <h2 className="section-title">{tr('Lernpfad', 'Учебный путь')}</h2>
       <div className="module-grid">
+        <Link to="/vorlesung" className="module-card lecture" style={{ ['--accent' as string]: '#a78bfa' }}>
+          <span className="module-index">{tr('Vorlesung', 'Лекция')} · MBR · ZHAW</span>
+          <span className="module-icon" aria-hidden="true">
+            📚
+          </span>
+          <strong>{tr('Deine Vorlesung als Lernspiel', 'Твоя лекция в игровой форме')}</strong>
+          <span className="module-sub">
+            {tr('72 Seiten: Lernmissionen, Bloch- und Fourier-Labor, DTI, Fluss und klinische Anwendungen.', '72 страницы: миссии, лаборатории Блоха и Фурье, DTI, поток и клиническое применение.')}
+          </span>
+          <ProgressBar value={lectureDone / LECTURE_LESSONS.length} label={tr('Vorlesungsfortschritt', 'Прогресс лекции')} color="#a78bfa" />
+          <span className="module-meta">
+            {lectureDone}/{LECTURE_LESSONS.length} {tr('Missionen', 'миссий')}
+          </span>
+        </Link>
         {MODULES.map((m) => {
           const prog = state.modules[m.id];
           const best = prog?.bestScore ?? 0;

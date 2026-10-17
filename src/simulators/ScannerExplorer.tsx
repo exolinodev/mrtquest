@@ -342,9 +342,8 @@ export function ScannerExplorer() {
         <div id={detailsId} className="scanner-details">
           {detail ? (
             <div className="scanner-facts" aria-live="polite" aria-atomic="true">
-              <p className="eyebrow">{tr('SO FUNKTIONIERT’S', 'КАК ЭТО РАБОТАЕТ')}</p>
-              <h3>{visual && loc(visual.action)}</h3>
-              <p className="scanner-detail-name">{loc(INFO[detail].title)}</p>
+              <h3>{loc(INFO[detail].title)}</h3>
+              {visual && <p className="scanner-detail-name">{loc(visual.action)}</p>}
               <ul className="fact-list">
                 {INFO[detail].facts.map((fact) => <li key={fact.de}>{loc(fact)}</li>)}
               </ul>

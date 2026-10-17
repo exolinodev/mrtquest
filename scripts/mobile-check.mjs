@@ -56,14 +56,14 @@ const PAGES = [
   ...['dti','mrs','bold','contrast','cases'].map(mode=>({name:`anwendung-${mode}`,path:`/labor/applications/${mode}`})),
   {
     name: 'fourier-tabelle', path: '/labor/fourier',
-    interact: async page=>page.locator('.lecture-lab summary').click(),
+    interact: async page=>page.locator('.fourier-steps summary').click(),
   },
   {
     name: 'vorlesung-feedback', path: '/vorlesung/dft',
     interact: async page=>{
-      await page.locator('.lecture-answers button').first().click();
+      await page.locator('.lecture-check .option').first().click();
       await page.getByRole('button',{name:/Antwort prüfen|Проверить ответ/}).click();
-      assert.ok(await page.locator('.callout').isVisible());
+      assert.ok(await page.locator('.lecture-check .feedback').isVisible());
     },
   },
   ...MODULES.flatMap((m) => [
