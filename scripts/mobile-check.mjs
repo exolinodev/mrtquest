@@ -81,7 +81,25 @@ const PAGES = [
   },
   {
     name: 'scanner-auswahl', path: '/labor/scanner',
-    interact: async (page) => page.getByRole('combobox').selectOption('coils'),
+    interact: async (page) => {
+      if (await page.locator('.scanner-view-switch').isVisible()) await page.locator('.scanner-view-switch button').nth(1).click();
+      await page.locator('.scanner-index summary').click();
+      await page.locator('.scanner-component[data-component="surface"]').click();
+    },
+  },
+  {
+    name: 'scanner-zoom', path: '/labor/scanner',
+    interact: async (page) => {
+      await page.locator('.scanner-zoom button').nth(2).click();
+      await page.locator('.scanner-zoom button').nth(2).click();
+    },
+  },
+  {
+    name: 'scanner-quiz-feedback', path: '/labor/scanner',
+    interact: async (page) => {
+      await page.locator('.scanner-map .panel-head button').click();
+      await page.locator('.scanner-component[data-component="gradient"]').click();
+    },
   },
   {
     name: 'artefakt-auswertung', path: '/labor/artifact',
@@ -133,7 +151,7 @@ function inspectPage(vw) {
   for (const el of document.querySelectorAll('button, a[href], input, select, .toggle, [role="button"], [role="radio"]')) {
     const r = el.getBoundingClientRect();
     if (!visible(el, r) || el.closest('[inert], [aria-hidden="true"]') || el.closest('svg')) continue;
-    // The SVG has a full-sized native picker; hidden toggle inputs use their label.
+    // SVG parts also have full-sized component buttons; hidden toggles use their label.
     if (el.matches('.toggle input')) continue;
     if (r.width < 43.5 || r.height < 43.5) smallTargets.push(`${describe(el)} (${Math.round(r.width)}×${Math.round(r.height)})`);
   }

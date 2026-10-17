@@ -1,4 +1,4 @@
-import { useId, useState, type KeyboardEvent } from 'react';
+import { useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { Panel } from '../components/ui';
 import { useGame } from '../game/GameContext';
 import { answerXp } from '../game/levels';
@@ -187,119 +187,212 @@ const QUIZ: Array<{ question: Loc; answer: ComponentId }> = [
   { question: { de: 'Wo fließt der Strom im Persistent Mode?', ru: 'Где течёт ток в режиме Persistent Mode?' }, answer: 'coils' },
 ];
 
+const COMPONENT_IDS = Object.keys(INFO) as ComponentId[];
+
 type Feedback = { ok: boolean; picked: ComponentId; expected: ComponentId; xp: number };
 
 export function ScannerExplorer() {
-  const pickerId = useId();
+  const detailsId = useId();
   const { state, dispatch } = useGame();
   const { tr, loc } = useLang();
-  const [selected, setSelected] = useState<ComponentId | null>(null);
+  const [selected, setSelected] = useState<ComponentId | null>('coils');
+  const [zoom, setZoom] = useState(1);
+  const [view, setView] = useState<'diagram' | 'details'>('diagram');
+  const [listOpen, setListOpen] = useState(false);
   const [quizMode, setQuizMode] = useState(false);
   const [qIdx, setQIdx] = useState(0);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const detailsRef = useRef<HTMLDivElement>(null);
+  const revealDetails = useRef(false);
 
-  const click = (id: ComponentId) => {
+  useLayoutEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport || viewport.clientWidth === 0) return;
+    if (zoom === 1) {
+      viewport.scrollTo(0, 0);
+      return;
+    }
+    const target = selected ? viewport.querySelector(`[data-part="${selected}"]`) : null;
+    if (!target) return;
+    const bounds = target.getBoundingClientRect();
+    const frame = viewport.getBoundingClientRect();
+    viewport.scrollTo({
+      left: viewport.scrollLeft + bounds.left + bounds.width / 2 - frame.left - frame.width / 2,
+      top: viewport.scrollTop + bounds.top + bounds.height / 2 - frame.top - frame.height / 2,
+    });
+  }, [zoom, selected, view]);
+
+  useLayoutEffect(() => {
+    if (!revealDetails.current) return;
+    revealDetails.current = false;
+    detailsRef.current?.focus({ preventScroll: true });
+    detailsRef.current?.scrollIntoView({ block: 'nearest' });
+  }, [selected, feedback, listOpen]);
+
+  const choose = (id: ComponentId, reveal = false) => {
+    if (quizMode && feedback) return;
+    revealDetails.current = reveal || quizMode;
     setSelected(id);
+    setView('details');
+    setListOpen(false);
     if (!quizMode) return;
-    const q = QUIZ[qIdx];
-    const ok = id === q.answer;
+    const ok = id === QUIZ[qIdx].answer;
     const xp = ok ? answerXp(1, state.stats.streak + 1, false, false) : 0;
     dispatch({ type: 'ANSWER', correct: ok, xp, hintUsed: false });
-    setFeedback({ ok, picked: id, expected: q.answer, xp });
-    setQIdx((i) => (i + 1) % QUIZ.length);
+    setFeedback({ ok, picked: id, expected: QUIZ[qIdx].answer, xp });
   };
 
-  const cls = (id: ComponentId) => `sx-part${selected === id ? ' active' : ''}`;
+  const toggleQuiz = () => {
+    revealDetails.current = !quizMode;
+    setQuizMode((value) => !value);
+    setSelected(quizMode ? 'coils' : null);
+    setFeedback(null);
+    setQIdx(0);
+    setListOpen(false);
+    setZoom(1);
+    setView(quizMode ? 'diagram' : 'details');
+  };
+
+  const cls = (id: ComponentId) => `sx-part${selected === id ? ' active' : ''}${feedback?.expected === id ? ' expected' : ''}${feedback && !feedback.ok && feedback.picked === id ? ' incorrect' : ''}`;
   const part = (id: ComponentId) => ({
     className: cls(id),
     'data-part': id,
-    onClick: () => click(id),
+    onClick: () => choose(id, true),
     role: 'button',
-    tabIndex: 0,
+    tabIndex: quizMode && feedback ? -1 : 0,
     'aria-label': loc(INFO[id].title),
-    onKeyDown: (e: KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        click(id);
+    'aria-pressed': selected === id,
+    'aria-controls': detailsId,
+    'aria-disabled': quizMode && feedback ? true : undefined,
+    onKeyDown: (event: KeyboardEvent) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        choose(id, true);
       }
     },
   });
+  const componentButtons = () => (
+    <div className="scanner-component-list" role="group" aria-label={tr('Scanner-Komponenten', 'Компоненты сканера')}>
+      {COMPONENT_IDS.map((id, index) => (
+        <button key={id} type="button" className={`scanner-component${selected === id ? ' selected' : ''}`} data-component={id} aria-pressed={selected === id} aria-controls={detailsId} onClick={() => choose(id, true)}>
+          <span className="scanner-component-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+          <span>{loc(INFO[id].title)}</span>
+          <span aria-hidden="true">{selected === id ? '✓' : '›'}</span>
+        </button>
+      ))}
+    </div>
+  );
+  const selectedIndex = selected ? COMPONENT_IDS.indexOf(selected) : 0;
+  const detail = feedback?.expected ?? selected;
 
   return (
-    <div className="sim-grid">
+    <div className="scanner-workspace" data-view={view}>
+      <div className="scanner-view-switch" role="group" aria-label={tr('Scanner-Ansicht', 'Режим просмотра сканера')}>
+        <button className={`btn${view === 'diagram' ? ' primary' : ''}`} type="button" aria-pressed={view === 'diagram'} onClick={() => setView('diagram')}>{tr('Scanner', 'Сканер')}</button>
+        <button className={`btn${view === 'details' ? ' primary' : ''}`} type="button" aria-pressed={view === 'details'} onClick={() => setView('details')}>{quizMode ? tr('Antworten', 'Ответы') : tr('Bauteile', 'Компоненты')}</button>
+      </div>
       <Panel
-        title={tr('Querschnitt eines 1,5/3-T-Scanners (Blick in den Tunnel)', 'Поперечное сечение сканера 1,5/3 Тл (взгляд в тоннель)')}
-        className="span-2"
+        title={tr('Querschnitt', 'Сечение')}
+        className="scanner-map"
         actions={
           <button
             className={`btn small${quizMode ? ' primary' : ''}`}
             type="button"
-            onClick={() => {
-              setQuizMode((q) => !q);
-              setFeedback(null);
-            }}
+            onClick={toggleQuiz}
           >
-            {quizMode ? tr('Quiz beenden', 'Завершить викторину') : tr('🎯 Such-Quiz starten', '🎯 Начать викторину-поиск')}
+            {quizMode ? tr('Quiz beenden', 'Завершить') : tr('🎯 Quiz starten', '🎯 Викторина')}
           </button>
         }
       >
-        {quizMode && <p className="quiz-prompt">🔎 {loc(QUIZ[qIdx].question)}</p>}
-        {feedback && (
-          <p className={feedback.ok ? 'ok-text' : 'bad-text'}>
-            {feedback.ok
-              ? `${tr('✔ Richtig', '✔ Правильно')}: ${loc(INFO[feedback.picked].title)} (+${feedback.xp} XP)`
-              : `${tr('✘ Das ist', '✘ Это')} ${loc(INFO[feedback.picked].title)}. ${tr('Gesucht', 'Искали')}: ${loc(INFO[feedback.expected].title)}.`}
-          </p>
+        {quizMode && (
+          <div className="scanner-question">
+            <span className="small muted">{tr('Frage', 'Вопрос')} {qIdx + 1} / {QUIZ.length}</span>
+            <p className="quiz-prompt">🔎 {loc(QUIZ[qIdx].question)}</p>
+          </div>
         )}
-        <svg viewBox="0 0 600 470" className="scanner-svg" aria-label={tr('Interaktiver Scanner-Querschnitt', 'Интерактивное сечение сканера')}>
-          <rect x="8" y="8" width="584" height="454" rx="10" {...part('cage')} />
-          <text x="20" y="30" className="sx-label">
-            {tr('HF-Kabine', 'РЧ-кабина')}
-          </text>
-          <rect x="285" y="8" width="30" height="62" {...part('quench')} />
-          <rect x="250" y="40" width="44" height="40" rx="6" {...part('coldhead')} />
-          <circle cx="300" cy="260" r="180" {...part('cryostat')} />
-          <circle cx="300" cy="260" r="160" className="sx-gap" />
-          {[0, 1, 2, 3, 4, 5].map((i) => {
-            const a = (i / 6) * Math.PI * 2 + Math.PI / 6;
-            return <rect key={i} x={300 + Math.cos(a) * 168 - 9} y={260 + Math.sin(a) * 168 - 9} width="18" height="18" rx="3" {...part('coils')} />;
-          })}
-          <circle cx="300" cy="260" r="148" {...part('shim')} />
-          <circle cx="300" cy="260" r="138" {...part('gradient')} />
-          <circle cx="300" cy="260" r="112" {...part('body')} />
-          <circle cx="300" cy="260" r="100" className="sx-bore" />
-          <rect x="215" y="318" width="170" height="16" rx="4" {...part('table')} />
-          <ellipse cx="300" cy="282" rx="70" ry="36" {...part('patient')} />
-          <path d="M235 258 Q300 220 365 258" fill="none" strokeWidth="10" strokeLinecap="round" {...part('surface')} />
-        </svg>
-        <div className="scanner-picker">
-          <label htmlFor={pickerId}>{tr('Komponente auswählen', 'Выбрать компонент')}</label>
-          <select id={pickerId} className="text-field" value={selected ?? ''} onChange={(e) => click(e.target.value as ComponentId)}>
-            <option value="" disabled>{tr('Komponente wählen …', 'Выбери компонент …')}</option>
-            {(Object.keys(INFO) as ComponentId[]).map((id) => <option key={id} value={id}>{loc(INFO[id].title)}</option>)}
-          </select>
+        <div ref={viewportRef} className="scanner-viewport" role="region" tabIndex={0} aria-label={tr('Scanner-Diagramm. Vergrößert durch Wischen verschiebbar.', 'Схема сканера. После увеличения можно перемещать свайпом.')}>
+          <div className="scanner-stage" style={{ width: `${zoom * 100}%` }}>
+            <svg viewBox="0 0 600 470" className="scanner-svg" aria-label={tr('Interaktiver Scanner-Querschnitt', 'Интерактивное сечение сканера')}>
+              <rect x="8" y="8" width="584" height="454" rx="10" {...part('cage')} />
+              <text x="20" y="30" className="sx-label">
+                {tr('HF-Kabine', 'РЧ-кабина')}
+              </text>
+              <rect x="285" y="8" width="30" height="62" {...part('quench')} />
+              <rect x="250" y="40" width="44" height="40" rx="6" {...part('coldhead')} />
+              <circle cx="300" cy="260" r="180" {...part('cryostat')} />
+              <circle cx="300" cy="260" r="160" className="sx-gap" />
+              {[0, 1, 2, 3, 4, 5].map((i) => {
+                const a = (i / 6) * Math.PI * 2 + Math.PI / 6;
+                return <rect key={i} x={300 + Math.cos(a) * 168 - 9} y={260 + Math.sin(a) * 168 - 9} width="18" height="18" rx="3" {...part('coils')} />;
+              })}
+              <circle cx="300" cy="260" r="148" {...part('shim')} />
+              <circle cx="300" cy="260" r="138" {...part('gradient')} />
+              <circle cx="300" cy="260" r="112" {...part('body')} />
+              <circle cx="300" cy="260" r="100" className="sx-bore" />
+              <rect x="215" y="318" width="170" height="16" rx="4" {...part('table')} />
+              <ellipse cx="300" cy="282" rx="70" ry="36" {...part('patient')} />
+              <path d="M235 258 Q300 220 365 258" fill="none" strokeWidth="10" strokeLinecap="round" {...part('surface')} />
+            </svg>
+          </div>
         </div>
-        <p className="small muted">
-          {tr(
-            'Klicke auf eine Komponente (Tastatur: Tab + Enter). Von außen nach innen: Kabine → Kryostat mit Spulen → Shim → Gradienten → HF-Körperspule → Tunnel.',
-            'Нажми на компонент (клавиатура: Tab + Enter). Снаружи внутрь: кабина → криостат с катушками → шим → градиенты → РЧ-катушка тела → тоннель.',
-          )}
+        <div className="scanner-zoom" role="group" aria-label={tr('Diagramm vergrößern', 'Масштаб схемы')}>
+          <button className="btn" type="button" aria-label={tr('Verkleinern', 'Уменьшить')} disabled={zoom === 1} onClick={() => setZoom((value) => Math.max(1, value - 1))}>−</button>
+          <output aria-live="polite">{zoom}×</output>
+          <button className="btn" type="button" aria-label={tr('Vergrößern', 'Увеличить')} disabled={zoom === 3} onClick={() => setZoom((value) => Math.min(3, value + 1))}>+</button>
+          <button className="btn ghost" type="button" disabled={zoom === 1} onClick={() => setZoom(1)}>{tr('Ganzansicht', 'Вся схема')}</button>
+        </div>
+        <p className="scanner-diagram-hint small muted">
+          {zoom > 1
+            ? tr('↔ Wische im Bild, um kleine Bauteile zu erreichen.', '↔ Перемещай схему свайпом, чтобы рассмотреть мелкие детали.')
+            : tr('Tippe ein Bauteil an oder nutze die großen Komponententasten.', 'Нажми на деталь схемы или воспользуйся большими кнопками выбора.')}
         </p>
       </Panel>
-      <Panel title={selected ? loc(INFO[selected].title) : tr('Komponente wählen', 'Выбери компонент')}>
-        {selected ? (
-          <ul className="fact-list">
-            {INFO[selected].facts.map((f) => (
-              <li key={f.de}>{loc(f)}</li>
-            ))}
-          </ul>
-        ) : (
-          <p className="muted">
-            {tr(
-              'Wähle im Querschnitt eine Komponente aus, um ihre Funktion, typische Kennzahlen und Sicherheitsaspekte zu sehen.',
-              'Выбери компонент на сечении, чтобы увидеть его функцию, типичные характеристики и аспекты безопасности.',
-            )}
-          </p>
+      <Panel className="scanner-info">
+        <div ref={detailsRef} id={detailsId} className="scanner-details" tabIndex={-1}>
+          {quizMode && (
+            <div className="scanner-answer-question">
+              <div className="row gap">
+                <span className="small muted">{tr('Frage', 'Вопрос')} {qIdx + 1} / {QUIZ.length}</span>
+                <button className="btn small ghost" type="button" onClick={toggleQuiz}>{tr('Quiz beenden', 'Завершить')}</button>
+              </div>
+              <p className="quiz-prompt">{loc(QUIZ[qIdx].question)}</p>
+            </div>
+          )}
+          {!quizMode && (
+            <div className="scanner-component-nav">
+              <button className="btn" type="button" aria-label={tr('Vorherige Komponente', 'Предыдущий компонент')} onClick={() => choose(COMPONENT_IDS[(selectedIndex - 1 + COMPONENT_IDS.length) % COMPONENT_IDS.length])}>←</button>
+              <span className="small muted">{tr('Komponente', 'Компонент')} {selectedIndex + 1} / {COMPONENT_IDS.length}</span>
+              <button className="btn" type="button" aria-label={tr('Nächste Komponente', 'Следующий компонент')} onClick={() => choose(COMPONENT_IDS[(selectedIndex + 1) % COMPONENT_IDS.length])}>→</button>
+            </div>
+          )}
+          {feedback && (
+            <div className={`scanner-quiz-feedback ${feedback.ok ? 'is-correct' : 'is-wrong'}`} role="status">
+              <strong>{feedback.ok ? tr(`✔ Richtig! +${feedback.xp} XP`, `✔ Правильно! +${feedback.xp} XP`) : tr('✘ Noch nicht richtig.', '✘ Пока неверно.')}</strong>
+              {!feedback.ok && <p>{tr('Deine Wahl', 'Твой выбор')}: {loc(INFO[feedback.picked].title)}</p>}
+              <button className="btn primary scanner-next-question" type="button" onClick={() => {
+                setQIdx((index) => (index + 1) % QUIZ.length);
+                setFeedback(null);
+                setSelected(null);
+                setZoom(1);
+              }}>{tr('Nächste Frage →', 'Следующий вопрос →')}</button>
+            </div>
+          )}
+          {detail ? (
+            <div className="scanner-facts" aria-live="polite" aria-atomic="true">
+              {feedback && !feedback.ok && <p className="eyebrow">{tr('Gesuchte Komponente', 'Правильный компонент')}</p>}
+              <h3>{loc(INFO[detail].title)}</h3>
+              <ul className="fact-list">
+                {INFO[detail].facts.map((fact) => <li key={fact.de}>{loc(fact)}</li>)}
+              </ul>
+            </div>
+          ) : <h3>{tr('Welche Komponente ist gesucht?', 'Какой компонент нужен?')}</h3>}
+        </div>
+        {quizMode ? (!feedback && componentButtons()) : (
+          <details className="scanner-index" open={listOpen} onToggle={(event) => setListOpen(event.currentTarget.open)}>
+            <summary>{tr('Alle 11 Komponenten auswählen', 'Выбрать из 11 компонентов')}</summary>
+            {componentButtons()}
+          </details>
         )}
       </Panel>
     </div>

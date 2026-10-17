@@ -1983,17 +1983,170 @@ h1, h2, h3, .lead, .eyebrow, .panel, .module-card, .scenario-card,
   max-width: 100%;
   height: auto;
 }
-.scanner-picker {
+/* Scanner: touch navigation and explanations form one compact workspace. */
+.scanner-workspace {
   display: grid;
-  gap: 0.4rem;
-  margin-block: 1rem;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr);
+  gap: 1rem;
+  align-items: start;
 }
-.scanner-picker label {
-  font-size: 0.85rem;
-  color: var(--text-dim);
+.scanner-map .panel-head {
+  align-items: flex-start;
 }
-.scanner-picker select {
+.scanner-view-switch, .scanner-answer-question {
+  display: none;
+}
+.scanner-map .panel-head h3 {
+  flex: 1 1 100px;
+}
+.scanner-viewport {
+  width: min(100%, 600px);
+  aspect-ratio: 600 / 470;
+  margin-inline: auto;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #080e1c;
+  touch-action: pan-x pan-y pinch-zoom;
+}
+.scanner-stage {
+  min-width: 100%;
+}
+.scanner-stage .scanner-svg {
   width: 100%;
+  max-width: none;
+  margin: 0;
+}
+.scanner-svg .sx-part.active {
+  stroke: var(--gold);
+  stroke-width: 4;
+  filter: drop-shadow(0 0 5px rgba(250, 204, 21, 0.5));
+}
+.scanner-svg .sx-part.expected {
+  stroke: var(--good);
+  stroke-width: 4;
+}
+.scanner-svg .sx-part.incorrect {
+  stroke: var(--bad);
+  stroke-width: 4;
+}
+.scanner-svg .sx-part[aria-disabled='true'] {
+  cursor: default;
+}
+.scanner-zoom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+  flex-wrap: wrap;
+}
+.scanner-zoom > .btn {
+  padding-inline: 0.65rem;
+}
+.scanner-zoom output {
+  min-width: 2rem;
+  text-align: center;
+  font-family: var(--mono);
+}
+.scanner-diagram-hint {
+  margin: 0.6rem 0 0;
+}
+.scanner-info {
+  position: sticky;
+  top: 90px;
+}
+.scanner-details {
+  scroll-margin-top: 90px;
+}
+.scanner-component-nav {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.scanner-component-nav .btn {
+  min-height: 48px;
+  font-size: 1.2rem;
+  padding-inline: 0;
+}
+.scanner-facts h3 {
+  color: var(--text);
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
+.scanner-facts .fact-list {
+  margin-bottom: 0;
+}
+.scanner-index {
+  margin-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+.scanner-index summary {
+  min-height: 48px;
+  padding: 0.8rem 0;
+  color: var(--accent);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.scanner-component-list {
+  display: grid;
+  gap: 0.5rem;
+}
+.scanner-component {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr) 1rem;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 56px;
+  padding: 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.scanner-component.selected, .scanner-component:hover {
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+.scanner-component-number {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 7px;
+  background: var(--surface-2);
+  color: var(--accent);
+  font-family: var(--mono);
+}
+.scanner-question .quiz-prompt {
+  margin-top: 0.4rem;
+}
+.scanner-quiz-feedback {
+  display: grid;
+  gap: 0.7rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.scanner-quiz-feedback p {
+  margin: 0;
+}
+.scanner-quiz-feedback.is-correct > strong {
+  color: var(--good);
+}
+.scanner-quiz-feedback.is-wrong > strong {
+  color: var(--bad);
 }
 .challenge, .challenge-summary {
   scroll-margin-top: 90px;
@@ -2251,6 +2404,21 @@ h1, h2, h3, .lead, .eyebrow, .panel, .module-card, .scenario-card,
   }
 }
 @container workspace (max-width: 760px) {
+  .scanner-view-switch {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+  .scanner-view-switch .btn {
+    min-height: 48px;
+  }
+  .scanner-workspace[data-view='details'] .scanner-map,
+  .scanner-workspace[data-view='diagram'] .scanner-info {
+    display: none;
+  }
+  .scanner-answer-question {
+    display: block;
+  }
   .console-nav {
     display: flex;
     gap: 0.3rem;
@@ -2270,13 +2438,13 @@ h1, h2, h3, .lead, .eyebrow, .panel, .module-card, .scenario-card,
   .diagram-hint {
     display: block;
   }
-  .sim-grid, .profile-grid, .theory, .hero, .console {
+  .sim-grid, .profile-grid, .theory, .hero, .console, .scanner-workspace {
     grid-template-columns: minmax(0, 1fr);
   }
   .span-2, .span-3, .console-reqs {
     grid-column: auto;
   }
-  .toc, .console-controls, .console-reqs {
+  .toc, .console-controls, .console-reqs, .scanner-info {
     position: static;
     max-height: none;
   }
