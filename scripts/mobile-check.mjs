@@ -15,6 +15,7 @@ import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium } from 'playwright-core';
+import assert from 'node:assert/strict';
 
 const PORT = Number(process.env.PORT ?? 4179);
 const BASE = `http://localhost:${PORT}/`;
@@ -80,11 +81,16 @@ const PAGES = [
     interact: async (page) => page.locator('canvas.clickable').click(),
   },
   {
-    name: 'scanner-auswahl', path: '/labor/scanner',
+    name: 'scanner-auswahl', path: '/modul/hardware/simulator',
     interact: async (page) => {
-      if (await page.locator('.scanner-view-switch').isVisible()) await page.locator('.scanner-view-switch button').nth(1).click();
       await page.locator('.scanner-index summary').click();
       await page.locator('.scanner-component[data-component="surface"]').click();
+      assert.equal(await page.locator('.scanner-svg').getAttribute('data-focus'), 'surface');
+      assert.ok(await page.locator('.scanner-map').isVisible(), 'Scanner muss bei der Bauteil-Erklärung sichtbar bleiben');
+      assert.ok(await page.locator('.scanner-info').isVisible(), 'Erklärung muss zusammen mit dem Scanner sichtbar sein');
+      assert.equal(await page.locator('.sx-focus-layer').count(), 1);
+      await page.locator('.scanner-detail-nav button').last().click();
+      assert.equal(await page.locator('.scanner-svg').getAttribute('data-focus'), 'table');
     },
   },
   {
@@ -100,6 +106,9 @@ const PAGES = [
     interact: async (page) => {
       await page.locator('.scanner-map .panel-head button').click();
       await page.locator('.scanner-component[data-component="gradient"]').click();
+      assert.equal(await page.locator('.scanner-svg').getAttribute('data-focus'), 'gradient');
+      assert.ok(await page.locator('.scanner-quiz-feedback.is-correct').isVisible());
+      assert.equal(await page.locator('.scanner-svg [data-part="gradient"]').getAttribute('aria-disabled'), 'true');
     },
   },
   {
