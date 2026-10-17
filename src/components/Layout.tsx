@@ -197,16 +197,18 @@ export function Layout({ route, children }: { route: string[]; children: ReactNo
 
 export function ToastStack() {
   const { toasts, dismissToast } = useGame();
+  const { tr } = useLang();
   return (
     <div className="toast-stack" role="status" aria-live="polite">
-      {toasts.map((t) => (
-        <button key={t.id} type="button" className={`toast toast-${t.kind}`} onClick={() => dismissToast(t.id)}>
+      {toasts.slice(0, 1).map((t) => (
+        <button key={t.id} type="button" className={`toast toast-${t.kind}`} aria-label={`${tr('Meldung schließen', 'Закрыть уведомление')}: ${t.title}`} onClick={() => dismissToast(t.id)}>
           <span className="toast-icon" aria-hidden="true">
             {t.icon ?? '✨'}
           </span>
           <span>
             <strong>{t.title}</strong>
             {t.detail && <small>{t.detail}</small>}
+            {toasts.length > 1 && <small className="toast-queue-count">{tr(toasts.length === 2 ? 'Eine weitere Meldung folgt' : `Noch ${toasts.length - 1} Meldungen`, `В очереди: ${toasts.length - 1}`)}</small>}
           </span>
         </button>
       ))}

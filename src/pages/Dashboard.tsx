@@ -152,7 +152,7 @@ export function Dashboard() {
               ? state.examBest > 0
                 ? tr(`Bestwert ${Math.round(state.examBest * 100)} %`, `Лучший результат ${Math.round(state.examBest * 100)} %`)
                 : tr('Bereit, wenn du es bist.', 'Всё готово – начинай, когда захочешь.')
-              : tr('Freischaltung: jede Modul-Challenge einmal spielen', 'Открытие: пройди задание каждого модуля хотя бы раз')}
+              : tr('Freischaltung: alle sieben Modul-Challenges abschließen', 'Открытие: заверши задания всех семи модулей')}
           </span>
         </Link>
       </div>

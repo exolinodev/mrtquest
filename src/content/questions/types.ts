@@ -113,8 +113,11 @@ export function materialize(ref: QuestionRef, lang: Lang): Question {
 /** Prüft eine numerische Eingabe (deutsches oder englisches Dezimalformat). */
 export function parseNumber(input: string): number | null {
   let cleaned = input.trim().replace(/[\s  ]/g, '');
-  // „1.234,5“ → Punkt ist Tausendertrenner; sonst wird ein Komma als Dezimalzeichen gelesen.
-  if (cleaned.includes(',') && cleaned.includes('.')) cleaned = cleaned.replace(/\./g, '');
+  // With mixed separators the last one is decimal: 1.234,5 and 1,234.5.
+  if (cleaned.includes(',') && cleaned.includes('.')) {
+    const decimalComma = cleaned.lastIndexOf(',') > cleaned.lastIndexOf('.');
+    cleaned = decimalComma ? cleaned.replace(/\./g, '') : cleaned.replace(/,/g, '');
+  }
   cleaned = cleaned.replace(',', '.');
   if (cleaned === '' || !/^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(cleaned)) return null;
   const v = Number(cleaned);

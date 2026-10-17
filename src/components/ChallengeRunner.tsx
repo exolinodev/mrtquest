@@ -1,13 +1,16 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
-import { isNumericCorrect, materialize, parseNumber, type QuestionRef } from '../content/questions/types';
+import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from 'react';
+import { isNumericCorrect, materialize, parseNumber, type Question, type QuestionRef } from '../content/questions/types';
 import { useGame } from '../game/GameContext';
 import { answerXp } from '../game/levels';
+import { completionBonus, MASTERY_SCORE, type ChallengeKind } from '../game/challenge';
 import { numberLocale } from '../i18n/format';
 import { useLang } from '../i18n/LanguageContext';
 import { RichText } from './RichText';
 import { ProgressBar } from './ui';
+import { Link } from './router';
 
-export type ChallengeKind = { type: 'module'; moduleId: string } | { type: 'exam' };
+export type { ChallengeKind } from '../game/challenge';
+export { completionBonus } from '../game/challenge';
 
 interface Props {
   /** sprachunabhängige Fragen; materialisiert in der aktiven Sprache */
@@ -24,20 +27,28 @@ interface AnswerRecord {
   xp: number;
 }
 
-export function completionBonus(score: number, kind: ChallengeKind, replay: boolean): number {
-  const factor = replay ? 0.5 : 1;
-  if (kind.type === 'exam') return Math.round((score >= 0.8 ? 150 : score >= 0.6 ? 60 : 0) * factor);
-  return Math.round((score >= 1 ? 40 : score >= 0.8 ? 25 : score >= 0.6 ? 10 : 0) * factor);
+function AnswerSolution({ question }: { question: Question }) {
+  const { lang } = useLang();
+  if (question.kind === 'numeric') return <p className="solution-value"><strong>{question.answer.toLocaleString(numberLocale(lang), { maximumSignificantDigits: 6, useGrouping: false })}</strong> {question.unit}</p>;
+  const indices = question.kind === 'mc' ? [question.answer] : question.answers;
+  return <ul className="solution-list">{indices.map((i) => <li key={i}><RichText text={question.options[i]} /></li>)}</ul>;
 }
 
-export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: Props) {
+export function ChallengeRunner({ questions, kind, replay: replayAtStart, onRestart, onExit }: Props) {
   const { state, dispatch } = useGame();
   const { lang, tr } = useLang();
+  // A newly earned mastery badge affects the next round, not this round’s summary.
+  const [replay] = useState(replayAtStart);
+  const promptId = useId();
+  const helpId = useId();
+  const errorId = useId();
+  const feedbackId = useId();
+  const feedbackRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   const [records, setRecords] = useState<AnswerRecord[]>([]);
   const [selected, setSelected] = useState<number[]>([]);
   const [numeric, setNumeric] = useState('');
-  const [inputError, setInputError] = useState<string | null>(null);
+  const [inputError, setInputError] = useState<'number' | 'selection' | null>(null);
   const [hintShown, setHintShown] = useState(false);
   const [submitted, setSubmitted] = useState<AnswerRecord | null>(null);
   const [finished, setFinished] = useState<{ score: number; bonus: number } | null>(null);
@@ -47,17 +58,20 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
     questionRef.current?.scrollIntoView({ block: 'start' });
   }, [index, finished]);
 
+  useEffect(() => {
+    if (!submitted) return;
+    feedbackRef.current?.focus({ preventScroll: true });
+    feedbackRef.current?.scrollIntoView({ block: 'nearest' });
+  }, [submitted]);
+
   // Bei Sprachwechsel neu materialisiert: gleiche Seeds ⇒ gleiche Werte und Optionsreihenfolge
   const q = useMemo(() => (questions[index] ? materialize(questions[index], lang) : undefined), [questions, index, lang]);
   const correctCount = records.filter((r) => r.correct).length;
   const earned = records.reduce((s, r) => s + r.xp, 0);
 
-  const correctText = useMemo(() => {
-    if (!q) return '';
-    if (q.kind === 'numeric') return `${q.answer.toLocaleString(numberLocale(lang), { maximumFractionDigits: 3 })} ${q.unit}`;
-    if (q.kind === 'mc') return q.options[q.answer];
-    return q.answers.map((a) => q.options[a]).join(' · ');
-  }, [q, lang]);
+  const errorText = inputError === 'number'
+    ? tr('Gib eine gültige Zahl ein. Komma oder Punkt als Dezimalzeichen sind möglich.', 'Введи корректное число. Десятичный разделитель — запятая или точка.')
+    : tr('Wähle mindestens eine Antwort aus.', 'Выбери хотя бы один ответ.');
 
   if (finished) {
     const pct = Math.round(finished.score * 100);
@@ -69,30 +83,39 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
         </div>
         <p className="summary-text">
           {pct === 100
-            ? tr('Perfekt! Kohärenter geht es nicht.', 'Идеально! Когерентнее не бывает.')
+            ? tr('Alles richtig – sehr stark!', 'Все ответы верны — отличный результат!')
             : pct >= 80
               ? tr('Stark – dieses Thema sitzt.', 'Отлично – эта тема усвоена.')
               : pct >= 60
                 ? tr('Solide Basis. Schau dir die Erklärungen noch einmal an und versuche es erneut.', 'Прочная основа. Просмотри объяснения ещё раз и попробуй снова.')
                 : tr('Hier lohnt sich ein zweiter Blick in Theorie und Simulator.', 'Стоит ещё раз заглянуть в теорию и симулятор.')}
         </p>
-        <ul className="summary-xp">
-          <li>
-            {tr('Antworten', 'Ответы')}: <strong>+{earned} XP</strong>
-          </li>
-          <li>
-            {tr('Abschlussbonus', 'Бонус за завершение')}: <strong>+{finished.bonus} XP</strong>
-          </li>
-          {replay && <li className="muted">{tr('Wiederholungsmodus: XP halbiert, da bereits gemeistert.', 'Режим повторения: XP уменьшены вдвое, так как тема уже освоена.')}</li>}
-        </ul>
-        <div className="row gap">
-          <button className="btn primary" type="button" onClick={onRestart}>
-            {tr('Neue Runde', 'Новый раунд')}
-          </button>
-          <button className="btn" type="button" onClick={onExit}>
-            {tr('Zurück', 'Назад')}
-          </button>
+        <dl className="summary-rewards">
+          <div><dt>{tr('Antwort-XP', 'XP за ответы')}</dt><dd>+{earned}</dd></div>
+          <div><dt>{tr('Rundenbonus', 'Бонус за раунд')}</dt><dd>+{finished.bonus}</dd></div>
+          <div><dt>{tr('Zusammen', 'Итого')}</dt><dd>+{earned + finished.bonus} XP</dd></div>
+        </dl>
+        {replay && <p className="challenge-replay-note">{tr('Wiederholungsrunde: Die angezeigten XP sind bereits halbiert und gerundet.', 'Повторение: показанные XP уже уменьшены вдвое и округлены.')}</p>}
+        {finished.score >= MASTERY_SCORE && <p className="ok-text">{kind.type === 'module' ? tr('✓ Ziel erreicht: Modul gemeistert.', '✓ Цель достигнута: модуль освоен.') : tr('✓ Abschlussprüfung bestanden.', '✓ Итоговый экзамен сдан.')}</p>}
+        <div className="row gap summary-actions">
+          <button className="btn primary" type="button" onClick={onRestart}>{tr('Neue Runde starten', 'Начать новый раунд')}</button>
+          <button className="btn" type="button" onClick={onExit}>{tr('Zurück zur Übersicht', 'Назад к обзору')}</button>
+          {kind.type === 'module' && <Link className="btn ghost" to={`/modul/${kind.moduleId}/theorie`}>{tr('Theorie auffrischen', 'Повторить теорию')}</Link>}
         </div>
+        <section className="challenge-review" aria-label={tr('Rückblick auf deine Antworten', 'Разбор твоих ответов')}>
+          <h3>{tr('Deine Antworten im Rückblick', 'Разбор твоих ответов')}</h3>
+          <p className="small muted">{tr('Öffne eine Aufgabe, um Lösung und Erklärung nachzulesen.', 'Открой задание, чтобы посмотреть решение и объяснение.')}</p>
+          {records.map((record, i) => {
+            const question = materialize(questions[i], lang);
+            return <details key={i} className="challenge-review-item" data-correct={record.correct}>
+              <summary><span>{tr('Aufgabe', 'Задание')} {i + 1}</span><span>{record.correct ? tr('✓ Richtig', '✓ Верно') : tr('↻ Noch üben', '↻ Повторить')}</span></summary>
+              <p className="review-prompt"><RichText text={question.prompt} /></p>
+              <h4>{tr('Die Lösung', 'Решение')}</h4>
+              <AnswerSolution question={question} />
+              <p><RichText text={question.explanation} /></p>
+            </details>;
+          })}
+        </section>
       </div>
     );
   }
@@ -103,13 +126,13 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
     if (q.kind === 'numeric') {
       const v = parseNumber(numeric);
       if (v === null) {
-        setInputError(tr('Bitte eine Zahl eingeben (z. B. 63,87).', 'Введи число (напр. 63,87).'));
+        setInputError('number');
         return null;
       }
       return isNumericCorrect(q, v);
     }
     if (selected.length === 0) {
-      setInputError(tr('Bitte eine Antwort auswählen.', 'Выбери ответ.'));
+      setInputError('selection');
       return null;
     }
     if (q.kind === 'mc') return selected[0] === q.answer;
@@ -166,38 +189,41 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
     <div className="challenge" ref={questionRef} tabIndex={-1}>
       <div className="challenge-head">
         <span>
-          {tr('Frage', 'Вопрос')} {index + 1} / {questions.length}
+          {tr('Aufgabe', 'Задание')} {index + 1} / {questions.length}
         </span>
-        <span className="difficulty" title={tr('Schwierigkeit', 'Сложность')}>
-          {'◆'.repeat(q.difficulty)}
-          {'◇'.repeat(3 - q.difficulty)}
-        </span>
+        <span className="difficulty">{tr(['Basis', 'Aufbau', 'Transfer'][q.difficulty - 1], ['Базовый', 'Средний', 'Продвинутый'][q.difficulty - 1])} · {tr(`Stufe ${q.difficulty}/3`, `Уровень ${q.difficulty}/3`)}</span>
         <span className="combo" data-active={state.stats.streak >= 3}>
           🔥 {tr('Serie', 'Серия')} {state.stats.streak}
           {state.stats.streak >= 6 ? ' · ×1,5 XP' : state.stats.streak >= 3 ? ' · ×1,2 XP' : ''}
         </span>
       </div>
-      <ProgressBar value={index / questions.length} label={tr('Fortschritt der Challenge', 'Прогресс задания')} />
+      <ProgressBar value={(index + (submitted ? 1 : 0)) / questions.length} label={tr('Fortschritt der Challenge', 'Прогресс задания')} />
 
-      <form className="question" onSubmit={submit}>
+      <form className="question" onSubmit={submit} aria-labelledby={promptId}>
         <p className="question-kind">
           {q.kind === 'numeric'
-            ? tr('🧮 Rechen-Puzzle', '🧮 Расчётная задача')
+            ? tr('Rechenaufgabe', 'Расчётная задача')
             : q.kind === 'multi'
-              ? tr('☑️ Mehrfachauswahl', '☑️ Несколько вариантов')
-              : tr('🔘 Einfachauswahl', '🔘 Один вариант')}
+              ? tr('Mehrfachauswahl', 'Несколько вариантов')
+              : tr('Einfachauswahl', 'Один вариант')}
         </p>
-        <h3 className="question-prompt">
+        <h3 className="question-prompt" id={promptId}>
           <RichText text={q.prompt} />
         </h3>
 
+        <p className="question-instruction" id={helpId}>{q.kind === 'numeric'
+          ? tr(`Gib dein Ergebnis in ${q.unit} ein. Komma und Punkt sind möglich.`, `Введи результат в ${q.unit}. Можно использовать запятую или точку.`)
+          : q.kind === 'multi' ? tr('Wähle alle richtigen Aussagen. Mehrere Antworten sind möglich.', 'Выбери все верные утверждения. Верных ответов может быть несколько.')
+            : tr('Wähle genau eine Antwort.', 'Выбери один ответ.')}</p>
         {q.kind === 'numeric' ? (
           <div className="numeric-input">
             <input
               type="text"
               inputMode="decimal"
               autoComplete="off"
-              aria-label={tr('Antwort', 'Ответ')}
+              aria-label={tr(`Dein Ergebnis in ${q.unit}`, `Твой результат в ${q.unit}`)}
+              aria-describedby={`${helpId}${inputError ? ` ${errorId}` : ''}`}
+              aria-invalid={!!inputError}
               placeholder={tr('Ergebnis', 'Результат')}
               value={numeric}
               disabled={!!submitted}
@@ -208,11 +234,11 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
             />
             <span className="unit-label">{q.unit}</span>
             <span className="muted small">
-              {tr('Toleranz', 'Допуск')} ±{(q.tolerance * 100).toLocaleString(numberLocale(lang))} %
+              {tr('Akzeptierte Abweichung', 'Допустимое отклонение')}: ±{q.answer === 0 ? `${q.tolerance.toLocaleString(numberLocale(lang))} ${q.unit}` : `${(q.tolerance * 100).toLocaleString(numberLocale(lang))} %`}
             </span>
           </div>
         ) : (
-          <div className="options" role={q.kind === 'mc' ? 'radiogroup' : 'group'}>
+          <div className="options" role={q.kind === 'mc' ? 'radiogroup' : 'group'} aria-labelledby={promptId} aria-describedby={helpId}>
             {q.options.map((opt, i) => (
               <button
                 key={i}
@@ -221,20 +247,21 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
                 aria-checked={selected.includes(i)}
                 className={`option ${optionState(i)}`}
                 onClick={() => toggle(i)}
-                disabled={!!submitted && optionState(i) === 'dim'}
+                disabled={!!submitted}
               >
                 <span className="option-marker" aria-hidden="true">
                   {q.kind === 'mc' ? String.fromCharCode(65 + i) : selected.includes(i) ? '☑' : '☐'}
                 </span>
-                <span>
+                <span className="option-content">
                   <RichText text={opt} />
+                  {submitted && (optionState(i) === 'correct' || selected.includes(i)) && <span className="option-result">{optionState(i) === 'correct' ? tr('✓ Richtige Antwort', '✓ Верный ответ') : tr('✘ Deine Auswahl', '✘ Твой выбор')}{optionState(i) === 'correct' && selected.includes(i) ? tr(' · von dir gewählt', ' · твой выбор') : ''}</span>}
                 </span>
               </button>
             ))}
           </div>
         )}
 
-        {inputError && <p className="input-error">{inputError}</p>}
+        {inputError && <p className="input-error" role="alert" id={errorId}>{errorText}</p>}
 
         {hintShown && q.hint && !submitted && (
           <p className="hint">
@@ -249,23 +276,18 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
             </button>
             {q.hint && !hintShown && (
               <button className="btn ghost" type="button" onClick={() => setHintShown(true)}>
-                {tr('Hinweis (halbe XP)', 'Подсказка (половина XP)')}
+                {tr('Hinweis nutzen · ½ Antwort-XP', 'Подсказка · ½ XP за ответ')}
               </button>
             )}
           </div>
         ) : (
-          <div className={`feedback ${submitted.correct ? 'is-correct' : 'is-wrong'}`}>
-            <strong>{submitted.correct ? `✔ ${tr('Richtig!', 'Правильно!')} +${submitted.xp} XP` : tr('✘ Leider falsch.', '✘ К сожалению, неверно.')}</strong>
-            {!submitted.correct && (
-              <p>
-                {tr('Richtige Antwort', 'Правильный ответ')}: <RichText text={correctText} />
-              </p>
-            )}
-            <p>
-              <RichText text={q.explanation} />
-            </p>
+          <div className={`feedback ${submitted.correct ? 'is-correct' : 'is-wrong'}`} ref={feedbackRef} tabIndex={-1} aria-labelledby={feedbackId}>
+            <strong id={feedbackId}>{submitted.correct ? `✔ ${tr('Richtig!', 'Правильно!')} +${submitted.xp} XP` : tr('Noch nicht richtig – schauen wir es uns an.', 'Пока неверно — давай разберёмся.')}</strong>
+            {!submitted.correct && <div className="answer-solution"><h4>{tr('Die richtige Lösung', 'Верное решение')}</h4><AnswerSolution question={q} /></div>}
+            <h4>{tr('Warum ist das so?', 'Почему так?')}</h4>
+            <p><RichText text={q.explanation} /></p>
             <button className="btn primary" type="button" onClick={next}>
-              {index + 1 >= questions.length ? tr('Auswertung', 'Результаты') : tr('Weiter →', 'Далее →')}
+              {index + 1 >= questions.length ? tr('Runde auswerten →', 'Итоги раунда →') : tr('Nächste Aufgabe →', 'Следующее задание →')}
             </button>
           </div>
         )}
