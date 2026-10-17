@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ChallengeRunner } from '../components/ChallengeRunner';
 import { ChallengeIntro } from '../components/ChallengeIntro';
+import { Figure } from '../components/figures';
 import { RichText, TeX } from '../components/RichText';
 import { Link, navigate } from '../components/router';
 import { Callout } from '../components/ui';
@@ -77,6 +78,8 @@ function Block({ block }: { block: TheoryBlock }) {
       );
     case 'exam':
       return <ExamBlock block={block} />;
+    case 'figure':
+      return <Figure id={block.id} caption={block.caption} />;
     case 'pitfall':
       return (
         <aside className="pitfall">

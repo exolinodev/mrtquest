@@ -185,6 +185,11 @@ export const hardware: Chapter = {
           text: 'Die Antenne steht aber an einem **festen Ort**. Dort ist $\\vec k\\cdot\\vec r$ eine Konstante, die man in die Phase stecken kann. Übrig bleibt eine einfache Schwingung in der Zeit. Und jetzt kommt der Trick aus dem Skript: Man schreibt sie als komplexe Zahl.',
         },
         {
+          type: 'figure',
+          id: 'em-wave',
+          caption: 'E (blau) und B (violett) stehen senkrecht aufeinander und senkrecht zur Ausbreitungsrichtung, λ ist der Abstand zweier Wellenberge. Die Antenne an einem festen Ort sieht davon nur eine Schwingung in der Zeit: $E(t) = \\hat E\\cos(\\omega t + \\varphi)$.',
+        },
+        {
           type: 'formula',
           tex: '\\begin{aligned} E(t) &= \\hat E\\cos(\\omega t + \\varphi) \\\\ &\\to \\hat E\\big(\\cos\\omega t + i\\sin\\omega t\\big) \\\\ &= \\hat E\\, e^{i\\omega t} = s(t) \\end{aligned}',
           caption: 'Signal an der Antenne in komplexer Darstellung, die Phase steckt in $\\hat E$',
@@ -250,6 +255,11 @@ export const hardware: Chapter = {
         {
           type: 'p',
           text: 'Parallel dazu gibt es die Sendeseite und die Steuerung. Der **Rechner** spielt die Pulssequenz ab: Er sagt dem HF-Sender, wann er welchen Puls senden soll, und den Gradientenverstärkern, wann welcher Gradient an ist. Und er sagt dem ADC, wann er messen soll. Senden, Gradienten und Empfang müssen auf Mikrosekunden genau zusammenspielen.',
+        },
+        {
+          type: 'figure',
+          id: 'signal-chain',
+          caption: 'Folge den Pfeilen von oben nach unten: Die Steuerung spielt die Sequenz ab, Magnet, Gradienten und HF-Sender wirken auf den Patienten, und das Signal läuft über Spule, Vorverstärker und ADC in den Rechner. Die gestrichelten Linien sind Steuersignale, die alles auf Mikrosekunden genau takten.',
         },
         {
           type: 'mnemonic',
@@ -495,6 +505,11 @@ export const hardware: Chapter = {
           text: 'Но антенна стоит в **фиксированном месте**. Там $\\vec k\\cdot\\vec r$ постоянная величина, которую можно спрятать в фазу. Остаётся простое колебание во времени. И вот приём из конспекта: его записывают как комплексное число.',
         },
         {
+          type: 'figure',
+          id: 'em-wave',
+          caption: 'E (синее) и B (фиолетовое) перпендикулярны друг другу и направлению распространения, а λ это расстояние между двумя гребнями. Антенна в фиксированном месте видит из этого только колебание во времени: $E(t) = \\hat E\\cos(\\omega t + \\varphi)$.',
+        },
+        {
           type: 'formula',
           tex: '\\begin{aligned} E(t) &= \\hat E\\cos(\\omega t + \\varphi) \\\\ &\\to \\hat E\\big(\\cos\\omega t + i\\sin\\omega t\\big) \\\\ &= \\hat E\\, e^{i\\omega t} = s(t) \\end{aligned}',
           caption: 'сигнал на антенне в комплексной записи, фаза спрятана в $\\hat E$',
@@ -560,6 +575,11 @@ export const hardware: Chapter = {
         {
           type: 'p',
           text: 'Параллельно работают передающая сторона и управление. **Компьютер** проигрывает импульсную последовательность: говорит РЧ-передатчику, когда какой импульс послать, а градиентным усилителям, когда какой градиент включён. И говорит АЦП, когда измерять. Передача, градиенты и приём должны быть согласованы с точностью до микросекунд.',
+        },
+        {
+          type: 'figure',
+          id: 'signal-chain',
+          caption: 'Следуй за стрелками сверху вниз: управление запускает последовательность, магнит, градиенты и РЧ-передатчик действуют на пациента, а сигнал идёт через катушку, предусилитель и АЦП в компьютер. Пунктирные линии это сигналы управления, которые синхронизируют всё с точностью до микросекунд.',
         },
         {
           type: 'mnemonic',

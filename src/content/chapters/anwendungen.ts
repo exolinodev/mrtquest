@@ -234,6 +234,7 @@ export const anwendungen: Chapter = {
           type: 'p',
           text: '**Flussmessung: Geschwindigkeit aus der Phase.** In Modul 3 hast du gelernt, dass ein Gradient die Präzessionsfrequenz ortsabhängig macht und die Spins dadurch Phase sammeln. Diesen Trick nutzt die Flussmessung (Phasenkontrast). Man schaltet einen Gradienten erst in die eine, dann gleich lang in die andere Richtung, einen sogenannten **bipolaren Gradienten**. Für ein ruhendes Proton heben sich beide Hälften genau auf: Es sammelt erst Phase und gibt sie dann wieder ab, am Ende bleibt null. Ein Proton im fließenden Blut ist aber in der zweiten Hälfte schon an einem anderen Ort und spürt ein anderes Feld. Bei ihm bleibt eine Restphase übrig, und die ist **proportional zur Geschwindigkeit**.',
         },
+        { type: 'figure', id: 'flow-phase', caption: 'Beide Protonen sammeln in der ersten Gradientenhälfte Phase, aber nur beim ruhenden Gewebe hebt die zweite Hälfte alles wieder auf. Achte auf die Zeiger rechts: Doppelt so schnelles Blut dreht die Restphase doppelt so weit.' },
         {
           type: 'analogy',
           title: 'Hin und zurück auf einem schiefen Laufband',
@@ -581,6 +582,7 @@ export const anwendungen: Chapter = {
           type: 'p',
           text: '**Измерение потока: скорость из фазы.** В модуле 3 ты узнал, что градиент делает частоту прецессии зависящей от места, и спины из-за этого набирают фазу. Этим приёмом пользуется измерение потока (фазовый контраст). Включают градиент сначала в одну сторону, а потом столько же времени в другую, так называемый **биполярный градиент**. Для неподвижного протона обе половины точно компенсируются: он сначала набирает фазу, потом отдаёт её обратно, в итоге остаётся ноль. Протон в текущей крови во второй половине уже в другом месте и чувствует другое поле. У него остаётся остаточная фаза, и она **пропорциональна скорости**.',
         },
+        { type: 'figure', id: 'flow-phase', caption: 'Оба протона набирают фазу в первой половине градиента, но только у неподвижной ткани вторая половина всё компенсирует. Обрати внимание на стрелки справа: вдвое более быстрая кровь поворачивает остаточную фазу вдвое дальше.' },
         {
           type: 'analogy',
           title: 'Туда и обратно на беговой дорожке',

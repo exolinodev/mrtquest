@@ -55,6 +55,11 @@ export const kraum: Chapter = {
           text: 'Mit nur einem Summanden siehst du eine Sinuswelle. Mit drei Summanden ahnst du schon den Sägezahn. Je mehr hohe Harmonische du dazunimmst, desto **schärfer werden die Kanten**. Merk dir diesen Satz gut, denn er wird am Ende des Moduls die Recap-Frage zu den Kanten beantworten.',
         },
         {
+          type: 'figure',
+          id: 'fourier-sum',
+          caption: 'Links siehst du drei Sinuswellen mit den Amplituden 1, ½ und ⅓, darunter ihre Summe, die schon fast wie der gestrichelte Sägezahn aussieht. Rechts stehen dieselben Amplituden als Balken: Das ist das Spektrum des Signals.',
+        },
+        {
           type: 'mnemonic',
           text: '**Langsame Wellen machen die Form, schnelle Wellen machen die Kanten.** Jedes periodische Signal ist ein Akkord aus Sinus und Kosinus mit ganzzahligen Frequenzen.',
         },
@@ -350,6 +355,11 @@ export const kraum: Chapter = {
           ],
         },
         {
+          type: 'figure',
+          id: 'kspace-masks',
+          caption: 'Hier ist ein Hirn-Phantom wirklich per FFT berechnet: Oben siehst du, welcher Teil des k-Raums behalten wurde, unten das Bild daraus. Achte darauf, dass das Zentrum allein den Kontrast liefert, der Rand allein die Kanten und eine einzige Zeile nur Streifen.',
+        },
+        {
           type: 'analogy',
           title: 'Am Equalizer die Höhen aufdrehen',
           text: 'Willst du bei Musik das Zischen der Becken und die S-Laute deutlicher hören, drehst du am Equalizer die **Höhen** auf und die Bässe etwas herunter. Bei einem Bild ist es genau gleich, nur mit Ortsfrequenzen. Kanten sind die „Höhen“ des Bildes. Wer sie betonen will, verstärkt den Rand des k-Raums.',
@@ -435,6 +445,11 @@ export const kraum: Chapter = {
         {
           type: 'p',
           text: 'С одним слагаемым видна синусоида. С тремя уже угадывается пила. Чем больше высоких гармоник ты добавляешь, тем **острее края**. Хорошо запомни эту мысль: в конце модуля она ответит на контрольный вопрос о краях.',
+        },
+        {
+          type: 'figure',
+          id: 'fourier-sum',
+          caption: 'Слева три синусоиды с амплитудами 1, ½ и ⅓, а под ними их сумма, которая уже почти похожа на пунктирную пилу. Справа те же амплитуды в виде столбиков: это и есть спектр сигнала.',
         },
         {
           type: 'mnemonic',
@@ -730,6 +745,11 @@ export const kraum: Chapter = {
             ['только край', 'только контуры и края, почти нет яркости площадей'],
             ['всё', 'резкое изображение с правильным контрастом'],
           ],
+        },
+        {
+          type: 'figure',
+          id: 'kspace-masks',
+          caption: 'Здесь фантом мозга действительно посчитан через БПФ: сверху видно, какая часть k-пространства сохранена, снизу полученное изображение. Обрати внимание: один центр даёт контраст, один край даёт только контуры, а одна-единственная строка даёт лишь полосы.',
         },
         {
           type: 'analogy',

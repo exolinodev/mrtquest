@@ -73,7 +73,7 @@ export const BADGES: BadgeDef[] = [
   {
     id: 'grand-slam',
     title: { de: 'Grand Slam', ru: 'Большой шлем' },
-    description: { de: 'Meistere alle sieben Module mit mindestens 80 %.', ru: 'Освой все семь модулей не менее чем на 80 %.' },
+    description: { de: 'Meistere alle acht Module mit mindestens 80 %.', ru: 'Освой все восемь модулей не менее чем на 80 %.' },
     icon: '🏆',
     tier: 'gold',
     xp: 150,

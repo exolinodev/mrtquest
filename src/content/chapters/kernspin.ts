@@ -91,6 +91,7 @@ export const kernspin: Chapter = {
           type: 'p',
           text: 'Genau so ist es bei den Protonen. Die Wärmebewegung bei Körpertemperatur wirft ständig alles durcheinander. Die **Boltzmann-Verteilung** sagt, wie viele Protonen trotzdem im günstigeren Zustand sitzen: nur wenige pro Million mehr, ungefähr 3 von einer Million pro Tesla. Weil im Körper aber unvorstellbar viele Protonen sind, ergibt dieser kleine Überschuss eine messbare **Nettomagnetisierung** $M_0$, die entlang von $B_0$ zeigt.',
         },
+        { type: 'figure', id: 'spins-field', caption: 'Links zeigen die Pfeile in alle Richtungen und heben sich auf. Rechts stehen fast gleich viele Pfeile oben und unten, achte auf den kleinen Überschuss nach oben: Nur er ergibt den grünen Summenpfeil $M_0$ (in echt sind es nur rund 3 von einer Million pro Tesla).' },
         {
           type: 'list',
           items: [
@@ -129,6 +130,7 @@ export const kernspin: Chapter = {
           type: 'p',
           text: 'Wie schnell kreist das Proton? Das ist die wichtigste Zahl der ganzen MRT, die **Larmor-Frequenz**. Sie ist einfach proportional zur Feldstärke. Doppeltes Feld, doppelt so schnelles Kreisen.',
         },
+        { type: 'figure', id: 'precession', caption: 'Achte darauf, dass der Pfeil nicht zu $B_0$ umkippt, sondern auf dem Kegel um die Feldachse kreist. Wie oft er pro Sekunde herumläuft, ist die Larmor-Frequenz, und sie wächst linear mit $B_0$.' },
         { type: 'formula', tex: 'f_0 = \\bar\\gamma\\, B_0, \\qquad \\bar\\gamma = \\frac{\\gamma}{2\\pi} = 42{,}57\\ \\text{MHz/T}\\ \\ (^1\\text{H})', caption: 'Larmor-Gleichung für Wasserstoff' },
         {
           type: 'table',
@@ -235,6 +237,7 @@ export const kernspin: Chapter = {
           type: 'p',
           text: 'Nach dem Puls kreist die Quermagnetisierung mit der Larmor-Frequenz. Ein kreisender Magnet induziert in einer Spule eine Wechselspannung, das ist dasselbe Prinzip wie beim Fahrraddynamo. Dieses Signal wird schnell schwächer, weil die Protonen ihre Energie wieder abgeben und sich zurück ausrichten. Man nennt es **Free Induction Decay**, kurz **FID**: freier Induktionszerfall.',
         },
+        { type: 'figure', id: 'rf-pulse', caption: 'Verfolge den grünen Pfeil: Erst ruht er entlang z, dann kippt ihn der HF-Puls mit der Larmor-Frequenz um 90° in die xy-Ebene. Nur dort kreist er und erzeugt in der Spule den abklingenden FID.' },
         {
           type: 'p',
           text: 'Damit ist die Kette komplett: **Eingang** ist die Pulssequenz, **Ausgang** ist das FID-Signal. Alles Weitere in der MRT ist die Frage, wie man aus diesem Signal ein Bild macht.',
@@ -346,6 +349,7 @@ export const kernspin: Chapter = {
           type: 'p',
           text: 'С протонами то же самое. Тепловое движение при температуре тела постоянно всё перемешивает. **Распределение Больцмана** говорит, сколько протонов всё же находится в выгодном состоянии: лишь несколько на миллион больше, примерно 3 на миллион на тесла. Но протонов в теле невообразимо много, и этот маленький избыток даёт измеримую **суммарную намагниченность** $M_0$, направленную вдоль $B_0$.',
         },
+        { type: 'figure', id: 'spins-field', caption: 'Слева стрелки смотрят во все стороны и взаимно гасятся. Справа вверх и вниз смотрят почти поровну, обрати внимание на маленький избыток вверх: только он даёт зелёную суммарную стрелку $M_0$ (на самом деле это всего около 3 на миллион на тесла).' },
         {
           type: 'list',
           items: [
@@ -384,6 +388,7 @@ export const kernspin: Chapter = {
           type: 'p',
           text: 'Как быстро кружит протон? Это самое важное число всей МРТ, **ларморова частота**. Она просто пропорциональна силе поля. Поле вдвое сильнее, кружение вдвое быстрее.',
         },
+        { type: 'figure', id: 'precession', caption: 'Обрати внимание: стрелка не падает к $B_0$, а кружит по конусу вокруг оси поля. Число её оборотов в секунду и есть ларморова частота, и она растёт линейно с $B_0$.' },
         { type: 'formula', tex: 'f_0 = \\bar\\gamma\\, B_0, \\qquad \\bar\\gamma = \\frac{\\gamma}{2\\pi} = 42{,}57\\ \\text{МГц/Тл}\\ \\ (^1\\text{H})', caption: 'уравнение Лармора для водорода' },
         {
           type: 'table',
@@ -490,6 +495,7 @@ export const kernspin: Chapter = {
           type: 'p',
           text: 'После импульса поперечная намагниченность кружит с ларморовой частотой. Вращающийся магнит наводит в катушке переменное напряжение, это тот же принцип, что у велосипедной динамо-машины. Сигнал быстро слабеет, потому что протоны отдают энергию и снова выстраиваются. Его называют **Free Induction Decay**, сокращённо **FID**: спад свободной индукции.',
         },
+        { type: 'figure', id: 'rf-pulse', caption: 'Следи за зелёной стрелкой: сначала она покоится вдоль z, потом РЧ-импульс на ларморовой частоте опрокидывает её на 90° в плоскость xy. Только там она кружит и наводит в катушке затухающий FID.' },
         {
           type: 'p',
           text: 'Цепочка замкнулась: **вход** это импульсная последовательность, **выход** это сигнал FID. Всё остальное в МРТ отвечает на вопрос, как из этого сигнала получить изображение.',

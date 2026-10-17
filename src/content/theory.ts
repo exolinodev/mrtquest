@@ -16,6 +16,8 @@ export type TheoryBlock =
   | { type: 'mnemonic'; text: string }
   /** Typische Prüfungsfrage mit Musterantwort; sim ist ein Pfad unter /labor, z. B. 'signal/spectrum' */
   | { type: 'exam'; question: string; answer: string; full?: string; sim?: string }
+  /** Schematische Abbildung aus src/components/figures (id), mit Bildunterschrift */
+  | { type: 'figure'; id: string; caption: string }
   /** Häufige Denkfehler */
   | { type: 'pitfall'; items: string[] }
   | { type: 'p'; text: string }

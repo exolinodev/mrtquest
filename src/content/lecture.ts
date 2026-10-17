@@ -21,7 +21,7 @@ function lesson(id: string, pages: number[], module: ModuleId, simulator: Simula
 
 export const LECTURE_SOURCE = {
   filename: '03_MBR_MRI.pdf', title: 'Medical Imaging · Magnetic Resonance Imaging MRI',
-  author: 'Stephan Scheidegger · ZHAW School of Engineering', pages: 72,
+  author: 'Vorlesungsskript', pages: 72,
   bibliography: [
     { title: 'IAEA: Diagnostic Radiology Physics (2014), Kapitel 15', url: 'https://www.iaea.org/publications/8841/diagnostic-radiology-physics' },
     { title: 'Oppelt (Hrsg.): Imaging Systems for Medical Diagnostics', isbn: '3-89578-226-2' },
