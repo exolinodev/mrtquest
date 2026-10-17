@@ -65,6 +65,30 @@ const PAGES = [
   { name: 'profil', path: '/profil' },
   { name: 'navigation-offen', path: '/', click: '.menu-btn', mobileOnly: true },
   {
+    name: 'challenge-regeln', path: '/modul/hardware/challenge',
+    interact: async (page) => {
+      await page.locator('.challenge-rules summary').click();
+      assert.match(await page.locator('.challenge-overview').innerText(), /7/);
+    },
+  },
+  {
+    name: 'challenge-auswertung', path: '/modul/kernspin/challenge',
+    interact: async (page) => {
+      await page.locator('.challenge-start').click();
+      for (let i = 0; i < 8; i++) {
+        const input = page.locator('.numeric-input input');
+        if (await input.count()) await input.fill('0');
+        else await page.locator('.option').first().click();
+        await page.locator('.question button[type="submit"]').press('Enter');
+        await page.locator('.feedback').waitFor({ state: 'visible' });
+        await page.locator('.feedback .btn').click();
+        await page.locator('.feedback').waitFor({ state: 'hidden' });
+      }
+      assert.equal(await page.locator('.challenge-review-item').count(), 8);
+      await page.locator('.challenge-review-item summary').first().click();
+    },
+  },
+  {
     name: 'gradient-offset-max', path: '/labor/gradient',
     interact: async (page) => page.getByRole('slider').nth(2).press('End'),
   },

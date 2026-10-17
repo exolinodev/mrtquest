@@ -31,10 +31,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const notify = useCallback((toast: Omit<Toast, 'id'>) => {
     const id = ++toastCounter;
     setToasts((t) => [...t.slice(-4), { ...toast, id }]);
-    window.setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), toast.kind === 'level' ? 6500 : 4500);
   }, []);
 
   const dismissToast = useCallback((id: number) => setToasts((t) => t.filter((x) => x.id !== id)), []);
+  const activeToast = toasts[0];
+  useEffect(() => {
+    if (!activeToast) return;
+    const timer = window.setTimeout(() => dismissToast(activeToast.id), activeToast.kind === 'level' ? 6500 : 4500);
+    return () => window.clearTimeout(timer);
+  }, [activeToast, dismissToast]);
 
   const dispatch = useCallback((action: GameAction) => {
     lastActionRef.current = action;

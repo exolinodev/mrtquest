@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ChallengeRunner } from '../components/ChallengeRunner';
+import { ChallengeIntro } from '../components/ChallengeIntro';
 import { RichText, TeX } from '../components/RichText';
 import { Link, navigate } from '../components/router';
 import { Callout } from '../components/ui';
@@ -122,7 +123,6 @@ function TheoryView({ moduleId }: { moduleId: ModuleId }) {
 
 function ChallengeView({ moduleId }: { moduleId: ModuleId }) {
   const { state } = useGame();
-  const { tr } = useLang();
   const [round, setRound] = useState(0);
   const [started, setStarted] = useState(false);
   const progress = state.modules[moduleId];
@@ -131,38 +131,8 @@ function ChallengeView({ moduleId }: { moduleId: ModuleId }) {
 
   if (!started) {
     return (
-      <div className="challenge-intro">
-        <h2>{tr('🏁 Modul-Challenge', '🏁 Задание модуля')}</h2>
-        <p>
-          {tr(
-            `${CHALLENGE_LENGTH} Aufgaben aus Verständnisfragen und Rechen-Puzzles mit zufällig generierten Werten. Jede Runde ist anders.`,
-            `${CHALLENGE_LENGTH} заданий: вопросы на понимание и расчётные задачи со случайно сгенерированными значениями. Каждый раунд отличается.`,
-          )}
-        </p>
-        <ul>
-          <li>{tr('XP pro richtiger Antwort', 'XP за правильный ответ')}: ◆ 10 · ◆◆ 15 · ◆◆◆ 25</li>
-          <li>{tr('Serie ab 3 richtigen: ×1,2 XP · ab 6: ×1,5 XP', 'Серия от 3 правильных: ×1,2 XP · от 6: ×1,5 XP')}</li>
-          <li>{tr('Hinweise halbieren die XP der Frage', 'Подсказка уменьшает XP за вопрос вдвое')}</li>
-          <li>{tr('Abschlussbonus', 'Бонус за завершение')}: 60 % → +10 · 80 % → +25 · 100 % → +40 XP</li>
-          <li>
-            {tr(
-              'Ab 80 % gilt das Modul als gemeistert (Abzeichen!) – danach Wiederholungsmodus mit halben XP.',
-              'От 80 % модуль считается освоенным (награда!) – далее режим повторения с половиной XP.',
-            )}
-          </li>
-        </ul>
-        {progress && progress.attempts > 0 && (
-          <p className="muted">
-            {tr(
-              `Bisher: ${progress.attempts} Versuch(e), Bestwert ${Math.round(progress.bestScore * 100)} %`,
-              `До сих пор: попыток – ${progress.attempts}, лучший результат ${Math.round(progress.bestScore * 100)} %`,
-            )}
-          </p>
-        )}
-        <button className="btn primary big" type="button" onClick={() => setStarted(true)}>
-          {tr('Challenge starten', 'Начать задание')}
-        </button>
-      </div>
+      <ChallengeIntro count={CHALLENGE_LENGTH} kind={{ type: 'module', moduleId }} replay={replay}
+        attempts={progress?.attempts} bestScore={progress?.bestScore} onStart={() => setStarted(true)} />
     );
   }
 

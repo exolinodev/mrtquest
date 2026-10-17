@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ChallengeRunner } from '../components/ChallengeRunner';
+import { ChallengeIntro } from '../components/ChallengeIntro';
 import { Link } from '../components/router';
 import { ProgressBar, Stars } from '../components/ui';
 import { MODULES } from '../content/modules';
@@ -140,8 +141,8 @@ export function ExamPage() {
         <h1>{title}</h1>
         <p className="lead">
           {tr(
-            'Die Prüfung wird freigeschaltet, sobald du jede Modul-Challenge mindestens einmal gespielt hast.',
-            'Экзамен откроется, как только ты пройдёшь задание каждого модуля хотя бы один раз.',
+            'Die Prüfung wird freigeschaltet, sobald du jede Modul-Challenge mindestens einmal abgeschlossen hast.',
+            'Экзамен откроется, когда ты завершишь задание каждого модуля хотя бы один раз.',
           )}
         </p>
         <ul className="checklist">
@@ -159,22 +160,8 @@ export function ExamPage() {
     return (
       <div className="page">
         <h1>{title}</h1>
-        <div className="challenge-intro">
-          <p>
-            {tr(
-              `${EXAM_LENGTH} gemischte Aufgaben aus allen sieben Modulen. Bestehensgrenze: 80 %. Bestanden gibt es +150 XP und das Gold-Abzeichen „Prüfung bestanden“.`,
-              `${EXAM_LENGTH} смешанных заданий из всех семи модулей. Проходной балл: 80 %. За успешную сдачу – +150 XP и золотая награда «Экзамен сдан».`,
-            )}
-          </p>
-          {state.examBest > 0 && (
-            <p className="muted">
-              {tr('Bisheriger Bestwert', 'Лучший результат на данный момент')}: {Math.round(state.examBest * 100)} %
-            </p>
-          )}
-          <button className="btn primary big" type="button" onClick={() => setStarted(true)}>
-            {tr('Prüfung beginnen', 'Начать экзамен')}
-          </button>
-        </div>
+        <ChallengeIntro count={EXAM_LENGTH} kind={{ type: 'exam' }} replay={state.examBest >= 0.8}
+          bestScore={state.examBest} onStart={() => setStarted(true)} />
       </div>
     );
   }

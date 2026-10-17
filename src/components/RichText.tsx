@@ -2,12 +2,12 @@ import katex from 'katex';
 import { Fragment, memo, useMemo } from 'react';
 
 function renderTex(tex: string, displayMode: boolean): string {
-  return katex.renderToString(tex, { displayMode, throwOnError: false, strict: 'ignore', output: 'html' });
+  return katex.renderToString(tex, { displayMode, throwOnError: false, strict: 'ignore', output: 'htmlAndMathml' });
 }
 
 export const TeX = memo(function TeX({ tex, block = false }: { tex: string; block?: boolean }) {
   const html = useMemo(() => renderTex(tex, block), [tex, block]);
-  return block ? <div className="tex-block" dangerouslySetInnerHTML={{ __html: html }} /> : <span dangerouslySetInnerHTML={{ __html: html }} />;
+  return block ? <div className="tex-block" dangerouslySetInnerHTML={{ __html: html }} /> : <span className="tex-inline" dangerouslySetInnerHTML={{ __html: html }} />;
 });
 
 /** Zerlegt Text in Abschnitte mit $Formel$ und **Fettdruck**. */
