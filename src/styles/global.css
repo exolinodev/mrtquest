@@ -2049,18 +2049,20 @@ h1, h2, h3, .lead, .eyebrow, .panel, .module-card, .scenario-card,
     position: sticky;
     top: 0;
     z-index: 2;
+    margin-inline: -0.75rem;
+    padding: max(1rem, env(safe-area-inset-top)) 0.75rem 0;
     background: var(--bg-2);
   }
   .sidebar-heading .nav-close {
-    top: 0;
-    right: 0;
+    top: max(1rem, env(safe-area-inset-top));
+    right: 0.75rem;
   }
   .nav-item {
     min-height: 44px;
   }
   .sidebar {
     overscroll-behavior-y: contain;
-    padding-top: max(1rem, env(safe-area-inset-top));
+    padding-top: 0;
     padding-bottom: max(2rem, env(safe-area-inset-bottom));
   }
   .nav-open .sidebar {
