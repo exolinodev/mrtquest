@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { LineChart, sampleCurve } from '../components/LineChart';
 import { TeX } from '../components/RichText';
-import { Panel, Segmented, Slider } from '../components/ui';
+import { Panel, Segmented, Slider, Toggle } from '../components/ui';
 import { TISSUES, type FieldStrength, type TissueId } from '../physics/constants';
 import { fmt, mxyDecay, mzAfter90, mzAfterInversion, spinEchoSignal } from '../physics/mri';
 import { describeWeighting, DEFAULT_PROTOCOL } from '../physics/protocol';
@@ -180,9 +180,7 @@ export function RelaxationSimulator() {
         title={tr('Quermagnetisierung Mxy(t) – T2 / T2*', 'Поперечная намагниченность Mxy(t) – T2 / T2*')}
         className="span-2"
         actions={
-          <label className="small">
-            <input type="checkbox" checked={showStar} onChange={(e) => setShowStar(e.target.checked)} /> {tr('T2* (gestrichelt)', 'T2* (пунктир)')}
-          </label>
+          <Toggle label={tr('T2* (gestrichelt)', 'T2* (пунктир)')} checked={showStar} onChange={setShowStar} />
         }
       >
         <LineChart

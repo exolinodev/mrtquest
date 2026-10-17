@@ -217,8 +217,9 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
       </header>
       <div className="tabs" role="tablist">
         {tabs.map((t) => (
-          <button key={t.id} role="tab" type="button" aria-selected={active === t.id} className={active === t.id ? 'active' : ''} onClick={() => navigate(`/modul/${meta.id}/${t.id}`)}>
-            {t.label}
+          <button key={t.id} role="tab" type="button" aria-selected={active === t.id} aria-label={t.label} className={active === t.id ? 'active' : ''} onClick={() => navigate(`/modul/${meta.id}/${t.id}`)}>
+            <span className={t.id === 'simulator' ? 'tab-label-full' : undefined}>{t.label}</span>
+            {t.id === 'simulator' && <span className="tab-label-short" aria-hidden="true">{tr('🔬 Simulator', '🔬 Симулятор')}</span>}
           </button>
         ))}
       </div>

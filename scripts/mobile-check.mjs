@@ -30,9 +30,15 @@ const CHROME_CANDIDATES = [
 ].filter(Boolean);
 
 const ALL_VIEWPORTS = {
+  320: { width: 320, height: 740 }, // schmales iPhone
   360: { width: 360, height: 740 }, // kleines Android
   390: { width: 390, height: 844 }, // iPhone 13/14
+  430: { width: 430, height: 932 }, // großes Smartphone
   768: { width: 768, height: 1024 }, // Tablet hochkant
+  844: { width: 844, height: 390 }, // Smartphone quer
+  901: { width: 901, height: 700 }, // direkt oberhalb des Sidebar-Breakpoints
+  1024: { width: 1024, height: 768 }, // Tablet quer
+  1280: { width: 1280, height: 900 }, // Desktop-Kontrolle
 };
 
 const MODULES = ['kernspin', 'relaxation', 'ortskodierung', 'kraum', 'sequenzen', 'qualitaet', 'hardware'];
@@ -45,6 +51,7 @@ const PAGES = [
   ...MODULES.flatMap((m) => [
     { name: `modul-${m}-theorie`, path: `/modul/${m}/theorie` },
     { name: `modul-${m}-simulator`, path: `/modul/${m}/simulator` },
+    { name: `modul-${m}-intro`, path: `/modul/${m}/challenge` },
     { name: `modul-${m}-challenge`, path: `/modul/${m}/challenge`, click: '.challenge-intro .btn.primary' },
   ]),
   { name: 'klinik', path: '/klinik' },
@@ -52,8 +59,38 @@ const PAGES = [
   { name: 'labor', path: '/labor' },
   ...SIMULATORS.map((s) => ({ name: `labor-${s}`, path: `/labor/${s}` })),
   { name: 'pruefung', path: '/pruefung' },
+  { name: 'pruefung-offen', path: '/pruefung', unlockedExam: true },
+  { name: 'pruefung-frage', path: '/pruefung', unlockedExam: true, click: '.challenge-intro .btn.primary' },
   { name: 'profil', path: '/profil' },
   { name: 'navigation-offen', path: '/', click: '.menu-btn', mobileOnly: true },
+  {
+    name: 'gradient-offset-max', path: '/labor/gradient',
+    interact: async (page) => page.getByRole('slider').nth(2).press('End'),
+  },
+  ...[1, 2].map((index) => ({
+    name: `gradient-modus-${index + 1}`, path: '/labor/gradient',
+    interact: async (page) => page.getByRole('radiogroup').first().getByRole('radio').nth(index).click(),
+  })),
+  ...[0, 2, 3, 4].map((index) => ({
+    name: `sequenz-modus-${index}`, path: '/labor/sequence',
+    interact: async (page) => page.getByRole('radiogroup').first().getByRole('radio').nth(index).click(),
+  })),
+  {
+    name: 'kraum-basiswelle', path: '/labor/kspace',
+    interact: async (page) => page.locator('canvas.clickable').click(),
+  },
+  {
+    name: 'scanner-auswahl', path: '/labor/scanner',
+    interact: async (page) => page.getByRole('combobox').selectOption('coils'),
+  },
+  {
+    name: 'artefakt-auswertung', path: '/labor/artifact',
+    interact: async (page) => {
+      await page.locator('.options.compact').nth(0).getByRole('button').first().click();
+      await page.locator('.options.compact').nth(1).getByRole('button').first().click();
+      await page.locator('.sim-grid > .panel').last().locator('.btn.primary').click();
+    },
+  },
 ];
 
 const viewports = (process.env.VIEWPORTS ?? Object.keys(ALL_VIEWPORTS).join(','))
@@ -93,11 +130,12 @@ function inspectPage(vw) {
   const uniqueOffenders = [...new Set(offenders)].slice(0, 8);
 
   const smallTargets = [];
-  for (const el of document.querySelectorAll('button, a[href], input, [role="button"], [role="radio"]')) {
+  for (const el of document.querySelectorAll('button, a[href], input, select, .toggle, [role="button"], [role="radio"]')) {
     const r = el.getBoundingClientRect();
-    if (!visible(el, r) || el.closest('.sidebar') || el.closest('svg')) continue;
-    if (el.matches('input[type="range"], input[type="checkbox"]')) continue;
-    if (r.width < 24 || r.height < 24) smallTargets.push(`${describe(el)} (${Math.round(r.width)}×${Math.round(r.height)})`);
+    if (!visible(el, r) || el.closest('[inert], [aria-hidden="true"]') || el.closest('svg')) continue;
+    // The SVG has a full-sized native picker; hidden toggle inputs use their label.
+    if (el.matches('.toggle input')) continue;
+    if (r.width < 43.5 || r.height < 43.5) smallTargets.push(`${describe(el)} (${Math.round(r.width)}×${Math.round(r.height)})`);
   }
 
   return {
@@ -138,7 +176,7 @@ async function main() {
 
     for (const lang of langs) {
       for (const [vpName, vp] of viewports) {
-        const mobile = vp.width < 768;
+        const mobile = vp.width <= 900;
         const context = await browser.newContext({ viewport: vp, deviceScaleFactor: 1, isMobile: mobile, hasTouch: mobile, reducedMotion: 'reduce' });
         await context.addInitScript((l) => localStorage.setItem('mrt-quest:lang', l), lang);
         const dir = join(OUT, lang, String(vpName));
@@ -150,11 +188,25 @@ async function main() {
           const errors = [];
           page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
           page.on('console', (m) => m.type() === 'error' && errors.push(`console: ${m.text()}`));
+          if (pg.unlockedExam) {
+            // Separate page fixture: also cover the exam after all modules are played.
+            await page.addInitScript((ids) => localStorage.setItem('mrt-quest:v1', JSON.stringify({
+              version: 1,
+              modules: Object.fromEntries(ids.map((id) => [id, { attempts: 1, bestScore: 0, perfect: false, theoryRead: false, xpEarned: 0 }])),
+            })), MODULES);
+          } else {
+            await page.addInitScript(() => localStorage.removeItem('mrt-quest:v1'));
+          }
           await page.goto(`${BASE}#${pg.path}`, { waitUntil: 'load' });
-          await page.waitForTimeout(350);
+          await page.locator('main h1').waitFor();
+          await page.evaluate(() => document.fonts.ready);
           if (pg.click) {
             await page.click(pg.click, { timeout: 3000 }).catch((e) => errors.push(`Klick ${pg.click}: ${e.message.split('\n')[0]}`));
-            await page.waitForTimeout(350);
+            await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+          }
+          if (pg.interact) {
+            await pg.interact(page).catch((e) => errors.push(`Interaktion: ${e.message.split('\n')[0]}`));
+            await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
           }
           const report = await page.evaluate(inspectPage, vp.width);
           await page.screenshot({ path: join(dir, `${pg.name}.png`), fullPage: true });
@@ -170,7 +222,7 @@ async function main() {
   }
 
   writeFileSync(join(OUT, 'report.json'), JSON.stringify(results, null, 2));
-  const failures = results.filter((r) => r.horizontalOverflow || r.offenders.length || r.errors.length);
+  const failures = results.filter((r) => r.horizontalOverflow || r.offenders.length || r.smallTargets.length || r.errors.length);
   const small = results.filter((r) => r.smallTargets.length);
   for (const r of failures) {
     console.log(`✘ ${r.lang}/${r.viewport}/${r.page}: scrollWidth ${r.scrollWidth}px bei ${r.viewport}px`);

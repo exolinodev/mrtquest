@@ -32,7 +32,7 @@ interface Props {
 
 /** Maximale Zeichenbreite; auf schmalen Bildschirmen wird die tatsächliche Breite genutzt, damit Beschriftungen lesbar bleiben. */
 const MAX_W = 640;
-const MIN_W = 280;
+const MIN_W = 220;
 const PAD = { l: 48, r: 16, t: 14, b: 40 };
 
 function ticks([a, b]: [number, number], count: number): number[] {

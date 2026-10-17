@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import { MRImage } from '../components/MRImage';
 import { Panel, Segmented, Slider, Stars, Stat, Toggle } from '../components/ui';
 import { evaluateScenario, type ParamKey, type Scenario } from '../content/scenarios';
@@ -87,6 +87,7 @@ function sarModeLabel(mode: 'normal' | 'first-level' | 'unzulässig', lang: Lang
 }
 
 export function ProtocolConsole({ scenario }: Props) {
+  const consoleId = useId();
   const { state, dispatch } = useGame();
   const { tr, loc, lang } = useLang();
   const [protocol, setProtocol] = useState<Protocol>(scenario?.start ?? DEFAULT_PROTOCOL);
@@ -123,7 +124,24 @@ export function ProtocolConsole({ scenario }: Props) {
 
   return (
     <div className="console">
-      <Panel title={tr('Protokoll', 'Протокол')} className="console-controls">
+      <nav className="console-nav" aria-label={tr('Protokoll-Konsole', 'Консоль протоколов')}>
+        {[
+          { id: 'controls', label: tr('Parameter', 'Параметры') },
+          { id: 'preview', label: tr('Bild & Werte', 'Изображение') },
+          ...(scenario ? [{ id: 'requirements', label: tr('Anforderungen', 'Требования') }] : []),
+        ].map((item) => (
+          <button
+            className="btn small"
+            type="button"
+            key={item.id}
+            aria-controls={`${consoleId}-${item.id}`}
+            onClick={() => document.getElementById(`${consoleId}-${item.id}`)?.scrollIntoView({ block: 'start' })}
+          >
+            {item.label}
+          </button>
+        ))}
+      </nav>
+      <Panel id={`${consoleId}-controls`} title={tr('Protokoll', 'Протокол')} className="console-controls">
         {editable.includes('sequence') && (
           <Segmented<SequenceType>
             label={tr('Sequenz', 'Последовательность')}
@@ -202,7 +220,7 @@ export function ProtocolConsole({ scenario }: Props) {
         )}
       </Panel>
 
-      <div className="console-center">
+      <div id={`${consoleId}-preview`} className="console-center">
         <Panel title={tr('Vorschau', 'Предпросмотр')}>
           <MRImage data={image} label={tr('Simulierte Aufnahme', 'Смоделированное изображение')} overlay={loc(metrics.weighting)} />
         </Panel>
@@ -247,7 +265,7 @@ export function ProtocolConsole({ scenario }: Props) {
       </div>
 
       {scenario && evaluation && (
-        <Panel title={tr('Anforderungen', 'Требования')} className="console-reqs">
+        <Panel id={`${consoleId}-requirements`} title={tr('Anforderungen', 'Требования')} className="console-reqs">
           <ul className="req-list">
             {evaluation.results.map(({ req, ok }) => (
               <li key={req.id} className={ok ? 'ok' : 'nok'}>
