@@ -88,9 +88,9 @@ export function Stat({ label, value, unit, tone, sub }: { label: string; value: 
   );
 }
 
-export function Panel({ title, children, actions, className = '' }: { title?: ReactNode; children: ReactNode; actions?: ReactNode; className?: string }) {
+export function Panel({ id, title, children, actions, className = '' }: { id?: string; title?: ReactNode; children: ReactNode; actions?: ReactNode; className?: string }) {
   return (
-    <section className={`panel ${className}`}>
+    <section id={id} className={`panel ${className}`}>
       {(title || actions) && (
         <header className="panel-head">
           {title && <h3>{title}</h3>}

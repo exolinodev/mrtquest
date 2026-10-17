@@ -118,7 +118,7 @@ p {
 /* ---------------------------------------------------------------- Shell */
 .app-shell {
   display: grid;
-  grid-template-columns: 270px 1fr;
+  grid-template-columns: 270px minmax(0, 1fr);
   min-height: 100vh;
 }
 
@@ -151,6 +151,9 @@ p {
   color: var(--muted);
   font-size: 0.75rem;
 }
+.brand > span:last-child {
+  min-width: 0;
+}
 
 .nav-group {
   margin: 1rem 0.6rem 0.3rem;
@@ -162,6 +165,7 @@ p {
 
 .nav-item {
   display: flex;
+  min-height: 44px;
   align-items: center;
   gap: 0.6rem;
   padding: 0.5rem 0.6rem;
@@ -710,7 +714,7 @@ p {
 
 .module-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
   gap: 1rem;
 }
 .module-card {
@@ -1323,6 +1327,7 @@ th {
 
 .body-strip {
   position: relative;
+  overflow: hidden;
   height: 46px;
   margin: 0.4rem 0 0.4rem 48px;
   margin-right: 16px;
@@ -1411,7 +1416,7 @@ th {
 
 .control-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
   gap: 0 1.4rem;
   align-items: start;
 }
@@ -1594,7 +1599,7 @@ th {
 /* ---------------------------------------------------------------- Klinik / Konsole */
 .scenario-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   gap: 1rem;
   margin-top: 1rem;
 }
@@ -1735,7 +1740,7 @@ th {
 }
 .badge-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr));
   gap: 0.8rem;
 }
 .badge-card {
@@ -1863,6 +1868,143 @@ th {
   color: #fff;
 }
 
+/* Shared responsive primitives: keep labels readable and controls easy to tap. */
+.main-col {
+  container: workspace / inline-size;
+}
+body {
+  min-height: 100dvh;
+}
+h1, h2, h3, .lead, .eyebrow, .panel, .module-card, .scenario-card,
+.badge-card, .question, .challenge-intro, .challenge-summary, .footer {
+  overflow-wrap: anywhere;
+}
+.row.gap, .panel-head, .slider-head, .challenge-head {
+  flex-wrap: wrap;
+}
+.row > *, .panel-head > *, .module-header > div, .scenario-header > div,
+.theory-body, .hero > *, .segmented-wrap, .slider, .legend-item, .option > span {
+  min-width: 0;
+}
+.btn, .segmented button, .lang-toggle button, .chip, .menu-btn, .nav-close,
+.tabs button, .text-field, .num-field, .numeric-input input {
+  min-height: 44px;
+}
+.btn, .segmented button, .chip {
+  min-width: 44px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+.text-field, .num-field, .numeric-input input {
+  min-width: 0;
+  max-width: 100%;
+  font-size: 16px; /* Prevent focus zoom on iOS. */
+}
+.name-form .text-field, .profile-grid form .text-field {
+  flex: 1 1 160px;
+}
+.menu-btn, .nav-close {
+  width: 44px;
+  flex: 0 0 44px;
+}
+.nav-close {
+  display: none;
+  position: absolute;
+  top: max(0.75rem, env(safe-area-inset-top));
+  right: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+.level-chip {
+  min-height: 44px;
+}
+.level-badge, .slider-head output {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.level-info {
+  min-width: 0;
+}
+.level-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.slider-head label {
+  flex: 1 1 8rem;
+}
+.slider input[type='range'] {
+  display: block;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+.toggle {
+  min-height: 44px;
+}
+.toggle-track, .sec-num, .legend-swatch {
+  flex-shrink: 0;
+}
+.toc a, .back-link, .next-module a, .checklist a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.4rem 0;
+}
+.toc a {
+  display: block;
+}
+.toc li {
+  margin-block: 0.15rem;
+}
+.tab-label-short {
+  display: none;
+}
+.scroll-x, .table-wrap, .tex-block {
+  max-width: 100%;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-x {
+  overflow-x: auto;
+}
+.scroll-x .pulse-diagram {
+  display: block;
+  min-width: 600px;
+}
+.spin-fan svg {
+  max-width: 100%;
+  height: auto;
+}
+.scanner-picker {
+  display: grid;
+  gap: 0.4rem;
+  margin-block: 1rem;
+}
+.scanner-picker label {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+.scanner-picker select {
+  width: 100%;
+}
+.challenge, .challenge-summary {
+  scroll-margin-top: 90px;
+}
+.diagram-hint, .console-nav {
+  display: none;
+}
+.console-controls, .console-center, .console-reqs {
+  scroll-margin-top: 150px;
+}
+
 /* ---------------------------------------------------------------- Responsiv */
 @media (max-width: 1250px) {
   .console {
@@ -1893,12 +2035,38 @@ th {
   .sidebar {
     position: fixed;
     inset: 0 auto 0 0;
-    width: 280px;
+    width: min(320px, calc(100% - 3rem));
+    height: 100dvh;
     z-index: 50;
+    visibility: hidden;
     transform: translateX(-100%);
-    transition: transform 0.2s ease;
+    /* Keep pointer targets stationary when the drawer opens. */
+  }
+  .sidebar .brand {
+    margin-right: 2.5rem;
+  }
+  .sidebar-heading {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    margin-inline: -0.75rem;
+    padding: max(1rem, env(safe-area-inset-top)) 0.75rem 0;
+    background: var(--bg-2);
+  }
+  .sidebar-heading .nav-close {
+    top: max(1rem, env(safe-area-inset-top));
+    right: 0.75rem;
+  }
+  .nav-item {
+    min-height: 44px;
+  }
+  .sidebar {
+    overscroll-behavior-y: contain;
+    padding-top: 0;
+    padding-bottom: max(2rem, env(safe-area-inset-bottom));
   }
   .nav-open .sidebar {
+    visibility: visible;
     transform: none;
   }
   .nav-open .scrim {
@@ -1908,8 +2076,10 @@ th {
     background: rgba(0, 0, 0, 0.5);
     z-index: 40;
   }
-  .menu-btn {
-    display: inline-block;
+  .menu-btn,
+  .nav-close {
+    display: inline-grid;
+    place-items: center;
   }
   .topbar-stats {
     display: none;
@@ -1980,6 +2150,140 @@ th {
   .content {
     padding: 1.2rem 1rem 2rem;
   }
+  .panel,
+  .question,
+  .challenge-intro,
+  .challenge-summary {
+    padding: 1rem;
+  }
+  .hero {
+    padding: 1.1rem;
+    gap: 1.4rem;
+  }
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    overflow: visible;
+  }
+  .tabs button {
+    padding: 0.65rem 0.2rem;
+    font-size: 0.82rem;
+    white-space: normal;
+  }
+  .tab-label-full {
+    display: none;
+  }
+  .tab-label-short {
+    display: inline;
+  }
+  .module-header {
+    gap: 0.7rem;
+    align-items: flex-start;
+  }
+  .module-icon.big {
+    font-size: 2rem;
+  }
+  .sim-canvas {
+    aspect-ratio: 1;
+  }
+  .image-placeholder {
+    aspect-ratio: auto;
+    min-height: 72px;
+  }
+  .formula {
+    margin-inline: 0;
+    padding: 0.7rem;
+  }
+  .table-wrap table {
+    min-width: 520px;
+  }
+  .footer {
+    padding: 1rem;
+  }
+  .topbar {
+    gap: 0.5rem;
+    padding-inline: max(0.75rem, env(safe-area-inset-left)) max(0.75rem, env(safe-area-inset-right));
+  }
+  .level-chip {
+    gap: 0.5rem;
+  }
+  .level-badge {
+    padding-inline: 0.45rem;
+  }
+  .lang-toggle {
+    gap: 0.1rem;
+    padding: 0.1rem;
+  }
+  .lang-toggle button {
+    padding-inline: 0.4rem;
+  }
+  .num-field {
+    flex: 1 1 100px;
+  }
+  .kpi {
+    padding: 0.8rem;
+  }
+  .toast-stack {
+    right: 1rem;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* Respond to the space beside the sidebar as well as the device width. */
+@container workspace (max-width: 1000px) {
+  .console {
+    grid-template-columns: 280px minmax(0, 1fr);
+  }
+  .console-reqs {
+    grid-column: 1 / -1;
+    position: static;
+  }
+  .topbar-stats {
+    display: none;
+  }
+  .lang-toggle {
+    margin-left: auto;
+  }
+  .level-chip {
+    flex: 1;
+    min-width: 0;
+  }
+}
+@container workspace (max-width: 760px) {
+  .console-nav {
+    display: flex;
+    gap: 0.3rem;
+    position: sticky;
+    top: 78px;
+    z-index: 15;
+    padding: 0.4rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-2);
+  }
+  .console-nav button {
+    flex: 1;
+    min-width: 0;
+    padding-inline: 0.3rem;
+  }
+  .diagram-hint {
+    display: block;
+  }
+  .sim-grid, .profile-grid, .theory, .hero, .console {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .span-2, .span-3, .console-reqs {
+    grid-column: auto;
+  }
+  .toc, .console-controls, .console-reqs {
+    position: static;
+    max-height: none;
+  }
+  .spin-fan {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1988,130 +2292,5 @@ th {
   *::after {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
-  }
-}
-
-/* ---------------------------------------------------------------- Mobile-Feinschliff
- * Ergebnis des mobilen Regressionstests (npm run test:mobile):
- * lange Komposita umbrechen, Button-Reihen umbrechen, Touch-Ziele ≥ 24 px.
- */
-h1,
-h2,
-h3,
-.lead,
-.theory-body p,
-.theory-body li,
-.question-prompt,
-.option,
-.stat-label,
-.kpi-label,
-.module-sub,
-.scenario-task {
-  overflow-wrap: break-word;
-  hyphens: auto;
-}
-
-.row.gap {
-  flex-wrap: wrap;
-}
-
-.name-form .text-field {
-  flex: 1 1 160px;
-  min-width: 0;
-}
-
-.theory-body,
-.console-center,
-.hero > * {
-  min-width: 0;
-}
-
-.toc a,
-.back-link,
-.next-module a,
-.checklist a {
-  display: inline-block;
-  padding: 0.2rem 0;
-  min-height: 24px;
-}
-
-@media (max-width: 680px) {
-  .toc li {
-    margin: 0.15rem 0;
-  }
-  .toc a {
-    padding: 0.35rem 0;
-  }
-  .num-field {
-    flex: 1 1 100px;
-  }
-}
-
-/* Breite Diagramme auf dem Handy horizontal scrollbar statt unlesbar klein */
-.scroll-x {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-.level-badge {
-  white-space: nowrap;
-}
-.level-title {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.level-info {
-  min-width: 0;
-}
-.toc a {
-  display: block;
-}
-
-@media (max-width: 680px) {
-  .sim-canvas {
-    aspect-ratio: 1 / 1;
-  }
-  .scroll-x .pulse-diagram {
-    min-width: 600px;
-  }
-  .tabs {
-    flex-wrap: wrap;
-    overflow-x: visible;
-  }
-  .tabs button {
-    flex: 1 1 auto;
-    padding: 0.6rem 0.7rem;
-    white-space: normal;
-  }
-  .image-placeholder {
-    aspect-ratio: auto;
-    min-height: 72px;
-  }
-  .lang-toggle button {
-    padding: 0.3rem 0.45rem;
-  }
-  .formula .katex {
-    font-size: 0.98em;
-  }
-}
-
-/* Flex-Kinder mit langen Überschriften dürfen schrumpfen; Umbruch notfalls mitten im Wort
- * (unter Linux fehlt Chrome teils das Silbentrennungs-Wörterbuch, z. B. für Russisch). */
-.module-header > div,
-.scenario-header > div {
-  min-width: 0;
-}
-.module-header h1,
-.scenario-header h1,
-.page > h1 {
-  overflow-wrap: anywhere;
-}
-@media (max-width: 680px) {
-  .module-header {
-    gap: 0.7rem;
-    align-items: flex-start;
-  }
-  .module-icon.big {
-    font-size: 2rem;
   }
 }

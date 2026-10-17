@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { isNumericCorrect, materialize, parseNumber, type QuestionRef } from '../content/questions/types';
 import { useGame } from '../game/GameContext';
 import { answerXp } from '../game/levels';
@@ -41,6 +41,11 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
   const [hintShown, setHintShown] = useState(false);
   const [submitted, setSubmitted] = useState<AnswerRecord | null>(null);
   const [finished, setFinished] = useState<{ score: number; bonus: number } | null>(null);
+  const questionRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    questionRef.current?.focus({ preventScroll: true });
+    questionRef.current?.scrollIntoView({ block: 'start' });
+  }, [index, finished]);
 
   // Bei Sprachwechsel neu materialisiert: gleiche Seeds ⇒ gleiche Werte und Optionsreihenfolge
   const q = useMemo(() => (questions[index] ? materialize(questions[index], lang) : undefined), [questions, index, lang]);
@@ -57,7 +62,7 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
   if (finished) {
     const pct = Math.round(finished.score * 100);
     return (
-      <div className="challenge-summary">
+      <div className="challenge-summary" ref={questionRef} tabIndex={-1}>
         <div className="summary-score" data-tone={pct >= 80 ? 'good' : pct >= 60 ? 'warn' : 'bad'}>
           <span className="summary-pct">{pct} %</span>
           <span>{tr(`${correctCount} von ${questions.length} richtig`, `${correctCount} из ${questions.length} правильно`)}</span>
@@ -158,7 +163,7 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
   };
 
   return (
-    <div className="challenge">
+    <div className="challenge" ref={questionRef} tabIndex={-1}>
       <div className="challenge-head">
         <span>
           {tr('Frage', 'Вопрос')} {index + 1} / {questions.length}
@@ -200,7 +205,6 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
                 setNumeric(e.target.value);
                 setInputError(null);
               }}
-              autoFocus
             />
             <span className="unit-label">{q.unit}</span>
             <span className="muted small">
@@ -260,7 +264,7 @@ export function ChallengeRunner({ questions, kind, replay, onRestart, onExit }: 
             <p>
               <RichText text={q.explanation} />
             </p>
-            <button className="btn primary" type="button" onClick={next} autoFocus>
+            <button className="btn primary" type="button" onClick={next}>
               {index + 1 >= questions.length ? tr('Auswertung', 'Результаты') : tr('Weiter →', 'Далее →')}
             </button>
           </div>

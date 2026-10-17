@@ -120,7 +120,8 @@ export function SequenceSimulator() {
       </Panel>
 
       <Panel title={tr('Pulssequenzdiagramm (schematisch)', 'Диаграмма импульсной последовательности (схематично)')} className="span-2">
-        <div className="scroll-x">
+        <p className="small muted diagram-hint">{tr('↔ Diagramm seitlich verschieben, um die gesamte Sequenz zu sehen.', '↔ Прокрути диаграмму по горизонтали, чтобы увидеть всю последовательность.')}</p>
+        <div className="scroll-x" tabIndex={0} role="region" aria-label={tr('Pulssequenzdiagramm, horizontal scrollbar', 'Диаграмма последовательности, горизонтальная прокрутка')}>
           <PulseDiagram sequence={s} te={protocol.te} ti={protocol.ti} etl={protocol.etl} flip={protocol.flip} />
         </div>
       </Panel>

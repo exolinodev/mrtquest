@@ -1,4 +1,4 @@
-import { useState, type KeyboardEvent } from 'react';
+import { useId, useState, type KeyboardEvent } from 'react';
 import { Panel } from '../components/ui';
 import { useGame } from '../game/GameContext';
 import { answerXp } from '../game/levels';
@@ -190,6 +190,7 @@ const QUIZ: Array<{ question: Loc; answer: ComponentId }> = [
 type Feedback = { ok: boolean; picked: ComponentId; expected: ComponentId; xp: number };
 
 export function ScannerExplorer() {
+  const pickerId = useId();
   const { state, dispatch } = useGame();
   const { tr, loc } = useLang();
   const [selected, setSelected] = useState<ComponentId | null>(null);
@@ -250,7 +251,7 @@ export function ScannerExplorer() {
               : `${tr('✘ Das ist', '✘ Это')} ${loc(INFO[feedback.picked].title)}. ${tr('Gesucht', 'Искали')}: ${loc(INFO[feedback.expected].title)}.`}
           </p>
         )}
-        <svg viewBox="0 0 600 470" className="scanner-svg">
+        <svg viewBox="0 0 600 470" className="scanner-svg" aria-label={tr('Interaktiver Scanner-Querschnitt', 'Интерактивное сечение сканера')}>
           <rect x="8" y="8" width="584" height="454" rx="10" {...part('cage')} />
           <text x="20" y="30" className="sx-label">
             {tr('HF-Kabine', 'РЧ-кабина')}
@@ -271,6 +272,13 @@ export function ScannerExplorer() {
           <ellipse cx="300" cy="282" rx="70" ry="36" {...part('patient')} />
           <path d="M235 258 Q300 220 365 258" fill="none" strokeWidth="10" strokeLinecap="round" {...part('surface')} />
         </svg>
+        <div className="scanner-picker">
+          <label htmlFor={pickerId}>{tr('Komponente auswählen', 'Выбрать компонент')}</label>
+          <select id={pickerId} className="text-field" value={selected ?? ''} onChange={(e) => click(e.target.value as ComponentId)}>
+            <option value="" disabled>{tr('Komponente wählen …', 'Выбери компонент …')}</option>
+            {(Object.keys(INFO) as ComponentId[]).map((id) => <option key={id} value={id}>{loc(INFO[id].title)}</option>)}
+          </select>
+        </div>
         <p className="small muted">
           {tr(
             'Klicke auf eine Komponente (Tastatur: Tab + Enter). Von außen nach innen: Kabine → Kryostat mit Spulen → Shim → Gradienten → HF-Körperspule → Tunnel.',
