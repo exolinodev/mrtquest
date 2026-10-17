@@ -50,17 +50,20 @@ const SIMULATORS = ['larmor', 'relaxation', 'gradient', 'kspace', 'sequence', 'a
 const PAGES = [
   { name: 'uebersicht', path: '/' },
   { name: 'vorlesung', path: '/vorlesung' },
+  ...['kontrollfragen','karteikarten','spickzettel','lab3'].map(tab=>({name:`vorlesung-${tab}`,path:`/vorlesung/${tab}`})),
   {
-    name: 'vorlesung-aufgeklappt', path: '/vorlesung',
+    name: 'vorlesung-kontrollfrage-offen', path: '/vorlesung/kontrollfragen',
     interact: async page=>{
-      for (const summary of await page.locator('.recap-card summary, .exam-card summary').all()) await summary.click();
+      for (const btn of await page.locator('.recap-lesson .btn.primary').all()) await btn.click();
+      assert.ok(await page.locator('.recap-answer').first().isVisible());
     },
   },
-  { name: 'signal-spektrum', path: '/labor/signal/spectrum' },
-  ...['dti','mrs','bold','contrast','cases'].map(mode=>({name:`anwendung-${mode}`,path:`/labor/applications/${mode}`})),
   {
-    name: 'fourier-tabelle', path: '/labor/fourier',
-    interact: async page=>page.locator('.fourier-steps summary').click(),
+    name: 'vorlesung-karteikarte', path: '/vorlesung/karteikarten',
+    interact: async page=>{
+      await page.locator('.flashcard .btn.primary').click();
+      assert.ok(await page.locator('.flashcard .recap-answer').isVisible());
+    },
   },
   {
     name: 'vorlesung-alter-link', path: '/vorlesung/dft',

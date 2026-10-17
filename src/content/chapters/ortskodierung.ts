@@ -45,6 +45,11 @@ export const ortskodierung: Chapter = {
           text: 'Lies die zweite Zeile so: Die Kreisfrequenz am Ort $x$ ist γ mal das Feld an diesem Ort. Das Feld besteht aus dem großen, überall gleichen $B_0$ und dem kleinen ortsabhängigen Teil $G_x x$. Das Zusatzfeld ist winzig im Vergleich zu $B_0$, oft nur einige Millitesla am Rand des Körpers. Aber es reicht, damit jeder Ort messbar anders „klingt“.',
         },
         {
+          type: 'figure',
+          id: 'gradient-body',
+          caption: 'Achte darauf, dass das Feld von links nach rechts gleichmäßig steigt und in der Mitte genau $B_0$ ist, deshalb schwingt jeder Ort mit seiner eigenen Frequenz. Die Frequenzunterschiede sind zur Verdeutlichung stark übertrieben.',
+        },
+        {
           type: 'mnemonic',
           text: '**Anderes Feld, andere Frequenz, anderer Ort.** Der Gradient verwandelt den Körper in eine Klaviertastatur, und die Frequenz verrät, wo der Ton herkommt.',
         },
@@ -184,6 +189,11 @@ export const ortskodierung: Chapter = {
           text: 'Hier ist $\\hat s$ die Amplitude eines einzelnen Spinbeitrags, $\\omega_i$ die Frequenz von Spin Nummer $i$ und $e^{i\\omega t}$ die komplexe Schreibweise für eine Schwingung. Man nimmt sie, weil sie Cosinus und Sinus in einem Ausdruck zusammenfasst, so wie die Spule die Drehung in zwei Kanälen misst.',
         },
         {
+          type: 'figure',
+          id: 'spin-sum',
+          caption: 'Jeder Ort schickt seine eigene Frequenz, aber die Spule bekommt nur die gelbe Summenkurve zu sehen. Achte darauf, dass du die einzelnen Töne darin nicht mehr direkt erkennst: Erst die Fourier-Transformation trennt sie wieder.',
+        },
+        {
           type: 'analogy',
           title: 'Ein Chor, in dem jeder Platz seinen Ton singt',
           text: 'Stell dir einen Chor vor, der in einer Reihe steht. Jeder Platz singt einen eigenen Ton, links tief, rechts hoch. Wo mehr Sänger stehen, ist dieser Ton lauter. Du hörst einen einzigen Klang, einen großen Akkord. Ein gutes Ohr, oder eben eine Fourier-Analyse, kann diesen Akkord in seine Töne zerlegen. Die Lautstärke jedes Tons sagt dir, wie viele Sänger an diesem Platz stehen. Genau so verrät die Stärke jeder Frequenz im MR-Signal, wie viele Protonen an diesem Ort sitzen.',
@@ -295,6 +305,11 @@ export const ortskodierung: Chapter = {
           text: 'Das Ganze wiederholt sich nach der Zeit TR, jetzt mit der nächsten Stufe des Phasengradienten. So füllt die Sequenz Zeile für Zeile eine Tabelle mit Messdaten.',
         },
         {
+          type: 'figure',
+          id: 'sequence-diagram',
+          caption: 'Lies das Diagramm von links nach rechts wie einen Fahrplan: 90°-Puls, nach TE/2 der 180°-Puls, und genau nach TE erscheint das Echo, während der Auslesegradient anliegt. Die Leiter in $G_{PE}$ zeigt, dass jede Wiederholung nach TR eine andere Stufe des Phasengradienten nutzt.',
+        },
+        {
           type: 'analogy',
           title: 'Ein Barcode-Scanner, der Streifenmuster vergleicht',
           text: 'Ein Gradient legt über die Schicht ein Muster aus Phasen, ähnlich wie Streifen auf einem Barcode. Jede Messung fragt: „Wie gut passt das Objekt zu genau diesem Streifenmuster?“ Grobe Streifen beschreiben die groben Formen, feine Streifen die Kanten und Details. Hat man genug verschiedene Streifenmuster abgefragt, kann man das Bild daraus zusammensetzen.',
@@ -379,6 +394,11 @@ export const ortskodierung: Chapter = {
         {
           type: 'p',
           text: 'Читай вторую строку так: угловая частота в точке $x$ равна γ, умноженному на поле в этой точке. Поле состоит из большого, везде одинакового $B_0$ и маленькой зависящей от места части $G_x x$. Дополнительное поле крошечное по сравнению с $B_0$, часто лишь несколько миллитесла на краю тела. Но этого хватает, чтобы каждое место «звучало» измеримо по-другому.',
+        },
+        {
+          type: 'figure',
+          id: 'gradient-body',
+          caption: 'Обрати внимание: поле равномерно растёт слева направо и в середине равно ровно $B_0$, поэтому каждое место колеблется со своей частотой. Различия частот для наглядности сильно преувеличены.',
         },
         {
           type: 'mnemonic',
@@ -520,6 +540,11 @@ export const ortskodierung: Chapter = {
           text: 'Здесь $\\hat s$ амплитуда вклада одного спина, $\\omega_i$ частота спина номер $i$, а $e^{i\\omega t}$ комплексная запись колебания. Её используют потому, что она объединяет косинус и синус в одном выражении, так же как катушка измеряет вращение в двух каналах.',
         },
         {
+          type: 'figure',
+          id: 'spin-sum',
+          caption: 'Каждое место посылает свою частоту, но катушка видит только жёлтую суммарную кривую. Обрати внимание, что отдельные тона в ней уже не различить напрямую: разделить их снова может только преобразование Фурье.',
+        },
+        {
           type: 'analogy',
           title: 'Хор, где каждое место поёт свой тон',
           text: 'Представь хор, стоящий в один ряд. Каждое место поёт свой тон, слева низкий, справа высокий. Где стоит больше певцов, этот тон громче. Ты слышишь один звук, большой аккорд. Хорошее ухо, или анализ Фурье, может разложить этот аккорд на тоны. Громкость каждого тона говорит, сколько певцов стоит на этом месте. Точно так же сила каждой частоты в МР-сигнале выдаёт, сколько протонов находится в этом месте.',
@@ -629,6 +654,11 @@ export const ortskodierung: Chapter = {
         {
           type: 'p',
           text: 'Всё повторяется через время TR, теперь со следующей ступенькой фазового градиента. Так последовательность строка за строкой заполняет таблицу измеренных данных.',
+        },
+        {
+          type: 'figure',
+          id: 'sequence-diagram',
+          caption: 'Читай диаграмму слева направо как расписание: импульс 90°, через TE/2 импульс 180°, а ровно через TE появляется эхо, пока включён градиент считывания. Лесенка в $G_{PE}$ показывает, что каждое повторение через TR использует другую ступеньку фазового градиента.',
         },
         {
           type: 'analogy',

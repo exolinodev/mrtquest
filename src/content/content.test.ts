@@ -111,3 +111,18 @@ describe('Formeln', () => {
     expect(broken).toEqual([]);
   });
 });
+
+describe('Abbildungen', () => {
+  it('jede Abbildung im Kapitel ist registriert und hat eine Bildunterschrift', async () => {
+    const { FIGURES } = await import('../components/figures');
+    for (const m of MODULES) {
+      for (const lang of LANGS) {
+        for (const b of CHAPTERS[m.id][lang].flatMap((s) => s.blocks)) {
+          if (b.type !== 'figure') continue;
+          expect(Object.keys(FIGURES), `${m.id}/${lang}`).toContain(b.id);
+          expect(b.caption.length, `${m.id}/${lang}: ${b.id}`).toBeGreaterThan(20);
+        }
+      }
+    }
+  });
+});

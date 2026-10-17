@@ -46,6 +46,7 @@ export const relaxation: Chapter = {
           type: 'p',
           text: 'Lies die Formeln in Worten. $M_0$ ist die Ruhemagnetisierung, also der Wert, zu dem alles zurück will. $t$ ist die Zeit seit dem Puls. $e^{-t/T}$ ist eine Exponentialfunktion, die bei 1 startet und gegen 0 geht. Bei $M_z$ wird sie von 1 abgezogen, darum **wächst** $M_z$ von 0 auf $M_0$. Bei $M_{xy}$ steht sie allein, darum **zerfällt** $M_{xy}$ von $M_0$ auf 0.',
         },
+        { type: 'figure', id: 't1-t2-curves', caption: 'Links wächst $M_z$ nach der Zeit T1 auf 63 % von $M_0$, rechts fällt $M_{xy}$ nach T2 auf 37 % (Achtung: Die rechte Zeitachse ist viel kürzer, denn T2 ist kürzer als T1). Gestrichelt siehst du T2*: Mit den Feldinhomogenitäten zerfällt das Signal noch schneller.' },
         {
           type: 'callout',
           variant: 'merke',
@@ -263,6 +264,7 @@ export const relaxation: Chapter = {
           type: 'p',
           text: 'Ein Beispiel: Bei $T_2 = 100$ ms ist die Linie etwa $1/(\\pi \\cdot 0{,}1\\ \\text{s}) \\approx 3{,}2$ Hz breit. Bei $T_2 = 10$ ms sind es schon rund 32 Hz. Kurzes T2 heißt also breite Linie, langes T2 heißt schmale Linie. Wie im Skript beschrieben: Das Verhältnis von Breite zu Höhe kodiert das T2.',
         },
+        { type: 'figure', id: 'fid-spectrum', caption: 'Oben klingt der FID lange nach und ergibt eine schmale, hohe Linie, unten stirbt er schnell, und die Linie wird breit und flach. Achte auf die gelbe Halbwertsbreite: Sie ist $1/(\\pi T_2)$, also rund 5 Hz bei 60 ms und rund 27 Hz bei 12 ms.' },
         {
           type: 'callout',
           variant: 'achtung',
@@ -326,6 +328,7 @@ export const relaxation: Chapter = {
             '**T2w (lang/lang):** Langes TE bedeutet, dass bei Geweben mit kurzem T2 schon viel Signal weg ist. Weiße Substanz hat $e^{-101/80} \\approx 0{,}28$, Liquor $e^{-101/2000} \\approx 0{,}95$. **Liquor und Wasser sind hell**, Hirngewebe ist grauer.',
           ],
         },
+        { type: 'figure', id: 'weighting-map', caption: 'Lies die Karte so: Langes TR (rechts) schaltet den T1-Einfluss ab, langes TE (oben) schaltet den T2-Einfluss ein. Die drei Punkte sind die Bilder aus dem Skript, und die Ecke oben links mit kurzem TR und langem TE liefert kaum Signal.' },
         {
           type: 'callout',
           variant: 'klinik',
@@ -395,6 +398,7 @@ export const relaxation: Chapter = {
           type: 'p',
           text: 'Прочитай формулы словами. $M_0$ это намагниченность покоя, то есть значение, к которому всё стремится. $t$ это время после импульса. $e^{-t/T}$ это экспонента, которая начинается с 1 и стремится к 0. В $M_z$ она вычитается из 1, поэтому $M_z$ **растёт** от 0 до $M_0$. В $M_{xy}$ она стоит одна, поэтому $M_{xy}$ **затухает** от $M_0$ до 0.',
         },
+        { type: 'figure', id: 't1-t2-curves', caption: 'Слева $M_z$ за время T1 вырастает до 63 % от $M_0$, справа $M_{xy}$ за время T2 падает до 37 % (внимание: правая ось времени гораздо короче, ведь T2 короче T1). Пунктиром показан T2*: с неоднородностями поля сигнал спадает ещё быстрее.' },
         {
           type: 'callout',
           variant: 'merke',
@@ -612,6 +616,7 @@ export const relaxation: Chapter = {
           type: 'p',
           text: 'Пример: при $T_2 = 100$ мс линия шириной примерно $1/(\\pi \\cdot 0{,}1\\ \\text{с}) \\approx 3{,}2$ Гц. При $T_2 = 10$ мс уже около 32 Гц. Короткое T2 значит широкая линия, длинное T2 значит узкая линия. Как сказано в конспекте: отношение ширины к высоте кодирует T2.',
         },
+        { type: 'figure', id: 'fid-spectrum', caption: 'Сверху FID звучит долго и даёт узкую высокую линию, снизу он быстро затухает, и линия становится широкой и плоской. Обрати внимание на жёлтую ширину на полувысоте: она равна $1/(\\pi T_2)$, то есть около 5 Гц при 60 мс и около 27 Гц при 12 мс.' },
         {
           type: 'callout',
           variant: 'achtung',
@@ -675,6 +680,7 @@ export const relaxation: Chapter = {
             '**T2w (длинное/длинное):** длинное TE значит, что у тканей с коротким T2 уже много сигнала пропало. У белого вещества $e^{-101/80} \\approx 0{,}28$, у ликвора $e^{-101/2000} \\approx 0{,}95$. **Ликвор и вода светлые**, ткань мозга серее.',
           ],
         },
+        { type: 'figure', id: 'weighting-map', caption: 'Читай карту так: длинное TR (справа) выключает влияние T1, длинное TE (вверху) включает влияние T2. Три точки это изображения из конспекта, а угол слева вверху с коротким TR и длинным TE почти не даёт сигнала.' },
         {
           type: 'callout',
           variant: 'klinik',

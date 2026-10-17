@@ -14,7 +14,7 @@ export function ChallengeIntro({ count, kind, replay, attempts = 0, bestScore = 
     <p className="eyebrow">{tr(exam ? 'DEIN WISSEN IM GESAMTBILD' : 'VOM VERSTEHEN ZUM ANWENDEN', exam ? 'ПРОВЕРЬ ЗНАНИЯ ПО ВСЕМ ТЕМАМ' : 'ОТ ПОНИМАНИЯ К ПРАКТИКЕ')}</p>
     <h2 id="challenge-intro-title">{exam ? tr('Bereit für die Probeprüfung?', 'Готов(а) к пробному экзамену?') : tr('Deine Modul-Challenge', 'Проверь знания по модулю')}</h2>
     <p className="challenge-intro-lead">{exam
-      ? tr('Wende dein Wissen aus allen sieben Modulen an. Nach jeder Antwort erfährst du, wie die Lösung zustande kommt.', 'Примени знания из всех семи модулей. После каждого ответа ты увидишь объяснение решения.')
+      ? tr('Wende dein Wissen aus allen Prüfungsmodulen an. Nach jeder Antwort erfährst du, wie die Lösung zustande kommt.', 'Примени знания из всех экзаменационных модулей. После каждого ответа ты увидишь объяснение решения.')
       : tr('Teste dein Verständnis und löse Rechenaufgaben. Nach jeder Antwort bekommst du die Lösung mit Erklärung.', 'Проверь понимание темы и реши расчётные задачи. После каждого ответа ты получишь решение с объяснением.')}</p>
     <dl className="challenge-overview">
       <div><dt>{tr('Umfang', 'Объём')}</dt><dd>{count} <span>{tr('Aufgaben', 'заданий')}</span></dd></div>
