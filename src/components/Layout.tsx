@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
-import { MODULES } from '../content/modules';
+import { BONUS_MODULES, EXAM_MODULES, type ModuleMeta } from '../content/modules';
 import { BADGES } from '../game/badges';
 import { useGame } from '../game/GameContext';
 import { levelProgress } from '../game/levels';
@@ -97,6 +97,19 @@ export function Layout({ route, children }: { route: string[]; children: ReactNo
   const badgeCount = Object.keys(state.badges).length;
   const nf = (v: number) => v.toLocaleString(numberLocale(lang));
 
+  const moduleItem = (m: ModuleMeta) => {
+    const best = state.modules[m.id]?.bestScore ?? 0;
+    return (
+      <NavItem
+        key={m.id}
+        to={`/modul/${m.id}`}
+        active={section === 'modul' && route[1] === m.id}
+        icon={m.icon}
+        label={`${m.index}. ${loc(m.title)}`}
+        sub={best > 0 ? `${tr('Bestwert', 'Лучший результат')} ${Math.round(best * 100)} %` : undefined}
+      />
+    );
+  };
   return (
     <div className={`app-shell${open ? ' nav-open' : ''}`}>
       <aside
@@ -131,25 +144,15 @@ export function Layout({ route, children }: { route: string[]; children: ReactNo
         </div>
         <nav aria-label={tr('Hauptnavigation', 'Главная навигация')}>
           <NavItem to="/" active={section === ''} icon="🏠" label={tr('Übersicht', 'Обзор')} />
-          <NavItem to="/vorlesung" active={section === 'vorlesung'} icon="📚" label={tr('MBR-Vorlesung', 'Лекция MBR')} sub={tr('72 Seiten · Lernmissionen', '72 страницы · миссии')} />
-          <div className="nav-group">{tr('Lernmodule', 'Учебные модули')}</div>
-          {MODULES.map((m) => {
-            const best = state.modules[m.id]?.bestScore ?? 0;
-            return (
-              <NavItem
-                key={m.id}
-                to={`/modul/${m.id}`}
-                active={section === 'modul' && route[1] === m.id}
-                icon={m.icon}
-                label={`${m.index}. ${loc(m.title)}`}
-                sub={best > 0 ? `${tr('Bestwert', 'Лучший результат')} ${Math.round(best * 100)} %` : undefined}
-              />
-            );
-          })}
+          <NavItem to="/vorlesung" active={section === 'vorlesung'} icon="🎯" label={tr('Prüfungsvorbereitung', 'Подготовка к экзамену')} sub={tr('Kontrollfragen · Spickzettel', 'Вопросы · шпаргалка')} />
+          <div className="nav-group">{tr('Prüfungsstoff', 'Экзаменационный материал')}</div>
+          {EXAM_MODULES.map(moduleItem)}
+          <div className="nav-group">{tr('Bonus', 'Бонус')}</div>
+          {BONUS_MODULES.map(moduleItem)}
           <div className="nav-group">{tr('Praxis', 'Практика')}</div>
           <NavItem to="/klinik" active={section === 'klinik'} icon="🩺" label={tr('Klinische Fälle', 'Клинические случаи')} sub={tr('Protokoll-Trade-offs', 'Компромиссы протоколов')} />
           <NavItem to="/labor" active={section === 'labor'} icon="🔬" label={tr('Simulator-Labor', 'Лаборатория симуляторов')} sub={tr('Alle Simulatoren', 'Все симуляторы')} />
-          <NavItem to="/pruefung" active={section === 'pruefung'} icon="🎓" label={tr('Abschlussprüfung', 'Итоговый экзамен')} />
+          <NavItem to="/pruefung" active={section === 'pruefung'} icon="🎓" label={tr('Probeprüfung', 'Пробный экзамен')} />
           <NavItem
             to="/profil"
             active={section === 'profil'}

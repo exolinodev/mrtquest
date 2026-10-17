@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
 import { ChallengeRunner } from '../components/ChallengeRunner';
 import { ChallengeIntro } from '../components/ChallengeIntro';
+import { RichText } from '../components/RichText';
 import { Link } from '../components/router';
 import { ProgressBar, Stars } from '../components/ui';
-import { MODULES } from '../content/modules';
+import { EXAM_MODULES, MODULES } from '../content/modules';
 import { drawExam, EXAM_LENGTH } from '../content/questions';
 import { SCENARIO_BY_ID, SCENARIOS } from '../content/scenarios';
 import { BADGES } from '../game/badges';
@@ -50,6 +51,14 @@ export function ClinicPage({ scenarioId }: { scenarioId?: string }) {
           </div>
           <Stars count={state.scenarios[scenario.id]?.stars ?? 0} />
         </header>
+        {scenario.physicsStory && (
+          <aside className="analogy">
+            <p className="analogy-label">🧠 {tr('Die Physik dahinter', 'Физика за этим случаем')}</p>
+            <p>
+              <RichText text={loc(scenario.physicsStory)} />
+            </p>
+          </aside>
+        )}
         <ProtocolConsole key={scenario.id} scenario={scenario} />
       </div>
     );
@@ -60,8 +69,8 @@ export function ClinicPage({ scenarioId }: { scenarioId?: string }) {
       <h1>🩺 {tr('Klinische Fälle', 'Клинические случаи')}</h1>
       <p className="lead">
         {tr(
-          'In der Praxis gibt es selten das eine „richtige“ Protokoll. Jeder Fall bringt Randbedingungen mit – Atemanhalt, SAR-Grenzen von Implantaten, Zeitdruck oder Klaustrophobie. Optimiere Kontrast, SNR, Auflösung, Messzeit und Sicherheit gleichzeitig. Pflichtkriterien entscheiden über das Bestehen, Bonuskriterien über die Sterne.',
-          'На практике редко бывает один «правильный» протокол. У каждого случая свои ограничения – задержка дыхания, пределы SAR для имплантов, нехватка времени или клаустрофобия. Оптимизируй контраст, SNR, разрешение, время сканирования и безопасность одновременно. Обязательные критерии определяют, выполнено ли задание, бонусные – количество звёзд.',
+          'Bonus für alle, die wissen wollen, wie es in der Klinik weitergeht. In der Praxis gibt es selten das eine „richtige“ Protokoll. Jeder Fall bringt Randbedingungen mit: Atemanhalt, SAR-Grenzen von Implantaten, Zeitdruck oder Klaustrophobie. Du stellst Kontrast, Bildrauschen, Auflösung, Messzeit und Sicherheit gleichzeitig ein. Pflichtkriterien entscheiden über das Bestehen, Bonuskriterien über die Sterne. Jeder Fall erklärt dir vorher, welche Physik aus den Prüfungsmodulen dahintersteckt.',
+          'Бонус для тех, кто хочет узнать, что происходит дальше в клинике. На практике редко бывает один «правильный» протокол. У каждого случая свои ограничения: задержка дыхания, пределы SAR для имплантов, нехватка времени или клаустрофобия. Ты одновременно настраиваешь контраст, шум, разрешение, время сканирования и безопасность. Обязательные критерии определяют, выполнено ли задание, бонусные дают звёзды. Каждый случай сначала объясняет, какая физика из экзаменационных модулей за ним стоит.',
         )}
       </p>
       <div className="scenario-grid">
@@ -131,9 +140,9 @@ export function ExamPage() {
   const { tr, loc } = useLang();
   const [round, setRound] = useState(0);
   const [started, setStarted] = useState(false);
-  const unlocked = MODULES.every((m) => (state.modules[m.id]?.attempts ?? 0) > 0);
+  const unlocked = EXAM_MODULES.every((m) => (state.modules[m.id]?.attempts ?? 0) > 0);
   const questions = useMemo(() => drawExam(seededRandom((Date.now() + round * 104729) & 0xffffffff)), [round]);
-  const title = `🎓 ${tr('Abschlussprüfung', 'Итоговый экзамен')}`;
+  const title = `🎓 ${tr('Probeprüfung', 'Пробный экзамен')}`;
 
   if (!unlocked) {
     return (
@@ -141,12 +150,12 @@ export function ExamPage() {
         <h1>{title}</h1>
         <p className="lead">
           {tr(
-            'Die Prüfung wird freigeschaltet, sobald du jede Modul-Challenge mindestens einmal abgeschlossen hast.',
-            'Экзамен откроется, когда ты завершишь задание каждого модуля хотя бы один раз.',
+            'Die Probeprüfung wird freigeschaltet, sobald du jede Challenge der sechs Prüfungsmodule mindestens einmal gespielt hast. Die Bonus-Module zählen nicht dazu.',
+            'Пробный экзамен откроется, когда ты хотя бы раз пройдёшь задание каждого из шести экзаменационных модулей. Бонусные модули не учитываются.',
           )}
         </p>
         <ul className="checklist">
-          {MODULES.map((m) => (
+          {EXAM_MODULES.map((m) => (
             <li key={m.id} className={(state.modules[m.id]?.attempts ?? 0) > 0 ? 'ok' : ''}>
               {(state.modules[m.id]?.attempts ?? 0) > 0 ? '✔' : '○'} <Link to={`/modul/${m.id}/challenge`}>{loc(m.title)}</Link>
             </li>

@@ -1,5 +1,6 @@
-import type { ModuleId } from '../modules';
+import { EXAM_MODULES, type ModuleId } from '../modules';
 import { LECTURE_LESSONS } from '../lecture';
+import { anwendungenQuestions } from './anwendungen';
 import { hardwareQuestions } from './hardware';
 import { kernspinQuestions } from './kernspin';
 import { kraumQuestions } from './kraum';
@@ -17,6 +18,7 @@ export const QUESTION_BANK: Record<ModuleId, QuestionSource[]> = {
   sequenzen: sequenzenQuestions,
   qualitaet: qualitaetQuestions,
   hardware: hardwareQuestions,
+  anwendungen: anwendungenQuestions,
 };
 
 for (const lesson of LECTURE_LESSONS) QUESTION_BANK[lesson.module].push(lesson.question);
@@ -37,15 +39,15 @@ export function drawChallenge(moduleId: ModuleId, rng: Rng, count = CHALLENGE_LE
   return shuffle(rng, chosen).map((src) => toRef(src, rng));
 }
 
-/** Abschlussprüfung: je drei Fragen pro Modul, gemischt. */
+/** Abschlussprüfung: nur Prüfungsstoff, gleichmäßig über die Prüfungsmodule verteilt. */
 export function drawExam(rng: Rng): QuestionRef[] {
-  const perModule = Math.floor(EXAM_LENGTH / Object.keys(QUESTION_BANK).length);
-  const all = (Object.keys(QUESTION_BANK) as ModuleId[]).flatMap((id) =>
+  const perModule = Math.ceil(EXAM_LENGTH / EXAM_MODULES.length);
+  const all = EXAM_MODULES.map((m) => m.id).flatMap((id) =>
     shuffle(rng, QUESTION_BANK[id])
       .slice(0, perModule)
       .map((src) => toRef(src, rng)),
   );
-  return shuffle(rng, all);
+  return shuffle(rng, all).slice(0, EXAM_LENGTH);
 }
 
 export function totalQuestionCount(): number {

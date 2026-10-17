@@ -2,6 +2,9 @@ import { useEffect, type ComponentType } from 'react';
 import type { SimulatorId } from '../content/modules';
 import { useGame } from '../game/GameContext';
 import type { Loc } from '../i18n/format';
+import { SIM_GUIDES } from '../content/simGuides';
+import { useLang } from '../i18n/LanguageContext';
+import { RichText } from '../components/RichText';
 import { ArtifactLab } from './ArtifactLab';
 import { GradientSimulator } from './GradientSimulator';
 import { KSpaceSimulator } from './KSpaceSimulator';
@@ -102,5 +105,50 @@ export function SimulatorHost({ id }: { id: SimulatorId }) {
     dispatch({ type: 'VISIT_SIMULATOR', simulatorId: id });
   }, [id, dispatch]);
   const Comp = SIMULATOR_BY_ID[id].component;
-  return <Comp />;
+  return (
+    <>
+      <SimGuide id={id} />
+      <Comp />
+      <SimTakeaway id={id} />
+    </>
+  );
+}
+
+/** Einheitliche Anleitung über jedem Simulator: was man sieht und drei geführte Mini-Experimente. */
+function SimGuide({ id }: { id: SimulatorId }) {
+  const { loc, tr } = useLang();
+  const guide = SIM_GUIDES[id];
+  if (!guide) return <p className="muted">{loc(SIMULATOR_BY_ID[id].description)}</p>;
+  return (
+    <section className="sim-guide panel">
+      <p className="sim-guide-intro">
+        <RichText text={loc(guide.intro)} />
+      </p>
+      <details className="sim-guide-steps" open={window.matchMedia?.('(min-width: 900px)').matches ?? true}>
+        <summary>{tr('🧪 Drei Mini-Experimente', '🧪 Три мини-эксперимента')}</summary>
+        <ol>
+          {guide.steps.map((step, i) => (
+            <li key={i}>
+              <RichText text={loc(step)} />
+            </li>
+          ))}
+        </ol>
+      </details>
+    </section>
+  );
+}
+
+function SimTakeaway({ id }: { id: SimulatorId }) {
+  const { loc, tr } = useLang();
+  const guide = SIM_GUIDES[id];
+  if (!guide) return null;
+  return (
+    <aside className="mnemonic sim-takeaway">
+      <span aria-hidden="true">🎓</span>
+      <p>
+        <strong>{tr('Das nimmst du für die Prüfung mit: ', 'Что взять на экзамен: ')}</strong>
+        <RichText text={loc(guide.takeaway)} />
+      </p>
+    </aside>
+  );
 }

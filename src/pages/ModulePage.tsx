@@ -16,8 +16,80 @@ import { SimulatorHost, SIMULATOR_BY_ID } from '../simulators/registry';
 
 type Tab = 'theorie' | 'simulator' | 'challenge';
 
+function ExamBlock({ block }: { block: Extract<TheoryBlock, { type: 'exam' }> }) {
+  const { tr, loc } = useLang();
+  const simId = block.sim?.split('/')[0] as keyof typeof SIMULATOR_BY_ID | undefined;
+  return (
+    <aside className="exam-block">
+      <p className="exam-block-label">🎓 {tr('So fragt der Prof', 'Так спросит профессор')}</p>
+      <p className="exam-block-question">
+        <RichText text={block.question} />
+      </p>
+      <details>
+        <summary>{tr('Musterantwort zeigen', 'Показать образец ответа')}</summary>
+        <p>
+          <RichText text={block.answer} />
+        </p>
+        {block.full && (
+          <p className="exam-block-full">
+            <strong>{tr('Für volle Punkte: ', 'Для полного балла: ')}</strong>
+            <RichText text={block.full} />
+          </p>
+        )}
+        {simId && SIMULATOR_BY_ID[simId] && (
+          <Link to={`/labor/${block.sim}`} className="btn">
+            {SIMULATOR_BY_ID[simId].icon} {tr('Selbst ausprobieren', 'Попробовать самому')}: {loc(SIMULATOR_BY_ID[simId].title)} →
+          </Link>
+        )}
+      </details>
+    </aside>
+  );
+}
+
 function Block({ block }: { block: TheoryBlock }) {
+  const { tr } = useLang();
   switch (block.type) {
+    case 'hook':
+      return (
+        <p className="theory-hook">
+          <RichText text={block.text} />
+        </p>
+      );
+    case 'analogy':
+      return (
+        <aside className="analogy">
+          <p className="analogy-label">🖼️ {tr('Stell dir vor', 'Представь себе')}</p>
+          <p className="analogy-title">{block.title}</p>
+          <p>
+            <RichText text={block.text} />
+          </p>
+        </aside>
+      );
+    case 'mnemonic':
+      return (
+        <aside className="mnemonic">
+          <span aria-hidden="true">💡</span>
+          <p>
+            <strong>{tr('Merksatz: ', 'Запомни: ')}</strong>
+            <RichText text={block.text} />
+          </p>
+        </aside>
+      );
+    case 'exam':
+      return <ExamBlock block={block} />;
+    case 'pitfall':
+      return (
+        <aside className="pitfall">
+          <p className="pitfall-label">⚠️ {tr('Typische Denkfehler', 'Типичные ошибки')}</p>
+          <ul>
+            {block.items.map((it, i) => (
+              <li key={i}>
+                <RichText text={it} />
+              </li>
+            ))}
+          </ul>
+        </aside>
+      );
     case 'p':
       return (
         <p>
@@ -95,6 +167,16 @@ function TheoryView({ moduleId }: { moduleId: ModuleId }) {
         </ol>
       </nav>
       <div className="theory-body">
+        {MODULE_BY_ID[moduleId].track === 'bonus' && (
+          <Callout
+            variant="info"
+            title={tr('Bonus: Praxiswissen', 'Бонус: практические знания')}
+            text={tr(
+              'Dieses Modul geht über das Vorlesungsskript hinaus. Es zeigt, wie die Grundlagen im klinischen Alltag weitergehen. Für die Prüfung ist es nicht nötig, aber es hilft beim Verstehen.',
+              'Этот модуль выходит за рамки лекционного конспекта. Он показывает, как основы применяются в клинике. Для экзамена он не обязателен, но помогает понять материал.',
+            )}
+          />
+        )}
         {sections.map((s, i) => (
           <section key={i} id={`sec-${moduleId}-${i}`}>
             <h2>
@@ -181,6 +263,7 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
         <div>
           <p className="eyebrow">
             {tr('Modul', 'Модуль')} {meta.index}
+            {meta.track === 'bonus' ? tr(' · Bonus', ' · Бонус') : tr(' · Prüfungsstoff', ' · Экзаменационный материал')}
           </p>
           <h1>{loc(meta.title)}</h1>
           <p className="lead">{loc(meta.subtitle)}</p>
@@ -198,7 +281,6 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
         {active === 'theorie' && <TheoryView moduleId={meta.id} />}
         {active === 'simulator' && (
           <>
-            <p className="muted">{loc(SIMULATOR_BY_ID[meta.simulator].description)}</p>
             <SimulatorHost id={meta.simulator} />
             <PanelLinks moduleId={meta.id} />
             <div className="row gap end">
@@ -224,7 +306,18 @@ export function ModulePage({ moduleId, tab }: { moduleId: string; tab?: string }
 
 function PanelLinks({ moduleId }: { moduleId: ModuleId }) {
   const { tr, loc } = useLang();
-  const lessons = LECTURE_LESSONS.filter(l=>l.module===moduleId);
-  const extra = [...new Set(lessons.map(l=>l.simulator))].filter(id=>id!==MODULE_BY_ID[moduleId].simulator);
-  return <section className="panel"><h3>{tr('Mehr Experimente aus der MBR-Vorlesung', 'Другие эксперименты из лекции MBR')}</h3><div className="lecture-links">{extra.map(id=><Link className="btn" key={id} to={`/labor/${id}`}>{loc(SIMULATOR_BY_ID[id].title)} →</Link>)}<Link className="btn" to="/vorlesung">{tr('Alle Lernmissionen mit Folienbezug', 'Все миссии со ссылками на слайды')} →</Link></div></section>;
+  const extra = [...new Set(LECTURE_LESSONS.filter((l) => l.module === moduleId).map((l) => l.simulator))].filter((id) => id !== MODULE_BY_ID[moduleId].simulator);
+  if (!extra.length) return null;
+  return (
+    <section className="panel">
+      <h3>{tr('Weitere Labore zu diesem Thema', 'Другие лаборатории по этой теме')}</h3>
+      <div className="lecture-links">
+        {extra.map((id) => (
+          <Link className="btn" key={id} to={`/labor/${id}`}>
+            {SIMULATOR_BY_ID[id].icon} {loc(SIMULATOR_BY_ID[id].title)} →
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
 }

@@ -27,6 +27,7 @@ const MODULE_BADGES: Record<ModuleId, { title: Loc; icon: string }> = {
   sequenzen: { title: { de: 'Sequenz-Architekt:in', ru: 'Архитектор последовательностей' }, icon: '📈' },
   qualitaet: { title: { de: 'Qualitäts-Wächter:in', ru: 'Страж качества' }, icon: '🛡️' },
   hardware: { title: { de: 'Technik-Insider:in', ru: 'Знаток оборудования' }, icon: '🏥' },
+  anwendungen: { title: { de: 'Klinik-Navigator:in', ru: 'Клинический навигатор' }, icon: '🧬' },
 };
 
 export const BADGES: BadgeDef[] = [
@@ -234,7 +235,7 @@ export const BADGES: BadgeDef[] = [
   {
     id: 'facharzt',
     title: { de: 'Prüfung bestanden', ru: 'Экзамен сдан' },
-    description: { de: 'Bestehe die Abschlussprüfung mit mindestens 80 %.', ru: 'Сдай итоговый экзамен не менее чем на 80 %.' },
+    description: { de: 'Bestehe die Probeprüfung mit mindestens 80 %.', ru: 'Сдай пробный экзамен не менее чем на 80 %.' },
     icon: '🎓',
     tier: 'gold',
     xp: 150,

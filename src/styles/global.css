@@ -2772,3 +2772,239 @@ path.sx-focus-shape { fill: none; stroke-width: 10; }
   align-items: center;
   min-height: 44px;
 }
+
+/* ---------------------------------------------------------------- Erklärformat */
+.theory-hook {
+  font-size: 1.08rem;
+  line-height: 1.65;
+  color: var(--text);
+  border-left: 3px solid var(--accent);
+  padding-left: 0.9rem;
+}
+.analogy,
+.mnemonic,
+.pitfall,
+.exam-block {
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  margin: 1rem 0;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.analogy {
+  border-left: 4px solid var(--accent-2);
+}
+.analogy p,
+.pitfall p,
+.exam-block p {
+  margin: 0.3rem 0 0;
+}
+.analogy-label,
+.pitfall-label,
+.exam-block-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 0 !important;
+}
+.analogy-title {
+  font-weight: 700;
+  color: var(--text);
+}
+.mnemonic {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  border-left: 4px solid var(--warn);
+  background: rgba(251, 191, 36, 0.07);
+}
+.mnemonic p {
+  margin: 0;
+}
+.pitfall {
+  border-left: 4px solid var(--bad);
+  background: rgba(248, 113, 113, 0.06);
+}
+.pitfall ul {
+  margin: 0.4rem 0 0;
+  padding-left: 1.2rem;
+}
+.exam-block {
+  border-left: 4px solid var(--good);
+  background: rgba(52, 211, 153, 0.06);
+}
+.exam-block-question {
+  font-weight: 600;
+  color: var(--text);
+}
+.exam-block details {
+  margin-top: 0.5rem;
+}
+.exam-block summary,
+.sim-guide-steps summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  color: var(--accent);
+  font-weight: 600;
+}
+.exam-block .btn {
+  margin-top: 0.6rem;
+}
+.exam-block-full {
+  color: var(--text-dim);
+}
+.sim-guide {
+  margin-bottom: 1rem;
+}
+.sim-guide-intro {
+  margin: 0;
+  line-height: 1.6;
+}
+.sim-guide-steps ol {
+  margin: 0.2rem 0 0;
+  padding-left: 1.3rem;
+  display: grid;
+  gap: 0.45rem;
+}
+.sim-takeaway {
+  margin-top: 1rem;
+}
+
+/* ---------------------------------------------------------------- Prüfungszentrale */
+.warn-text {
+  color: var(--warn);
+}
+.objective-grid .progress {
+  margin: 0.4rem 0;
+}
+.objective-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.8rem;
+  font-size: 0.85rem;
+}
+.objective-links a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.recap-grid,
+.exam-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  gap: 1rem;
+  align-items: start;
+  margin: 1rem 0;
+}
+.recap-card.done,
+.exam-card.known {
+  border-color: color-mix(in srgb, var(--good) 55%, var(--border));
+}
+.recap-card details,
+.exam-card details {
+  margin-top: 0.4rem;
+}
+.recap-card summary,
+.exam-card summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  color: var(--accent);
+  font-weight: 600;
+}
+.recap-steps {
+  padding-left: 1.3rem;
+  display: grid;
+  gap: 0.45rem;
+}
+.recap-answer {
+  border-left: 4px solid var(--good);
+  background: rgba(52, 211, 153, 0.06);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 0.9rem;
+  margin: 0.8rem 0;
+}
+.recap-answer p {
+  margin: 0.3rem 0 0;
+}
+.exam-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 0.9rem 1rem;
+  min-width: 0;
+}
+.exam-card.again {
+  border-color: color-mix(in srgb, var(--warn) 55%, var(--border));
+}
+.exam-card-module {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+.exam-card .row,
+.recap-card .row {
+  margin-top: 0.6rem;
+}
+.cheat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+.cheat-section dl {
+  margin: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+.cheat-item dt {
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+.cheat-item dd {
+  margin: 0.15rem 0 0;
+  color: var(--text-dim);
+  overflow-x: auto;
+}
+.cheat-item .katex-display {
+  margin: 0.2rem 0;
+  text-align: left;
+}
+.exam-cta {
+  margin-top: 1.5rem;
+  border-color: color-mix(in srgb, var(--good) 45%, var(--border));
+}
+.exam-cta p {
+  margin-top: 0;
+}
+
+@media print {
+  .sidebar,
+  .topbar,
+  .no-print,
+  .exam-center > *:not(.cheat-sheet):not(h1) {
+    display: none !important;
+  }
+  .exam-center .cheat-sheet {
+    display: block !important;
+  }
+  body,
+  .panel {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .cheat-item dd {
+    color: #222 !important;
+  }
+}
+.cheat-section,
+.cheat-section dl,
+.cheat-item {
+  min-width: 0;
+}

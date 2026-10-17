@@ -1,12 +1,22 @@
 import { useState } from 'react';
 import { LineChart, sampleCurve } from '../components/LineChart';
-import { Link } from '../components/router';
+import { ClinicalAtlas } from '../components/ClinicalAtlas';
+import { RichText } from '../components/RichText';
 import { Callout, Panel, Segmented, Slider, Stat } from '../components/ui';
 import { LECTURE_LESSONS } from '../content/lecture';
 import { useLang } from '../i18n/LanguageContext';
 import { boldResponse, diffusionSignal, phaseContrast } from '../physics/lecture';
 
 type Mode = 'flow' | 'dti' | 'mrs' | 'bold' | 'contrast' | 'cases';
+const CASE_LABELS: Record<string, { de: string; ru: string }> = {
+  brain: { de: 'Gehirn', ru: 'Мозг' },
+  hybrid: { de: 'PET/MRT', ru: 'ПЭТ/МРТ' },
+  knee: { de: 'Knie', ru: 'Колено' },
+  pelvis: { de: 'Becken', ru: 'Таз' },
+  pregnancy: { de: 'Schwangerschaft', ru: 'Беременность' },
+};
+const CASES = LECTURE_LESSONS.filter((l) => ['brain', 'hybrid', 'knee', 'pelvis', 'pregnancy'].includes(l.id));
+
 /** Klinische Anwendungen: Flussmessung, DTI, Spektroskopie, BOLD, Kontrastmittel und Fallkarten. */
 export function ApplicationsLab() {
   const { tr, loc } = useLang();
@@ -14,6 +24,7 @@ export function ApplicationsLab() {
     const preset = window.location.hash.split('/')[3];
     return ['flow', 'dti', 'mrs', 'bold', 'contrast', 'cases'].includes(preset) ? (preset as Mode) : 'flow';
   });
+  const [caseId, setCaseId] = useState('brain');
   const [velocity, setVelocity] = useState(120),
     [venc, setVenc] = useState(80);
   const [angle, setAngle] = useState(0),
@@ -271,16 +282,23 @@ export function ApplicationsLab() {
         </>
       )}
       {mode === 'cases' && (
-        <div className="scenario-grid span-3">
-          {LECTURE_LESSONS.filter((l) => ['brain', 'hybrid', 'knee', 'pelvis', 'pregnancy'].includes(l.id)).map((l) => (
-            <Link key={l.id} to={`/vorlesung/${l.id}`} className="scenario-card">
-              <span className="eyebrow">PDF {l.pages.join('–')}</span>
-              <strong>{loc(l.title)}</strong>
-              <span className="scenario-task">{loc(l.experiment)}</span>
-              <span>{tr('Fall verstehen & Wissen prüfen →', 'Разобрать случай и проверить знания →')}</span>
-            </Link>
-          ))}
-        </div>
+        <>
+          <Panel title={tr('Fallbeispiel wählen', 'Выбор клинического примера')} className="span-3">
+            <Segmented value={caseId} onChange={setCaseId} options={CASES.map((l) => ({ value: l.id, label: loc(CASE_LABELS[l.id]) }))} />
+            <p className="small">
+              <RichText text={loc(LECTURE_LESSONS.find((l) => l.id === caseId)!.text)} />
+            </p>
+          </Panel>
+          <ClinicalAtlas key={caseId} id={caseId} />
+          <Panel title={tr('Was du hier lernst', 'Чему ты здесь научишься')}>
+            <p className="small">
+              {tr(
+                'Die schematische Karte zeigt, welche Strukturen in diesem Fallbeispiel wichtig sind und warum die MRT dafür passt. Tippe die Bereiche an. Es sind keine echten Patientenbilder und keine Diagnosehilfe.',
+                'Схема показывает, какие структуры важны в этом примере и почему для него подходит МРТ. Нажимай на области. Это не настоящие снимки пациентов и не помощь в диагностике.',
+              )}
+            </p>
+          </Panel>
+        </>
       )}
     </div>
   );

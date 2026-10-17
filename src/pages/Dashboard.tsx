@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link } from '../components/router';
 import { ProgressBar, Stars } from '../components/ui';
-import { LECTURE_LESSONS } from '../content/lecture';
-import { ALL_SIMULATORS, MODULES, MODULE_BY_ID } from '../content/modules';
+import { EXAM_QUESTIONS, RECAP_QUESTIONS } from '../content/examPrep';
+import { ALL_SIMULATORS, BONUS_MODULES, EXAM_MODULES, MODULE_BY_ID, type ModuleMeta } from '../content/modules';
 import { totalQuestionCount } from '../content/questions';
 import { SCENARIOS } from '../content/scenarios';
 import { BADGES, BADGE_BY_ID } from '../game/badges';
@@ -15,24 +15,25 @@ export function Dashboard() {
   const { state, dispatch } = useGame();
   const { lang, tr, loc } = useLang();
   const lp = levelProgress(state.xp, lang);
-  const lectureDone = LECTURE_LESSONS.filter((l) => state.flags[`lecture-${l.id}`]).length;
+  const prepTotal = RECAP_QUESTIONS.length + EXAM_QUESTIONS.length;
+  const prepDone = [...RECAP_QUESTIONS.map((q) => `recap-${q.id}`), ...EXAM_QUESTIONS.map((q) => `exq-${q.id}`)].filter((f) => state.flags[f]).length;
   const [name, setName] = useState(state.playerName);
-  const mastered = MODULES.filter((m) => (state.modules[m.id]?.bestScore ?? 0) >= 0.8).length;
-  const nextModule = MODULES.find((m) => (state.modules[m.id]?.bestScore ?? 0) < 0.8);
+  const mastered = EXAM_MODULES.filter((m) => (state.modules[m.id]?.bestScore ?? 0) >= 0.8).length;
+  const nextModule = EXAM_MODULES.find((m) => (state.modules[m.id]?.bestScore ?? 0) < 0.8);
   const recentBadges = Object.entries(state.badges)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 4)
     .map(([id]) => BADGE_BY_ID[id])
     .filter(Boolean);
   const accuracy = state.stats.answered > 0 ? Math.round((state.stats.correct / state.stats.answered) * 100) : 0;
-  const examUnlocked = MODULES.every((m) => (state.modules[m.id]?.attempts ?? 0) > 0);
+  const examUnlocked = EXAM_MODULES.every((m) => (state.modules[m.id]?.attempts ?? 0) > 0);
   const questionCount = totalQuestionCount();
 
   return (
     <div className="page">
       <section className="hero">
         <div>
-          <p className="eyebrow">{tr('MRT-Physik & Gerätetechnik · Hochschulniveau', 'Физика МРТ и оборудование · университетский уровень')}</p>
+          <p className="eyebrow">{tr('Dein Prüfungstrainer für MRI · MBR an der ZHAW', 'Твой тренажёр к экзамену по МРТ · MBR, ZHAW')}</p>
           <h1>
             {state.playerName
               ? tr(`Willkommen zurück, ${state.playerName}!`, `С возвращением, ${state.playerName}!`)
@@ -40,8 +41,8 @@ export function Dashboard() {
           </h1>
           <p className="lead">
             {tr(
-              `Vom Kernspin bis zum klinischen Protokoll: Erarbeite die Physik der Magnetresonanztomographie mit ${MODULES.length} Modulen, ${ALL_SIMULATORS.length} interaktiven Simulatoren, ${questionCount} Aufgabentypen (viele davon mit zufällig generierten Werten) und ${SCENARIOS.length} klinischen Trade-off-Fällen.`,
-              `От ядерного спина до клинического протокола: освой физику магнитно-резонансной томографии с помощью ${MODULES.length} модулей, ${ALL_SIMULATORS.length} интерактивных симуляторов, ${questionCount} типов заданий (многие со случайно сгенерированными значениями) и ${SCENARIOS.length} клинических случаев с компромиссами.`,
+              `MRT klingt nach Raketenwissenschaft. Hier wird sie Schritt für Schritt verständlich: in einfacher Sprache, mit Bildern aus dem Alltag, ${ALL_SIMULATORS.length} Simulatoren zum Ausprobieren und ${questionCount} Aufgabentypen. Alles folgt dem Vorlesungsskript, damit du genau das lernst, was in der Prüfung drankommt.`,
+              `МРТ звучит как ракетостроение. Здесь она становится понятной шаг за шагом: простым языком, с образами из жизни, ${ALL_SIMULATORS.length} симуляторами и ${questionCount} типами заданий. Всё следует лекционному конспекту, чтобы ты учил(а) именно то, что будет на экзамене.`,
             )}
           </p>
           {!state.playerName && (
@@ -89,9 +90,9 @@ export function Dashboard() {
         </div>
         <div className="kpi">
           <span className="kpi-value">
-            {mastered}/{MODULES.length}
+            {mastered}/{EXAM_MODULES.length}
           </span>
-          <span className="kpi-label">{tr('Module gemeistert', 'Модулей освоено')}</span>
+          <span className="kpi-label">{tr('Prüfungsmodule gemeistert', 'Экзаменационных модулей освоено')}</span>
         </div>
         <div className="kpi">
           <span className="kpi-value">{accuracy} %</span>
@@ -105,47 +106,60 @@ export function Dashboard() {
         </div>
       </section>
 
-      <h2 className="section-title">{tr('Lernpfad', 'Учебный путь')}</h2>
+      <h2 className="section-title">{tr('Dein Lernpfad zur Prüfung', 'Твой путь к экзамену')}</h2>
+      <p className="muted">
+        {tr(
+          'Diese sechs Module decken den kompletten Prüfungsstoff des Skripts ab. Arbeite sie der Reihe nach durch: lesen, ausprobieren, Challenge spielen.',
+          'Эти шесть модулей покрывают весь экзаменационный материал конспекта. Проходи их по порядку: читай, пробуй, проходи задание.',
+        )}
+      </p>
       <div className="module-grid">
-        <Link to="/vorlesung" className="module-card lecture" style={{ ['--accent' as string]: '#a78bfa' }}>
-          <span className="module-index">{tr('Vorlesung', 'Лекция')} · MBR · ZHAW</span>
+        {EXAM_MODULES.map((m) => (
+          <ModuleCard key={m.id} m={m} />
+        ))}
+        <Link to="/vorlesung" className="module-card lecture" style={{ ['--accent' as string]: '#34d399' }}>
+          <span className="module-index">{tr('Prüfung', 'Экзамен')}</span>
           <span className="module-icon" aria-hidden="true">
-            📚
+            🎯
           </span>
-          <strong>{tr('Deine Vorlesung als Lernspiel', 'Твоя лекция в игровой форме')}</strong>
+          <strong>{tr('Prüfungsvorbereitung', 'Подготовка к экзамену')}</strong>
           <span className="module-sub">
-            {tr('72 Seiten: Lernmissionen, Bloch- und Fourier-Labor, DTI, Fluss und klinische Anwendungen.', '72 страницы: миссии, лаборатории Блоха и Фурье, DTI, поток и клиническое применение.')}
+            {tr('Die 5 Kontrollfragen des Profs, wahrscheinliche Prüfungsfragen, Spickzettel und Lab 3.', '5 контрольных вопросов профессора, вероятные экзаменационные вопросы, шпаргалка и лабораторная 3.')}
           </span>
-          <ProgressBar value={lectureDone / LECTURE_LESSONS.length} label={tr('Vorlesungsfortschritt', 'Прогресс лекции')} color="#a78bfa" />
+          <ProgressBar value={prepTotal ? prepDone / prepTotal : 0} label={tr('Prüfungsfragen geübt', 'Экзаменационные вопросы')} color="#34d399" />
           <span className="module-meta">
-            {lectureDone}/{LECTURE_LESSONS.length} {tr('Missionen', 'миссий')}
+            {prepDone}/{prepTotal} {tr('Fragen sitzen', 'вопросов усвоено')}
           </span>
         </Link>
-        {MODULES.map((m) => {
-          const prog = state.modules[m.id];
-          const best = prog?.bestScore ?? 0;
-          const rec = m.recommendedAfter ? MODULE_BY_ID[m.recommendedAfter] : null;
-          const recDone = !rec || (state.modules[rec.id]?.bestScore ?? 0) >= 0.6;
-          return (
-            <Link key={m.id} to={`/modul/${m.id}`} className="module-card" style={{ ['--accent' as string]: m.accent }}>
-              <span className="module-index">
-                {tr('Modul', 'Модуль')} {m.index}
-              </span>
-              <span className="module-icon" aria-hidden="true">
-                {m.icon}
-              </span>
-              <strong>{loc(m.title)}</strong>
-              <span className="module-sub">{loc(m.subtitle)}</span>
-              <ProgressBar value={best} label={`${tr('Bestwert', 'Лучший результат')} ${loc(m.title)}`} color={m.accent} />
-              <span className="module-meta">
-                {prog?.theoryRead ? '📖 ✓' : '📖'} · {state.simulatorsVisited.includes(m.simulator) ? '🔬 ✓' : '🔬'} · {best > 0 ? `🏁 ${Math.round(best * 100)} %` : '🏁 –'}
-              </span>
-              {!recDone && rec && <span className="module-rec">{tr(`Empfohlen nach „${rec.title.de}“`, `Рекомендуется после «${rec.title.ru}»`)}</span>}
-            </Link>
-          );
-        })}
+        <Link to="/pruefung" className={`module-card exam${examUnlocked ? '' : ' locked'}`} style={{ ['--accent' as string]: '#eab308' }}>
+          <span className="module-index">{tr('Finale', 'Финал')}</span>
+          <span className="module-icon" aria-hidden="true">
+            🎓
+          </span>
+          <strong>{tr('Probeprüfung', 'Пробный экзамен')}</strong>
+          <span className="module-sub">
+            {examUnlocked
+              ? state.examBest > 0
+                ? tr(`Bestwert ${Math.round(state.examBest * 100)} %`, `Лучший результат ${Math.round(state.examBest * 100)} %`)
+                : tr('Bereit, wenn du es bist.', 'Всё готово – начинай, когда захочешь.')
+              : tr(`Freischaltung: alle ${EXAM_MODULES.length} Prüfungsmodule einmal spielen`, `Открытие: пройди все ${EXAM_MODULES.length} экзаменационных модулей`)}
+          </span>
+        </Link>
+      </div>
+
+      <h2 className="section-title">{tr('Bonus: Praxiswissen', 'Бонус: практические знания')}</h2>
+      <p className="muted">
+        {tr(
+          'Nicht prüfungsrelevant, aber spannend: Wie die Grundlagen im klinischen Alltag weitergehen. Ideal, wenn du tiefer verstehen willst.',
+          'Не входит в экзамен, но интересно: как основы применяются в клинической практике. Для тех, кто хочет понять глубже.',
+        )}
+      </p>
+      <div className="module-grid">
+        {BONUS_MODULES.map((m) => (
+          <ModuleCard key={m.id} m={m} />
+        ))}
         <Link to="/klinik" className="module-card clinic" style={{ ['--accent' as string]: '#f97316' }}>
-          <span className="module-index">{tr('Praxis', 'Практика')}</span>
+          <span className="module-index">{tr('Bonus · Praxis', 'Бонус · практика')}</span>
           <span className="module-icon" aria-hidden="true">
             🩺
           </span>
@@ -155,20 +169,6 @@ export function Dashboard() {
             {SCENARIOS.map((s) => (
               <Stars key={s.id} count={state.scenarios[s.id]?.stars ?? 0} max={3} />
             ))}
-          </span>
-        </Link>
-        <Link to="/pruefung" className={`module-card exam${examUnlocked ? '' : ' locked'}`} style={{ ['--accent' as string]: '#eab308' }}>
-          <span className="module-index">{tr('Finale', 'Финал')}</span>
-          <span className="module-icon" aria-hidden="true">
-            🎓
-          </span>
-          <strong>{tr('Abschlussprüfung', 'Итоговый экзамен')}</strong>
-          <span className="module-sub">
-            {examUnlocked
-              ? state.examBest > 0
-                ? tr(`Bestwert ${Math.round(state.examBest * 100)} %`, `Лучший результат ${Math.round(state.examBest * 100)} %`)
-                : tr('Bereit, wenn du es bist.', 'Всё готово – начинай, когда захочешь.')
-              : tr('Freischaltung: alle sieben Modul-Challenges abschließen', 'Открытие: заверши задания всех семи модулей')}
           </span>
         </Link>
       </div>
@@ -187,5 +187,32 @@ export function Dashboard() {
         </>
       )}
     </div>
+  );
+}
+
+function ModuleCard({ m }: { m: ModuleMeta }) {
+  const { state } = useGame();
+  const { tr, loc } = useLang();
+  const prog = state.modules[m.id];
+  const best = prog?.bestScore ?? 0;
+  const rec = m.recommendedAfter ? MODULE_BY_ID[m.recommendedAfter] : null;
+  const recDone = !rec || (state.modules[rec.id]?.bestScore ?? 0) >= 0.6;
+  return (
+    <Link to={`/modul/${m.id}`} className="module-card" style={{ ['--accent' as string]: m.accent }}>
+      <span className="module-index">
+        {tr('Modul', 'Модуль')} {m.index}
+        {m.track === 'bonus' && ` · ${tr('Bonus', 'Бонус')}`}
+      </span>
+      <span className="module-icon" aria-hidden="true">
+        {m.icon}
+      </span>
+      <strong>{loc(m.title)}</strong>
+      <span className="module-sub">{loc(m.subtitle)}</span>
+      <ProgressBar value={best} label={`${tr('Bestwert', 'Лучший результат')} ${loc(m.title)}`} color={m.accent} />
+      <span className="module-meta">
+        {prog?.theoryRead ? '📖 ✓' : '📖'} · {state.simulatorsVisited.includes(m.simulator) ? '🔬 ✓' : '🔬'} · {best > 0 ? `🏁 ${Math.round(best * 100)} %` : '🏁 –'}
+      </span>
+      {!recDone && rec && <span className="module-rec">{tr(`Empfohlen nach „${rec.title.de}“`, `Рекомендуется после «${rec.title.ru}»`)}</span>}
+    </Link>
   );
 }

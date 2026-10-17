@@ -20,10 +20,13 @@ export const hardwareQuestions: QuestionSource[] = [
         answer: time,
         tolerance: 0.02,
         unit: t('µs', 'мкс'),
-        hint: t('Slew-Rate = Gradientenänderung pro Zeit.', 'Скорость нарастания = изменение градиента за единицу времени.'),
+        hint: t(
+          'Die Slew-Rate ist das Tempo, mit dem der Gradient steigt. Zeit ist Ziel geteilt durch Tempo. Rechne mT/m zuerst in T/m um.',
+          'Скорость нарастания: это темп, с которым растёт градиент. Время равно цели, делённой на темп. Сначала переведи мТл/м в Тл/м.',
+        ),
         explanation: t(
-          `$t = G/SR = ${g}\\cdot10^{-3}/${sr}$ s $= ${n(time, 0, lang)}$ µs. Kurze Rampen ermöglichen kurze Echoabstände (EPI, TSE), sind aber durch PNS (dB/dt) begrenzt.`,
-          `$t = G/SR = ${g}\\cdot10^{-3}/${sr}$ с $= ${n(time, 0, lang)}$ мкс. Короткие фронты позволяют получить короткие межэховые интервалы (EPI, TSE), но ограничены стимуляцией периферических нервов (dB/dt).`,
+          `Die Anstiegszeit ist die Zielstärke geteilt durch die Slew-Rate: $t = G/SR = ${g}\\cdot10^{-3}/${sr}$ s $= ${n(time, 0, lang)}$ µs. Check: ${sr} T/m/s sind ${sr} mT/m pro Millisekunde, für ${g} mT/m braucht das System also weniger als eine Millisekunde. Kurze Rampen erlauben kurze Echoabstände (EPI, TSE). Begrenzt werden sie durch Nervenstimulation (PNS), denn schnelle Feldänderungen dB/dt induzieren Ströme im Körper.`,
+          `Время нарастания равно целевой амплитуде, делённой на скорость нарастания: $t = G/SR = ${g}\\cdot10^{-3}/${sr}$ с $= ${n(time, 0, lang)}$ мкс. Проверка: ${sr} Тл/м/с это ${sr} мТл/м за миллисекунду, значит для ${g} мТл/м системе нужно меньше миллисекунды. Короткие фронты позволяют короткие межэховые интервалы (EPI, TSE). Их ограничивает стимуляция периферических нервов (PNS), потому что быстрые изменения поля dB/dt наводят токи в теле.`,
         ),
       };
     },
@@ -46,10 +49,13 @@ export const hardwareQuestions: QuestionSource[] = [
         answer: lambda,
         tolerance: 0.03,
         unit: t('cm', 'см'),
-        hint: '$\\lambda = c / (f\\sqrt{\\varepsilon_r})$',
+        hint: t(
+          'Erst die Larmorfrequenz bestimmen. Im Gewebe läuft die Welle um den Faktor $\\sqrt{\\varepsilon_r}$ langsamer als in Luft. Was heißt das für ihre Länge?',
+          'Сначала найди частоту Лармора. В ткани волна идёт медленнее, чем в воздухе, в $\\sqrt{\\varepsilon_r}$ раз. Что это значит для её длины?',
+        ),
         explanation: t(
-          `$\\lambda = 3\\cdot10^8 / (${n(f / 1e6, 1, lang)}\\cdot10^6 \\cdot 8)$ m $= ${n(lambda, 1, lang)}$ cm. Liegt λ in der Größenordnung des Körperquerschnitts (ab 3 T), entstehen stehende Wellen → inhomogenes B₁ („dielektrische Effekte“, Signalabschattungen im Abdomen). Abhilfe: dielektrische Pads, parallele Sendetechnik (pTx).`,
-          `$\\lambda = 3\\cdot10^8 / (${n(f / 1e6, 1, lang)}\\cdot10^6 \\cdot 8)$ м $= ${n(lambda, 1, lang)}$ см. Если λ сравнима с поперечным сечением тела (от 3 Тл), возникают стоячие волны → неоднородное B₁ («диэлектрические эффекты», затенение сигнала в брюшной полости). Решение: диэлектрические подушки, параллельная передача (pTx).`,
+          `Im Gewebe schrumpft die Wellenlänge um den Faktor $\\sqrt{64} = 8$. Mit $\\lambda = c/(f\\sqrt{\\varepsilon_r})$ gilt: $\\lambda = 3\\cdot10^8 / (${n(f / 1e6, 1, lang)}\\cdot10^6 \\cdot 8)$ m $= ${n(lambda, 1, lang)}$ cm. Check: In Luft wäre die Welle 8-mal so lang. Liegt λ in der Größenordnung des Körperquerschnitts (ab 3 T), bilden sich stehende Wellen. B₁ wird ungleichmäßig, und zum Beispiel im Bauchraum entstehen dunkle Flecken („dielektrische Effekte“). Abhilfe: dielektrische Pads oder parallele Sendetechnik (pTx).`,
+          `В ткани длина волны уменьшается в $\\sqrt{64} = 8$ раз. По формуле $\\lambda = c/(f\\sqrt{\\varepsilon_r})$: $\\lambda = 3\\cdot10^8 / (${n(f / 1e6, 1, lang)}\\cdot10^6 \\cdot 8)$ м $= ${n(lambda, 1, lang)}$ см. Проверка: в воздухе волна была бы в 8 раз длиннее. Если λ сравнима с поперечным сечением тела (от 3 Тл), возникают стоячие волны. B₁ становится неоднородным, и, например, в брюшной полости появляются тёмные пятна («диэлектрические эффекты»). Что помогает: диэлектрические подушки или параллельная передача (pTx).`,
         ),
       };
     },
@@ -73,8 +79,8 @@ export const hardwareQuestions: QuestionSource[] = [
     ],
     answer: 0,
     explanation: {
-      de: 'Das Streufeld außerhalb des Magneten fällt steil ab, insbesondere bei aktiv abgeschirmten Magneten. Innerhalb der 0,5-mT-Linie gelten Zugangsbeschränkungen. Ferromagnetische Gegenstände werden in Richtung Isozentrum beschleunigt (Projektil-Effekt), am stärksten im Bereich höchster Feldgradienten am Tunneleingang.',
-      ru: 'Поле рассеяния за пределами магнита резко спадает, особенно у активно экранированных магнитов. Внутри линии 0,5 мТл действуют ограничения доступа. Ферромагнитные предметы ускоряются к изоцентру (эффект снаряда), сильнее всего в зоне наибольших градиентов поля у входа в туннель.',
+      de: 'Die 0,5-mT-Linie markiert, ab wo aktive Implantate wie Herzschrittmacher gestört werden können. Deshalb gelten innerhalb dieser Linie Zugangsbeschränkungen. Das Streufeld fällt außerhalb des Magneten steil ab, vor allem bei aktiv abgeschirmten Magneten. Für ferromagnetische Gegenstände wird es gefährlich: Sie werden zum Isozentrum gerissen (Projektil-Effekt). Am stärksten zieht es am Tunneleingang, wo sich das Feld räumlich am schnellsten ändert.',
+      ru: 'Линия 0,5 мТл отмечает, с какого места могут нарушаться активные имплантаты, например кардиостимуляторы. Поэтому внутри этой линии действуют ограничения доступа. Поле рассеяния за пределами магнита резко спадает, особенно у активно экранированных магнитов. Для ферромагнитных предметов это опасно: их притягивает к изоцентру (эффект снаряда). Сильнее всего тянет у входа в туннель, где поле быстрее всего меняется в пространстве.',
     },
   },
   {
@@ -93,8 +99,8 @@ export const hardwareQuestions: QuestionSource[] = [
     ],
     answer: 0,
     explanation: {
-      de: 'NbTi wird unterhalb von ≈ 9 K supraleitend. Im „Persistent Mode“ fließt der Strom (einige hundert A) ohne Spannungsquelle verlustfrei weiter. Ein Kaltkopf rekondensiert verdampfendes Helium (Zero-Boil-Off). Neuere Systeme kommen mit wenigen Litern Helium in geschlossenen Kreisläufen aus.',
-      ru: 'Сверхпроводник NbTi переходит в сверхпроводящее состояние ниже ≈ 9 K. В режиме «persistent mode» ток (несколько сотен А) течёт без источника напряжения и без потерь. Холодная головка реконденсирует испаряющийся гелий (Zero-Boil-Off). Новые системы обходятся несколькими литрами гелия в замкнутых контурах.',
+      de: 'Die Spulen bestehen aus Niob-Titan in einer Kupfermatrix und werden mit flüssigem Helium auf etwa 4,2 K gekühlt. NbTi wird erst unterhalb von etwa 9 K supraleitend, flüssiger Stickstoff mit 77 K wäre also viel zu warm. Im „Persistent Mode“ fließt der Strom von einigen hundert Ampere ohne Spannungsquelle und ohne Verluste weiter, wie ein Karussell ohne Reibung. Ein Kaltkopf verflüssigt verdampfendes Helium wieder (Zero-Boil-Off). Neuere Systeme kommen mit wenigen Litern Helium in geschlossenen Kreisläufen aus.',
+      ru: 'Катушки сделаны из ниобий-титана в медной матрице и охлаждаются жидким гелием примерно до 4,2 K. NbTi становится сверхпроводящим только ниже примерно 9 K, так что жидкий азот при 77 K был бы слишком тёплым. В режиме «persistent mode» ток в несколько сотен ампер течёт дальше без источника напряжения и без потерь, как карусель без трения. Холодная головка снова сжижает испаряющийся гелий (Zero-Boil-Off). Новые системы обходятся несколькими литрами гелия в замкнутых контурах.',
     },
   },
   {
@@ -122,8 +128,8 @@ export const hardwareQuestions: QuestionSource[] = [
     ],
     answers: [0, 1, 2],
     explanation: {
-      de: 'Nach einem Quench muss der Magnet neu mit Helium befüllt und wieder hochgefahren (geramped) und geshimmt werden – das dauert Tage und ist teuer. Bei einem Herzstillstand wird der Patient dagegen aus dem Raum gebracht; ein Quench wäre zu langsam und unnötig.',
-      ru: 'После квенча магнит нужно заново заправить гелием, поднять поле (ramp-up) и выполнить шиммирование – это занимает дни и стоит дорого. При остановке сердца пациента, напротив, выносят из помещения; квенч был бы слишком медленным и ненужным.',
+      de: 'Falsch ist nur die Aussage, das Feld sei nach Millisekunden wieder da. Bei einem Quench bricht die Supraleitung zusammen, die Feldenergie wird zu Wärme, und das Helium verdampft schlagartig. Es muss über das Quenchrohr ins Freie, sonst verdrängt es den Sauerstoff im Raum. Danach muss der Magnet neu mit Helium befüllt, wieder hochgefahren (geramped) und geshimmt werden. Das dauert Tage und ist teuer. Bei einem Herzstillstand bringt man den Patienten deshalb aus dem Raum, statt zu quenchen. Ein Quench wäre dafür zu langsam und unnötig.',
+      ru: 'Неверно только утверждение, что поле восстанавливается за миллисекунды. При квенче сверхпроводимость разрушается, энергия поля переходит в тепло, и гелий мгновенно испаряется. Его нужно отвести наружу через квенч-трубу, иначе он вытеснит кислород из помещения. Потом магнит нужно заново заправить гелием, снова поднять поле (ramp-up) и выполнить шиммирование. Это занимает дни и стоит дорого. Поэтому при остановке сердца пациента выносят из помещения, а не делают квенч. Квенч был бы для этого слишком медленным и ненужным.',
     },
   },
   {
@@ -133,8 +139,8 @@ export const hardwareQuestions: QuestionSource[] = [
     prompt: { de: 'Was ist die Aufgabe des Shimsystems?', ru: 'Какова задача системы шиммирования?' },
     options: [
       {
-        de: 'Homogenisierung von B₀ über das Messvolumen – passiv (Eisenplättchen bei Installation) und aktiv (Shimspulen höherer Ordnung, patientenspezifisch).',
-        ru: 'Гомогенизация B₀ в измерительном объёме – пассивно (железные пластинки при установке) и активно (шиммирующие катушки высших порядков, индивидуально для пациента).',
+        de: 'Homogenisierung von B₀ über das Messvolumen: passiv (Eisenplättchen bei Installation) und aktiv (Shimspulen höherer Ordnung, patientenspezifisch).',
+        ru: 'Гомогенизация B₀ в измерительном объёме: пассивно (железные пластинки при установке) и активно (шиммирующие катушки высших порядков, индивидуально для пациента).',
       },
       { de: 'Erzeugung des HF-Anregungsfeldes.', ru: 'Создание РЧ-поля возбуждения.' },
       { de: 'Kühlung der Gradientenspulen.', ru: 'Охлаждение градиентных катушек.' },
@@ -142,8 +148,8 @@ export const hardwareQuestions: QuestionSource[] = [
     ],
     answer: 0,
     explanation: {
-      de: 'Ziel sind wenige ppm Homogenität über ein kugelförmiges Volumen (DSV) von 40–50 cm. Gute Homogenität ist entscheidend für Fettsättigung (CHESS), EPI und Spektroskopie. Der Patient selbst stört das Feld (Suszeptibilität), daher wird vor jeder Untersuchung neu geshimmt.',
-      ru: 'Цель – однородность в несколько ppm в сферическом объёме (DSV) 40–50 см. Хорошая однородность решающе важна для жироподавления (CHESS), EPI и спектроскопии. Сам пациент искажает поле (магнитная восприимчивость), поэтому шиммирование выполняют перед каждым исследованием.',
+      de: 'Das Shimsystem macht B₀ im Messvolumen so gleichmäßig wie möglich. Ziel sind wenige ppm Abweichung über eine Kugel (DSV) von 40 bis 50 cm Durchmesser. Schon kleine Feldfehler verschieben die Larmorfrequenz, und darunter leiden besonders Fettsättigung (CHESS), EPI und Spektroskopie. Passiv shimmt man einmal bei der Installation mit Eisenplättchen. Aktiv shimmt man vor jeder Untersuchung mit Shimspulen, denn auch der Patient selbst verzerrt das Feld (Suszeptibilität).',
+      ru: 'Система шиммирования делает B₀ в измерительном объёме максимально однородным. Цель: отклонение в несколько ppm в сфере (DSV) диаметром 40–50 см. Даже небольшие ошибки поля сдвигают частоту Лармора, и от этого особенно страдают жироподавление (CHESS), EPI и спектроскопия. Пассивное шиммирование делают один раз при установке с помощью железных пластинок. Активное шиммирование выполняют катушками перед каждым исследованием, потому что сам пациент тоже искажает поле (магнитная восприимчивость).',
     },
   },
   {
@@ -162,8 +168,8 @@ export const hardwareQuestions: QuestionSource[] = [
     ],
     answer: 0,
     explanation: {
-      de: 'B_z(x,y,z) = B₀ + G_x·x + G_y·y + G_z·z. Drei orthogonale Spulensätze (Maxwell-Paar für z, Golay-Sattelspulen für x/y). Die Lorentzkraft auf die Leiter im starken B₀ verursacht den typischen Lärm (bis > 110 dB(A)) – Gehörschutz ist Pflicht.',
-      ru: 'B_z(x,y,z) = B₀ + G_x·x + G_y·y + G_z·z. Три ортогональных набора катушек (пара Максвелла для z, седловидные катушки Голея для x/y). Сила Лоренца, действующая на проводники в сильном B₀, вызывает характерный шум (до > 110 дБ(A)) – защита слуха обязательна.',
+      de: 'Gradientenspulen addieren zu B₀ eine z-Komponente, die linear mit dem Ort wächst. Die Feldrichtung bleibt z, nur die Stärke hängt vom Ort ab: B_z(x,y,z) = B₀ + G_x·x + G_y·y + G_z·z. Dafür gibt es drei Spulensätze: ein Maxwell-Paar für z und Golay-Sattelspulen für x und y. Der typische Lärm kommt von der Lorentzkraft auf die Leiter im starken B₀, er erreicht über 110 dB(A). Gehörschutz ist deshalb Pflicht.',
+      ru: 'Градиентные катушки добавляют к B₀ z-компоненту, которая линейно растёт с координатой. Направление поля остаётся z, от места зависит только величина: B_z(x,y,z) = B₀ + G_x·x + G_y·y + G_z·z. Для этого есть три набора катушек: пара Максвелла для z и седловидные катушки Голея для x и y. Характерный шум создаёт сила Лоренца, действующая на проводники в сильном B₀, он превышает 110 дБ(A). Поэтому защита слуха обязательна.',
     },
   },
   {
@@ -182,8 +188,8 @@ export const hardwareQuestions: QuestionSource[] = [
     ],
     answer: 0,
     explanation: {
-      de: 'Das MR-Signal liegt im µV-Bereich. Kupfer- oder Aluminiumverkleidung inkl. HF-dichter Tür und Filterplatte (Durchführungen) verhindern Einstreuungen. Das statische Feld wird davon nicht abgeschirmt.',
-      ru: 'МР-сигнал лежит в диапазоне микровольт. Медная или алюминиевая обшивка вместе с РЧ-герметичной дверью и фильтровой панелью (вводы) предотвращают наводки. Статическое поле этим не экранируется.',
+      de: 'Der Faradaykäfig hält Radiowellen von außen fern. Die Larmorfrequenz liegt bei 1,5 T bei etwa 64 MHz und bei 3 T bei etwa 128 MHz, also mitten im UKW-Bereich, in dem auch Radio und Funk senden. Das MR-Signal ist nur Mikrovolt stark. Ohne Abschirmung ginge es im Funklärm unter, wie ein Flüstern neben einem Lautsprecher. Wände aus Kupfer oder Aluminium, eine HF-dichte Tür und eine Filterplatte für Durchführungen halten die Störungen draußen. Das statische Magnetfeld schirmt der Käfig nicht ab.',
+      ru: 'Клетка Фарадея не пропускает радиоволны снаружи. Частота Лармора при 1,5 Тл около 64 МГц, а при 3 Тл около 128 МГц, то есть прямо в диапазоне УКВ, где работают радио и связь. МР-сигнал составляет всего микровольты. Без экранирования он утонул бы в радиошуме, как шёпот рядом с громкоговорителем. Стены из меди или алюминия, РЧ-герметичная дверь и фильтровая панель для вводов не пускают помехи внутрь. Статическое магнитное поле клетка не экранирует.',
     },
   },
   {
@@ -201,12 +207,12 @@ export const hardwareQuestions: QuestionSource[] = [
       },
       { de: 'Weil die Körperspule nur senden, aber niemals empfangen kann.', ru: 'Потому что катушка для тела может только передавать, но никогда не принимать.' },
       { de: 'Weil lokale Spulen das SAR auf null senken.', ru: 'Потому что локальные катушки снижают SAR до нуля.' },
-      { de: 'Weil Phased-Array-Spulen das Magnetfeld verstärken.', ru: 'Потому что катушки – фазированные решётки усиливают магнитное поле.' },
+      { de: 'Weil Phased-Array-Spulen das Magnetfeld verstärken.', ru: 'Потому что катушки типа фазированных решёток усиливают магнитное поле.' },
     ],
     answer: 0,
     explanation: {
-      de: 'Das Rauschen stammt überwiegend vom Patienten (Gewebeleitfähigkeit). Eine kleine Spule „sieht“ nur ein kleines Volumen. Die integrierte Körperspule dient meist als homogener Sender. Bei Empfang werden die Sendespulen verstimmt (Decoupling) – defekte Verstimmung kann Verbrennungen verursachen.',
-      ru: 'Шум исходит преимущественно от пациента (электропроводность тканей). Маленькая катушка «видит» лишь малый объём. Встроенная катушка для тела в основном служит однородным передатчиком. При приёме передающие катушки расстраиваются (decoupling) – неисправная расстройка может вызвать ожоги.',
+      de: 'Lokale Spulen sehen weniger Rauschen und liefern deshalb mehr SNR. Das Rauschen stammt hauptsächlich aus dem Patienten selbst, aus der Leitfähigkeit des Gewebes. Eine kleine Spule nah an der Anatomie „hört“ nur ein kleines Volumen und damit wenig Rauschen, wie ein Ansteckmikrofon statt eines Raummikrofons. Mehrere Elemente mit unterschiedlicher Empfindlichkeit ermöglichen zusätzlich parallele Bildgebung. Die Körperspule dient meist als gleichmäßiger Sender. Während des Sendens werden die Empfangsspulen verstimmt (Decoupling). Fällt das aus, können HF-Ströme in der Spule Verbrennungen verursachen.',
+      ru: 'Локальные катушки «видят» меньше шума и поэтому дают больше SNR. Шум идёт в основном от самого пациента, из-за электропроводности тканей. Маленькая катушка рядом с анатомией «слышит» лишь малый объём и поэтому мало шума, как петличный микрофон вместо микрофона на всю комнату. Несколько элементов с разной чувствительностью к тому же делают возможной параллельную визуализацию. Катушка для тела обычно служит однородным передатчиком. Во время передачи приёмные катушки расстраивают (decoupling). Если это не срабатывает, РЧ-токи в катушке могут вызвать ожоги.',
     },
   },
   {
@@ -231,8 +237,8 @@ export const hardwareQuestions: QuestionSource[] = [
     ],
     answers: [0, 1, 2],
     explanation: {
-      de: 'Leitende Schleifen bilden Antennen bzw. Stromkreise, in denen das HF-Feld Ströme induziert. Feuchtigkeit erhöht die Leitfähigkeit eher und wäre kontraproduktiv.',
-      ru: 'Проводящие петли образуют антенны или электрические контуры, в которых РЧ-поле индуцирует токи. Влага скорее повышает электропроводность и была бы контрпродуктивной.',
+      de: 'Alle Maßnahmen helfen, nur die nassen Tücher nicht. Leitende Schleifen wirken wie Antennen oder Stromkreise: Das HF-Feld induziert darin Ströme, und an engen Kontaktstellen wird es heiß. Deshalb vermeidet man Hautkontakt-Schleifen, Kabelschlaufen und Metall auf der Haut. Nässe erhöht die Leitfähigkeit eher und wäre kontraproduktiv.',
+      ru: 'Помогают все меры, кроме влажных полотенец. Проводящие петли работают как антенны или электрические контуры: РЧ-поле наводит в них токи, и в узких местах контакта становится горячо. Поэтому избегают петель через контакт кожи, петель кабелей и металла на коже. Влага скорее повышает электропроводность и навредила бы.',
     },
   },
   {
@@ -254,8 +260,8 @@ export const hardwareQuestions: QuestionSource[] = [
     ],
     answer: 0,
     explanation: {
-      de: 'Wirbelströme verzerren die Gradientenpulse zeitlich (Bildverzerrungen, Ghosting bei EPI/DWI); die Abschirmung plus Pre-Emphasis kompensieren sie. Das reduzierte Streufeld erleichtert die Raumplanung erheblich.',
-      ru: 'Вихревые токи искажают градиентные импульсы во времени (искажения изображения, «призраки» в EPI/DWI); экранирование вместе с предыскажением (pre-emphasis) компенсируют их. Уменьшенное поле рассеяния значительно упрощает планирование помещения.',
+      de: 'Die gegensinnigen Spulen löschen das Feld nach außen hin weitgehend aus. Beim Magneten schrumpft so das Streufeld, die 0,5-mT-Zone wird kleiner, und der Raum lässt sich viel leichter planen. Bei den Gradienten verhindern sie, dass das schnell wechselnde Feld in der Kryostatwand Wirbelströme erzeugt. Solche Wirbelströme verzerren die Gradientenpulse zeitlich und führen zu Bildverzerrungen und Geisterbildern bei EPI und DWI. Was übrig bleibt, gleicht die Pre-Emphasis aus.',
+      ru: 'Встречные катушки в основном гасят поле снаружи. У магнита так уменьшается поле рассеяния, зона 0,5 мТл становится меньше, и помещение гораздо проще планировать. У градиентов они не дают быстро меняющемуся полю наводить вихревые токи в стенке криостата. Такие вихревые токи искажают градиентные импульсы во времени и приводят к искажениям изображения и «призракам» в EPI и DWI. Остаток компенсирует предыскажение (pre-emphasis).',
     },
   },
   {
@@ -274,8 +280,8 @@ export const hardwareQuestions: QuestionSource[] = [
     ],
     answer: 0,
     explanation: {
-      de: 'F = I·L × B. Das Geräusch folgt dem Gradienten-Schaltmuster (EPI: hoher Dauerton). Die Kräfte steigen mit B₀ → 3 T ist lauter. „Silent“-Sequenzen nutzen sanfte Gradientenformen.',
-      ru: 'F = I·L × B. Шум повторяет схему переключения градиентов (EPI: высокий непрерывный тон). Силы растут с B₀ → 3 Тл громче. «Тихие» (silent) последовательности используют плавные формы градиентов.',
+      de: 'Das Klopfen kommt von der Lorentzkraft F = I·L × B auf die Gradientenspulen. Fließt Strom durch einen Leiter im starken Magnetfeld, wirkt eine Kraft auf ihn. Die Gradienten schalten ständig um, die Spulen ruckeln mit und wirken wie die Membran eines Lautsprechers. Das Geräusch folgt deshalb dem Schaltmuster, EPI erzeugt zum Beispiel einen hohen Dauerton. Die Kraft wächst mit B₀, darum ist 3 T lauter als 1,5 T. „Silent“-Sequenzen nutzen sanftere Gradientenformen.',
+      ru: 'Стук создаёт сила Лоренца F = I·L × B, действующая на градиентные катушки. Если ток течёт по проводнику в сильном магнитном поле, на него действует сила. Градиенты постоянно переключаются, катушки дёргаются вместе с ними и работают как мембрана громкоговорителя. Поэтому шум повторяет схему переключения, например EPI даёт высокий непрерывный тон. Сила растёт с B₀, поэтому 3 Тл громче, чем 1,5 Тл. «Тихие» (silent) последовательности используют более плавные формы градиентов.',
     },
   },
 ];
