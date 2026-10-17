@@ -23,7 +23,7 @@ function NavItem({ to, active, icon, label, sub }: { to: string; active: boolean
 }
 
 const LANG_OPTIONS: Array<{ value: Lang; flag: string; short: string; name: string }> = [
-  { value: 'de', flag: '🇩🇪', short: 'DE', name: 'Deutsch' },
+  { value: 'de', flag: '🇨🇭', short: 'DE', name: 'Deutsch' },
   { value: 'ru', flag: '🇺🇦', short: 'РУС', name: 'Русский' },
 ];
 
