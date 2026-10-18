@@ -44,7 +44,7 @@ const ALL_VIEWPORTS = {
 
 const MODULES = ['einfuehrung', 'prinzip', 'bild', 'anwendungen', 'fourier', 'sequenzen', 'qualitaet'];
 const SCENARIOS = ['ms-flair', 'claustro-brain', 'knee-stir-3t', 'liver-breathhold', 'stroke-dwi', 'implant-spine'];
-const SIMULATORS = ['larmor', 'relaxation', 'gradient', 'kspace', 'sequence', 'artifact', 'scanner', 'protocol', 'signal', 'fourier', 'applications'];
+const SIMULATORS = ['larmor', 'relaxation', 'gradient', 'kspace', 'sequence', 'artifact', 'scanner', 'protocol', 'signal', 'fourier', 'applications', 'modality'];
 
 /** Seiten inkl. optionaler Interaktion, damit auch Zustände nach Klicks geprüft werden. */
 const PAGES = [

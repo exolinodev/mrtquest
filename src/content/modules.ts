@@ -2,7 +2,7 @@ import type { Loc } from '../i18n/format';
 
 export type ModuleId = 'einfuehrung' | 'prinzip' | 'bild' | 'anwendungen' | 'fourier' | 'sequenzen' | 'qualitaet';
 
-export type SimulatorId = 'larmor' | 'relaxation' | 'gradient' | 'kspace' | 'sequence' | 'artifact' | 'scanner' | 'protocol' | 'signal' | 'fourier' | 'applications';
+export type SimulatorId = 'larmor' | 'relaxation' | 'gradient' | 'kspace' | 'sequence' | 'artifact' | 'scanner' | 'protocol' | 'signal' | 'fourier' | 'applications' | 'modality';
 
 export interface ModuleMeta {
   id: ModuleId;
@@ -13,8 +13,8 @@ export interface ModuleMeta {
   accent: string;
   simulator: SimulatorId;
   simulatorTitle: Loc;
-  /** Startansicht des Hauptlabors, z. B. 'cases' im Anwendungs-Labor */
-  simulatorPreset?: string;
+  /** Startansicht einzelner Labore in diesem Kapitel, z. B. { applications: 'cases' } */
+  labPresets?: Partial<Record<SimulatorId, string>>;
   /** weitere Labore zum Kapitel, im Simulator-Tab wählbar */
   labs?: SimulatorId[];
   /** exam: Stoff des MBR-Skripts und prüfungsrelevant · bonus: Praxiswissen darüber hinaus */
@@ -32,9 +32,10 @@ const MODULE_LIST: ModuleMeta[] = [
     subtitle: { de: 'Wofür man MRT braucht, was sie besonders gut kann und was dich in diesem Kapitel erwartet', ru: 'Зачем нужна МРТ, что она умеет особенно хорошо и что тебя ждёт в этой главе' },
     icon: '🏥',
     accent: '#22d3ee',
-    simulator: 'applications',
-    simulatorTitle: { de: 'Fallbeispiele', ru: 'Клинические примеры' },
-    simulatorPreset: 'cases',
+    simulator: 'modality',
+    simulatorTitle: { de: 'Modalitäten-Labor', ru: 'Лаборатория методов' },
+    labs: ['applications', 'scanner'],
+    labPresets: { applications: 'cases' },
     track: 'exam',
   },
   {
@@ -121,4 +122,4 @@ export const BONUS_MODULES = MODULES.filter((m) => m.track === 'bonus');
 
 export const MODULE_BY_ID = Object.fromEntries(MODULES.map((m) => [m.id, m])) as Record<ModuleId, ModuleMeta>;
 
-export const ALL_SIMULATORS: SimulatorId[] = ['larmor', 'relaxation', 'gradient', 'kspace', 'sequence', 'artifact', 'scanner', 'protocol', 'signal', 'fourier', 'applications'];
+export const ALL_SIMULATORS: SimulatorId[] = ['larmor', 'relaxation', 'gradient', 'kspace', 'sequence', 'artifact', 'scanner', 'protocol', 'signal', 'fourier', 'applications', 'modality'];

@@ -325,7 +325,7 @@ function LabSwitcher({ meta, lab }: { meta: (typeof MODULES)[number]; lab?: stri
           ))}
         </div>
       )}
-      <SimulatorHost key={active} id={active} preset={active === meta.simulator ? meta.simulatorPreset : undefined} />
+      <SimulatorHost key={active} id={active} preset={meta.labPresets?.[active]} />
     </>
   );
 }

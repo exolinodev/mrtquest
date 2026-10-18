@@ -3129,3 +3129,15 @@ path.sx-focus-shape { fill: none; stroke-width: 10; }
 .flashcard-done p {
   margin-top: 0;
 }
+
+/* Modalitäten-Labor: CT und MRT bleiben auch mobil nebeneinander */
+.image-pair.modlab-pair {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.modlab-pair figure {
+  margin: 0;
+  min-width: 0;
+}
+.modlab-table table {
+  min-width: 0;
+}

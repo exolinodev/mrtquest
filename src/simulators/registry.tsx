@@ -16,6 +16,7 @@ import { SequenceSimulator } from './SequenceSimulator';
 import { SignalLab } from './SignalLab';
 import { FourierLab } from './FourierLab';
 import { ApplicationsLab } from './ApplicationsLab';
+import { ModalityLab } from './ModalityLab';
 
 export interface SimulatorMeta {
   id: SimulatorId;
@@ -26,6 +27,10 @@ export interface SimulatorMeta {
 }
 
 export const SIMULATORS: SimulatorMeta[] = [
+  {
+    id: 'modality', title: { de: 'Modalitäten-Labor', ru: 'Лаборатория методов' }, icon: '🩻',
+    description: { de: 'Röntgen, CT, Ultraschall, PET und MRT vergleichen: Was misst welches Verfahren, und welches passt zur klinischen Frage?', ru: 'Сравни рентген, КТ, УЗИ, ПЭТ и МРТ: что измеряет каждый метод и какой подходит к клиническому вопросу?' }, component: ModalityLab,
+  },
   {
     id: 'signal', title: { de: 'Bloch- & Spektrum-Labor', ru: 'Лаборатория Блоха и спектров' }, icon: '📡',
     description: { de: 'Numerische Bloch-Dynamik, HF-Puls, komplexer FID und absorptive Linienbreite.', ru: 'Численная динамика Блоха, РЧ-импульс, комплексный FID и ширина линии поглощения.' }, component: SignalLab,
