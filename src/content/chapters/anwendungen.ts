@@ -11,7 +11,7 @@ export const anwendungen: Chapter = {
       blocks: [
         {
           type: 'hook',
-          text: 'Bis hierhin hast du gelernt, wie aus Protonen ein Signal und aus dem Signal ein Bild wird. Jetzt kommt die Frage, die in der Prüfung fast sicher auftaucht: **Wofür setzt man das alles ein, und warum gerade MRT?** In diesem Modul gehst du die Anwendungen aus dem Skript durch. Zu jeder lernst du zwei Dinge: **was man sieht** und **welche Physik aus Modul 1 bis 5 dahintersteckt**. Genau diese Verbindung bringt in der Prüfung die vollen Punkte.',
+          text: 'Bis hierhin hast du gelernt, wie aus Protonen ein Signal und aus dem Signal ein Bild wird. Jetzt kommt die Frage, die in der Prüfung fast sicher auftaucht: **Wofür setzt man das alles ein, und warum gerade MRT?** In diesem Modul gehst du die Anwendungen aus dem Skript durch. Zu jeder lernst du zwei Dinge: **was man sieht** und **welche Physik aus den vorherigen Kapiteln dahintersteckt**. Genau diese Verbindung bringt in der Prüfung die vollen Punkte.',
         },
         {
           type: 'p',
@@ -29,7 +29,7 @@ export const anwendungen: Chapter = {
         },
         {
           type: 'p',
-          text: 'Warum sind Weichteile die Stärke der MRT? Erinnere dich an Modul 1 und 2. Das Signal kommt von beweglichen Wasserstoffkernen in Wasser und Fett. Verschiedene Weichteile unterscheiden sich in drei Größen: in der **Protonendichte** (wie viel Wasser), in **T1** (wie schnell sich die Längsmagnetisierung erholt) und in **T2** (wie schnell das Quersignal zerfällt). Mit TR und TE kann man wählen, welche dieser Größen das Bild bestimmt. Das ergibt viele verschiedene Kontraste aus derselben Anatomie. Ein Röntgenbild dagegen kennt im Grunde nur eine Größe: wie stark das Gewebe Röntgenstrahlung abschwächt. Und Weichteile schwächen fast alle ähnlich ab.',
+          text: 'Warum sind Weichteile die Stärke der MRT? Erinnere dich an das physikalische Prinzip. Das Signal kommt von beweglichen Wasserstoffkernen in Wasser und Fett. Verschiedene Weichteile unterscheiden sich in drei Größen: in der **Protonendichte** (wie viel Wasser), in **T1** (wie schnell sich die Längsmagnetisierung erholt) und in **T2** (wie schnell das Quersignal zerfällt). Mit TR und TE kann man wählen, welche dieser Größen das Bild bestimmt. Das ergibt viele verschiedene Kontraste aus derselben Anatomie. Ein Röntgenbild dagegen kennt im Grunde nur eine Größe: wie stark das Gewebe Röntgenstrahlung abschwächt. Und Weichteile schwächen fast alle ähnlich ab.',
         },
         {
           type: 'analogy',
@@ -69,7 +69,7 @@ export const anwendungen: Chapter = {
       blocks: [
         {
           type: 'p',
-          text: 'Die meisten Bildbeispiele im Skript sind anatomische Aufnahmen. Für die Prüfung musst du keine Befunde stellen. Du sollst aber erklären können, **welche Gewichtung gewählt wurde und warum diese Gewichtung zur Frage passt**. Dafür brauchst du nur die Regeln aus Modul 2. Zur Erinnerung die drei Beispiele aus dem Skript:',
+          text: 'Die meisten Bildbeispiele im Skript sind anatomische Aufnahmen. Für die Prüfung musst du keine Befunde stellen. Du sollst aber erklären können, **welche Gewichtung gewählt wurde und warum diese Gewichtung zur Frage passt**. Dafür brauchst du nur die Regeln zur Gewichtung aus „Vom Signal zum Bild“. Zur Erinnerung die drei Beispiele aus dem Skript:',
         },
         {
           type: 'table',
@@ -98,7 +98,7 @@ export const anwendungen: Chapter = {
         },
         {
           type: 'p',
-          text: 'Noch ein praktischer Vorteil steckt in allen diesen Beispielen: Dank der Ortskodierung mit drei Gradienten (Modul 3) kann die MRT **jede Schnittebene** direkt aufnehmen, axial, sagittal, koronal oder schräg. Der Patient muss dafür nicht umgelagert werden.',
+          text: 'Noch ein praktischer Vorteil steckt in allen diesen Beispielen: Dank der Ortskodierung mit drei Gradienten kann die MRT **jede Schnittebene** direkt aufnehmen, axial, sagittal, koronal oder schräg. Der Patient muss dafür nicht umgelagert werden.',
         },
         {
           type: 'mnemonic',
@@ -143,7 +143,7 @@ export const anwendungen: Chapter = {
         },
         {
           type: 'p',
-          text: 'Und jetzt die Brücke zu Modul 2: Ein T1-gewichtetes Bild hat kurzes TR. Gewebe mit **kurzem T1** hat sich bis zur nächsten Anregung schon gut erholt und liefert deshalb viel Signal. Also gilt: **Wo Gadolinium ankommt, wird das T1-Bild heller.** Kontrastmittel reichert sich zum Beispiel dort an, wo die Blut-Hirn-Schranke gestört ist oder wo ein Tumor viele undichte Gefäße hat. Darum vergleicht man T1-Bilder vor und nach der Gabe.',
+          text: 'Und jetzt die Brücke zur Relaxation: Ein T1-gewichtetes Bild hat kurzes TR. Gewebe mit **kurzem T1** hat sich bis zur nächsten Anregung schon gut erholt und liefert deshalb viel Signal. Also gilt: **Wo Gadolinium ankommt, wird das T1-Bild heller.** Kontrastmittel reichert sich zum Beispiel dort an, wo die Blut-Hirn-Schranke gestört ist oder wo ein Tumor viele undichte Gefäße hat. Darum vergleicht man T1-Bilder vor und nach der Gabe.',
         },
         {
           type: 'p',
@@ -232,7 +232,7 @@ export const anwendungen: Chapter = {
         },
         {
           type: 'p',
-          text: '**Flussmessung: Geschwindigkeit aus der Phase.** In Modul 3 hast du gelernt, dass ein Gradient die Präzessionsfrequenz ortsabhängig macht und die Spins dadurch Phase sammeln. Diesen Trick nutzt die Flussmessung (Phasenkontrast). Man schaltet einen Gradienten erst in die eine, dann gleich lang in die andere Richtung, einen sogenannten **bipolaren Gradienten**. Für ein ruhendes Proton heben sich beide Hälften genau auf: Es sammelt erst Phase und gibt sie dann wieder ab, am Ende bleibt null. Ein Proton im fließenden Blut ist aber in der zweiten Hälfte schon an einem anderen Ort und spürt ein anderes Feld. Bei ihm bleibt eine Restphase übrig, und die ist **proportional zur Geschwindigkeit**.',
+          text: '**Flussmessung: Geschwindigkeit aus der Phase.** Bei der Ortskodierung hast du gelernt, dass ein Gradient die Präzessionsfrequenz ortsabhängig macht und die Spins dadurch Phase sammeln. Diesen Trick nutzt die Flussmessung (Phasenkontrast). Man schaltet einen Gradienten erst in die eine, dann gleich lang in die andere Richtung, einen sogenannten **bipolaren Gradienten**. Für ein ruhendes Proton heben sich beide Hälften genau auf: Es sammelt erst Phase und gibt sie dann wieder ab, am Ende bleibt null. Ein Proton im fließenden Blut ist aber in der zweiten Hälfte schon an einem anderen Ort und spürt ein anderes Feld. Bei ihm bleibt eine Restphase übrig, und die ist **proportional zur Geschwindigkeit**.',
         },
         { type: 'figure', id: 'flow-phase', caption: 'Beide Protonen sammeln in der ersten Gradientenhälfte Phase, aber nur beim ruhenden Gewebe hebt die zweite Hälfte alles wieder auf. Achte auf die Zeiger rechts: Doppelt so schnelles Blut dreht die Restphase doppelt so weit.' },
         {
@@ -255,7 +255,7 @@ export const anwendungen: Chapter = {
         },
         {
           type: 'p',
-          text: '**Spektroskopie: Chemie statt Bild.** Aus Modul 1 weißt du: Die Larmor-Frequenz hängt vom Magnetfeld ab, das das Proton tatsächlich spürt. Und das ist nicht ganz $B_0$. Die Elektronen um das Molekül schirmen das Feld ein winziges bisschen ab, und zwar je nach Molekül unterschiedlich stark. Ein Proton in Fett präzediert deshalb etwas langsamer als ein Proton in Wasser. Diese **chemische Verschiebung** ist winzig, man gibt sie in **ppm** an, also Millionstel der Larmor-Frequenz:',
+          text: '**Spektroskopie: Chemie statt Bild.** Aus dem physikalischen Prinzip weißt du: Die Larmor-Frequenz hängt vom Magnetfeld ab, das das Proton tatsächlich spürt. Und das ist nicht ganz $B_0$. Die Elektronen um das Molekül schirmen das Feld ein winziges bisschen ab, und zwar je nach Molekül unterschiedlich stark. Ein Proton in Fett präzediert deshalb etwas langsamer als ein Proton in Wasser. Diese **chemische Verschiebung** ist winzig, man gibt sie in **ppm** an, also Millionstel der Larmor-Frequenz:',
         },
         {
           type: 'formula',
@@ -264,7 +264,7 @@ export const anwendungen: Chapter = {
         },
         {
           type: 'p',
-          text: 'Beispiel: Fett und Wasser liegen rund 3,5 ppm auseinander. Bei 1,5 T ist $f_0 \\approx 64$ MHz, das ergibt etwa 3,5 · 64 ≈ 220 Hz. Bei 3 T verdoppelt sich der Abstand in Hz, die ppm bleiben gleich. Statt aus dem Signal ein Bild zu machen, macht man mit der Fourier-Transformation aus Modul 4 ein **Spektrum** aus einem kleinen Gewebewürfel. Jede Spitze im Spektrum gehört zu einer Molekülsorte. Im Gehirn sind typische Spitzen **NAA** (ein Marker für Nervenzellen, bei 2,0 ppm), **Kreatin** (Energiestoffwechsel, bei 3,0 ppm) und **Cholin** (Zellmembranen, bei 3,2 ppm). Wie breit eine Spitze ist, hängt übrigens mit T2 zusammen: Das zeigt dir das Skript am Zusammenhang zwischen exponentiellem Zerfall und Halbwertsbreite der Spektrallinie.',
+          text: 'Beispiel: Fett und Wasser liegen rund 3,5 ppm auseinander. Bei 1,5 T ist $f_0 \\approx 64$ MHz, das ergibt etwa 3,5 · 64 ≈ 220 Hz. Bei 3 T verdoppelt sich der Abstand in Hz, die ppm bleiben gleich. Statt aus dem Signal ein Bild zu machen, macht man mit der Fourier-Transformation ein **Spektrum** aus einem kleinen Gewebewürfel. Jede Spitze im Spektrum gehört zu einer Molekülsorte. Im Gehirn sind typische Spitzen **NAA** (ein Marker für Nervenzellen, bei 2,0 ppm), **Kreatin** (Energiestoffwechsel, bei 3,0 ppm) und **Cholin** (Zellmembranen, bei 3,2 ppm). Wie breit eine Spitze ist, hängt übrigens mit T2 zusammen: Das zeigt dir das Skript am Zusammenhang zwischen exponentiellem Zerfall und Halbwertsbreite der Spektrallinie.',
         },
         {
           type: 'mnemonic',
@@ -377,7 +377,7 @@ export const anwendungen: Chapter = {
         },
         {
           type: 'p',
-          text: 'Почему мягкие ткани это сильная сторона МРТ? Вспомни модули 1 и 2. Сигнал идёт от подвижных ядер водорода в воде и жире. Мягкие ткани различаются тремя величинами: **протонной плотностью** (сколько воды), **T1** (как быстро восстанавливается продольная намагниченность) и **T2** (как быстро затухает поперечный сигнал). С помощью TR и TE можно выбрать, какая из этих величин определяет изображение. Так из одной и той же анатомии получается много разных контрастов. Рентген же по сути знает только одну величину: насколько ткань ослабляет излучение. А мягкие ткани ослабляют его почти одинаково.',
+          text: 'Почему мягкие ткани это сильная сторона МРТ? Вспомни физический принцип. Сигнал идёт от подвижных ядер водорода в воде и жире. Мягкие ткани различаются тремя величинами: **протонной плотностью** (сколько воды), **T1** (как быстро восстанавливается продольная намагниченность) и **T2** (как быстро затухает поперечный сигнал). С помощью TR и TE можно выбрать, какая из этих величин определяет изображение. Так из одной и той же анатомии получается много разных контрастов. Рентген же по сути знает только одну величину: насколько ткань ослабляет излучение. А мягкие ткани ослабляют его почти одинаково.',
         },
         {
           type: 'analogy',
@@ -417,7 +417,7 @@ export const anwendungen: Chapter = {
       blocks: [
         {
           type: 'p',
-          text: 'Большинство примеров в конспекте это анатомические снимки. На экзамене не нужно ставить диагнозы. Но ты должен уметь объяснить, **какое взвешивание выбрано и почему оно подходит к вопросу**. Для этого достаточно правил из модуля 2. Напомним три примера из конспекта:',
+          text: 'Большинство примеров в конспекте это анатомические снимки. На экзамене не нужно ставить диагнозы. Но ты должен уметь объяснить, **какое взвешивание выбрано и почему оно подходит к вопросу**. Для этого достаточно правил взвешивания из главы «От сигнала к изображению». Напомним три примера из конспекта:',
         },
         {
           type: 'table',
@@ -446,7 +446,7 @@ export const anwendungen: Chapter = {
         },
         {
           type: 'p',
-          text: 'Во всех этих примерах есть ещё одно практическое преимущество: благодаря пространственному кодированию тремя градиентами (модуль 3) МРТ может напрямую снять **любую плоскость среза**: аксиальную, сагиттальную, корональную или косую. Пациента для этого не нужно перекладывать.',
+          text: 'Во всех этих примерах есть ещё одно практическое преимущество: благодаря пространственному кодированию тремя градиентами МРТ может напрямую снять **любую плоскость среза**: аксиальную, сагиттальную, корональную или косую. Пациента для этого не нужно перекладывать.',
         },
         {
           type: 'mnemonic',
@@ -491,7 +491,7 @@ export const anwendungen: Chapter = {
         },
         {
           type: 'p',
-          text: 'А теперь мост к модулю 2: у T1-взвешенного изображения короткое TR. Ткань с **коротким T1** к следующему возбуждению уже хорошо восстановилась и поэтому даёт много сигнала. Значит: **где появляется гадолиний, T1-изображение становится ярче.** Контраст накапливается, например, там, где нарушен гематоэнцефалический барьер или где у опухоли много проницаемых сосудов. Поэтому сравнивают T1-изображения до и после введения.',
+          text: 'А теперь мост к релаксации: у T1-взвешенного изображения короткое TR. Ткань с **коротким T1** к следующему возбуждению уже хорошо восстановилась и поэтому даёт много сигнала. Значит: **где появляется гадолиний, T1-изображение становится ярче.** Контраст накапливается, например, там, где нарушен гематоэнцефалический барьер или где у опухоли много проницаемых сосудов. Поэтому сравнивают T1-изображения до и после введения.',
         },
         {
           type: 'p',
@@ -580,7 +580,7 @@ export const anwendungen: Chapter = {
         },
         {
           type: 'p',
-          text: '**Измерение потока: скорость из фазы.** В модуле 3 ты узнал, что градиент делает частоту прецессии зависящей от места, и спины из-за этого набирают фазу. Этим приёмом пользуется измерение потока (фазовый контраст). Включают градиент сначала в одну сторону, а потом столько же времени в другую, так называемый **биполярный градиент**. Для неподвижного протона обе половины точно компенсируются: он сначала набирает фазу, потом отдаёт её обратно, в итоге остаётся ноль. Протон в текущей крови во второй половине уже в другом месте и чувствует другое поле. У него остаётся остаточная фаза, и она **пропорциональна скорости**.',
+          text: '**Измерение потока: скорость из фазы.** При пространственном кодировании ты узнал, что градиент делает частоту прецессии зависящей от места, и спины из-за этого набирают фазу. Этим приёмом пользуется измерение потока (фазовый контраст). Включают градиент сначала в одну сторону, а потом столько же времени в другую, так называемый **биполярный градиент**. Для неподвижного протона обе половины точно компенсируются: он сначала набирает фазу, потом отдаёт её обратно, в итоге остаётся ноль. Протон в текущей крови во второй половине уже в другом месте и чувствует другое поле. У него остаётся остаточная фаза, и она **пропорциональна скорости**.',
         },
         { type: 'figure', id: 'flow-phase', caption: 'Оба протона набирают фазу в первой половине градиента, но только у неподвижной ткани вторая половина всё компенсирует. Обрати внимание на стрелки справа: вдвое более быстрая кровь поворачивает остаточную фазу вдвое дальше.' },
         {
@@ -603,7 +603,7 @@ export const anwendungen: Chapter = {
         },
         {
           type: 'p',
-          text: '**Спектроскопия: химия вместо изображения.** Из модуля 1 ты знаешь: ларморова частота зависит от поля, которое протон реально чувствует. А это не совсем $B_0$. Электроны вокруг молекулы чуть-чуть экранируют поле, и в разных молекулах по-разному. Поэтому протон в жире прецессирует немного медленнее, чем протон в воде. Этот **химический сдвиг** крошечный, его указывают в **ppm**, то есть в миллионных долях ларморовой частоты:',
+          text: '**Спектроскопия: химия вместо изображения.** Из физического принципа ты знаешь: ларморова частота зависит от поля, которое протон реально чувствует. А это не совсем $B_0$. Электроны вокруг молекулы чуть-чуть экранируют поле, и в разных молекулах по-разному. Поэтому протон в жире прецессирует немного медленнее, чем протон в воде. Этот **химический сдвиг** крошечный, его указывают в **ppm**, то есть в миллионных долях ларморовой частоты:',
         },
         {
           type: 'formula',
@@ -612,7 +612,7 @@ export const anwendungen: Chapter = {
         },
         {
           type: 'p',
-          text: 'Пример: жир и вода отстоят примерно на 3,5 ppm. При 1,5 Тл $f_0 \\approx 64$ МГц, это даёт около 3,5 · 64 ≈ 220 Гц. При 3 Тл расстояние в Гц удваивается, а ppm остаются прежними. Вместо изображения из сигнала с помощью преобразования Фурье из модуля 4 получают **спектр** маленького кубика ткани. Каждый пик в спектре принадлежит одному виду молекул. В мозге типичные пики это **NAA** (маркер нервных клеток, 2,0 ppm), **креатин** (энергетический обмен, 3,0 ppm) и **холин** (клеточные мембраны, 3,2 ppm). Ширина пика, кстати, связана с T2: в конспекте это показано на связи экспоненциального затухания и полуширины спектральной линии.',
+          text: 'Пример: жир и вода отстоят примерно на 3,5 ppm. При 1,5 Тл $f_0 \\approx 64$ МГц, это даёт около 3,5 · 64 ≈ 220 Гц. При 3 Тл расстояние в Гц удваивается, а ppm остаются прежними. Вместо изображения из сигнала с помощью преобразования Фурье получают **спектр** маленького кубика ткани. Каждый пик в спектре принадлежит одному виду молекул. В мозге типичные пики это **NAA** (маркер нервных клеток, 2,0 ppm), **креатин** (энергетический обмен, 3,0 ppm) и **холин** (клеточные мембраны, 3,2 ppm). Ширина пика, кстати, связана с T2: в конспекте это показано на связи экспоненциального затухания и полуширины спектральной линии.',
         },
         {
           type: 'mnemonic',

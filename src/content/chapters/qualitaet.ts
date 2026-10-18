@@ -11,7 +11,7 @@ export const qualitaet: Chapter = {
       blocks: [
         {
           type: 'hook',
-          text: 'Dieses Modul ist ein **Bonus**. Es steht nicht im Vorlesungsskript und ist nicht prüfungsrelevant. Es zeigt dir aber, womit Radiologie-Teams jeden Tag kämpfen: verrauschte Bilder, zu lange Messzeiten, warme Patienten und seltsame Streifen im Bild. Das Schöne: Fast alles davon verstehst du mit dem, was du schon kennst. Vor allem mit dem **k-Raum** aus Modul 3 und 4.',
+          text: 'Dieses Modul ist ein **Bonus**. Es steht nicht im Vorlesungsskript und ist nicht prüfungsrelevant. Es zeigt dir aber, womit Radiologie-Teams jeden Tag kämpfen: verrauschte Bilder, zu lange Messzeiten, warme Patienten und seltsame Streifen im Bild. Das Schöne: Fast alles davon verstehst du mit dem, was du schon kennst. Vor allem mit dem **k-Raum** aus „Vom Signal zum Bild“.',
         },
         {
           type: 'p',
@@ -62,7 +62,7 @@ export const qualitaet: Chapter = {
             '**Voxelgröße:** Das Signal wächst direkt mit dem Volumen. Halbierst du die Schichtdicke, halbiert sich auch das SNR.',
             '**Mittelungen (NEX):** Du misst dieselben Daten mehrfach und addierst sie. Das Signal addiert sich immer gleich, das Rauschen nur zufällig. Darum wächst das SNR nur mit der Wurzel: doppelte Mittelungen bringen den Faktor √2 ≈ 1,41.',
             '**Bandbreite:** Eine große Empfangsbandbreite lässt mehr Rauschfrequenzen herein. Halbierte Bandbreite pro Pixel bringt den Faktor √2 an SNR, dauert aber länger beim Auslesen.',
-            '**Feldstärke:** Mehr B₀ bedeutet einen größeren Spin-Überschuss (siehe Modul 1) und damit mehr Signal. Grob gilt: 3 T hat etwa doppelt so viel SNR wie 1,5 T.',
+            '**Feldstärke:** Mehr B₀ bedeutet einen größeren Spin-Überschuss (siehe „Physikalisches Prinzip“) und damit mehr Signal. Grob gilt: 3 T hat etwa doppelt so viel SNR wie 1,5 T.',
             '**Spulen:** Eine Empfangsspule nah am Organ hört viel Signal und wenig Rauschen aus dem restlichen Körper. Darum gibt es eigene Kopf-, Knie- und Wirbelsäulenspulen.',
           ],
         },
@@ -110,7 +110,7 @@ export const qualitaet: Chapter = {
       blocks: [
         {
           type: 'p',
-          text: 'Aus Modul 4 weißt du: Ein Bild entsteht erst, wenn der k-Raum gefüllt ist. Bei einer klassischen Sequenz liefert jede Wiederholung (jedes TR) **eine** k-Raum-Zeile in Phasenrichtung. Die Messzeit ergibt sich deshalb fast wie ein Einkaufszettel:',
+          text: 'Vom k-Raum weißt du: Ein Bild entsteht erst, wenn der k-Raum gefüllt ist. Bei einer klassischen Sequenz liefert jede Wiederholung (jedes TR) **eine** k-Raum-Zeile in Phasenrichtung. Die Messzeit ergibt sich deshalb fast wie ein Einkaufszettel:',
         },
         {
           type: 'formula',
@@ -128,7 +128,7 @@ export const qualitaet: Chapter = {
             '**Weniger Phasenzeilen:** Zeit sinkt, aber das Pixel wird in Phasenrichtung gröber.',
             '**Längerer Echozug (ETL):** Zeit sinkt fast ohne SNR-Verlust, dafür wird das Bild unschärfer und die SAR steigt, weil mehr 180°-Pulse pro Sekunde laufen.',
             '**Parallele Bildgebung (R):** Zeit ÷R, SNR sinkt um den Faktor $g\\sqrt{R}$. Der g-Faktor beschreibt, wie gut die Spulengeometrie die fehlenden Zeilen ersetzen kann.',
-            '**Kürzeres TR:** Zeit sinkt, aber der Kontrast ändert sich (mehr T1-Gewichtung, siehe Modul 2).',
+            '**Kürzeres TR:** Zeit sinkt, aber der Kontrast ändert sich (mehr T1-Gewichtung).',
           ],
         },
         {
@@ -170,7 +170,7 @@ export const qualitaet: Chapter = {
         },
         {
           type: 'p',
-          text: 'Wovon hängt sie ab? Die Leistung einer Welle wächst mit dem **Quadrat ihrer Feldstärke**, also mit $B_1^2$. Aus Modul 1 kennst du den Flipwinkel $\\alpha = \\gamma B_1 \\tau$. Bei gleicher Pulsdauer τ braucht ein doppelter Flipwinkel ein doppeltes $B_1$ und damit **vierfache** Energie. Außerdem steigt die Larmor-Frequenz mit $B_0$, und schnellere Felder induzieren stärkere Ströme.',
+          text: 'Wovon hängt sie ab? Die Leistung einer Welle wächst mit dem **Quadrat ihrer Feldstärke**, also mit $B_1^2$. Aus dem physikalischen Prinzip kennst du den Flipwinkel $\\alpha = \\gamma B_1 \\tau$. Bei gleicher Pulsdauer τ braucht ein doppelter Flipwinkel ein doppeltes $B_1$ und damit **vierfache** Energie. Außerdem steigt die Larmor-Frequenz mit $B_0$, und schnellere Felder induzieren stärkere Ströme.',
         },
         {
           type: 'formula',
@@ -267,7 +267,7 @@ export const qualitaet: Chapter = {
       blocks: [
         {
           type: 'p',
-          text: 'Die Ortskodierung aus Modul 3 beruht auf einer Annahme: **Frequenz bedeutet Ort.** Alles, was die Frequenz verändert, ohne dass sich der Ort ändert, schiebt Signal an die falsche Stelle. Drei Artefakte folgen genau daraus, ein viertes aus dem abgeschnittenen k-Raum.',
+          text: 'Die Ortskodierung beruht auf einer Annahme: **Frequenz bedeutet Ort.** Alles, was die Frequenz verändert, ohne dass sich der Ort ändert, schiebt Signal an die falsche Stelle. Drei Artefakte folgen genau daraus, ein viertes aus dem abgeschnittenen k-Raum.',
         },
         {
           type: 'p',
@@ -324,7 +324,7 @@ export const qualitaet: Chapter = {
       blocks: [
         {
           type: 'hook',
-          text: 'Этот модуль **бонусный**. Его нет в конспекте лекций, и на экзамене его не спрашивают. Зато он показывает, с чем каждый день борется команда радиологии: шумные изображения, слишком долгие исследования, нагрев пациента и странные полосы на снимке. И приятная новость: почти всё это ты поймёшь с тем, что уже знаешь. Прежде всего с **k-пространством** из модулей 3 и 4.',
+          text: 'Этот модуль **бонусный**. Его нет в конспекте лекций, и на экзамене его не спрашивают. Зато он показывает, с чем каждый день борется команда радиологии: шумные изображения, слишком долгие исследования, нагрев пациента и странные полосы на снимке. И приятная новость: почти всё это ты поймёшь с тем, что уже знаешь. Прежде всего с **k-пространством** из главы «От сигнала к изображению».',
         },
         {
           type: 'p',
@@ -375,7 +375,7 @@ export const qualitaet: Chapter = {
             '**Размер вокселя:** сигнал растёт прямо пропорционально объёму. Уменьшишь толщину среза вдвое, и SNR тоже упадёт вдвое.',
             '**Усреднения (NEX):** одни и те же данные измеряют несколько раз и складывают. Сигнал всегда складывается одинаково, а шум случайно. Поэтому SNR растёт только как корень: вдвое больше усреднений дают множитель √2 ≈ 1,41.',
             '**Полоса пропускания:** широкая полоса приёма впускает больше шумовых частот. Полоса на пиксель вдвое уже даёт множитель √2 в SNR, но считывание длится дольше.',
-            '**Индукция поля:** больше B₀ значит больший избыток спинов (см. модуль 1) и больше сигнала. Грубо: при 3 Тл SNR примерно вдвое выше, чем при 1,5 Тл.',
+            '**Индукция поля:** больше B₀ значит больший избыток спинов (см. «Физический принцип») и больше сигнала. Грубо: при 3 Тл SNR примерно вдвое выше, чем при 1,5 Тл.',
             '**Катушки:** приёмная катушка рядом с органом слышит много сигнала и мало шума от остального тела. Поэтому существуют отдельные катушки для головы, колена и позвоночника.',
           ],
         },
@@ -423,7 +423,7 @@ export const qualitaet: Chapter = {
       blocks: [
         {
           type: 'p',
-          text: 'Из модуля 4 ты знаешь: изображение появляется только тогда, когда k-пространство заполнено. В классической последовательности каждое повторение (каждое TR) даёт **одну** строку k-пространства в фазовом направлении. Поэтому время сканирования складывается почти как список покупок:',
+          text: 'Из раздела о k-пространстве ты знаешь: изображение появляется только тогда, когда k-пространство заполнено. В классической последовательности каждое повторение (каждое TR) даёт **одну** строку k-пространства в фазовом направлении. Поэтому время сканирования складывается почти как список покупок:',
         },
         {
           type: 'formula',
@@ -441,7 +441,7 @@ export const qualitaet: Chapter = {
             '**Меньше фазовых строк:** время сокращается, но пиксель в фазовом направлении становится крупнее.',
             '**Длиннее эхо-поезд (ETL):** время сокращается почти без потери SNR, зато изображение размывается, а SAR растёт, потому что в секунду идёт больше импульсов 180°.',
             '**Параллельная визуализация (R):** время ÷R, SNR падает в $g\\sqrt{R}$ раз. g-фактор описывает, насколько хорошо геометрия катушек заменяет пропущенные строки.',
-            '**Короче TR:** время сокращается, но меняется контраст (больше T1-взвешенности, см. модуль 2).',
+            '**Короче TR:** время сокращается, но меняется контраст (больше T1-взвешенности).',
           ],
         },
         {
@@ -483,7 +483,7 @@ export const qualitaet: Chapter = {
         },
         {
           type: 'p',
-          text: 'От чего он зависит? Мощность волны растёт с **квадратом её напряжённости**, то есть с $B_1^2$. Из модуля 1 ты знаешь угол отклонения $\\alpha = \\gamma B_1 \\tau$. При той же длительности импульса τ для вдвое большего угла нужно вдвое большее $B_1$, а значит, **вчетверо** больше энергии. Кроме того, ларморова частота растёт с $B_0$, а более быстрые поля наводят более сильные токи.',
+          text: 'От чего он зависит? Мощность волны растёт с **квадратом её напряжённости**, то есть с $B_1^2$. Из физического принципа ты знаешь угол отклонения $\\alpha = \\gamma B_1 \\tau$. При той же длительности импульса τ для вдвое большего угла нужно вдвое большее $B_1$, а значит, **вчетверо** больше энергии. Кроме того, ларморова частота растёт с $B_0$, а более быстрые поля наводят более сильные токи.',
         },
         {
           type: 'formula',
@@ -580,7 +580,7 @@ export const qualitaet: Chapter = {
       blocks: [
         {
           type: 'p',
-          text: 'Пространственное кодирование из модуля 3 опирается на одно допущение: **частота означает место.** Всё, что меняет частоту без изменения места, переносит сигнал не туда. Из этого прямо следуют три артефакта, а четвёртый из обрезанного k-пространства.',
+          text: 'Пространственное кодирование опирается на одно допущение: **частота означает место.** Всё, что меняет частоту без изменения места, переносит сигнал не туда. Из этого прямо следуют три артефакта, а четвёртый из обрезанного k-пространства.',
         },
         {
           type: 'p',

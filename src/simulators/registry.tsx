@@ -22,7 +22,7 @@ export interface SimulatorMeta {
   title: Loc;
   icon: string;
   description: Loc;
-  component: ComponentType;
+  component: ComponentType<{ preset?: string }>;
 }
 
 export const SIMULATORS: SimulatorMeta[] = [
@@ -92,14 +92,15 @@ export const SIMULATORS: SimulatorMeta[] = [
     title: { de: 'Freie Protokoll-Konsole', ru: 'Свободная консоль протоколов' },
     icon: '🎛️',
     description: { de: 'Alle Parameter frei: SNR, SAR, Messzeit und Artefakte im Gleichgewicht.', ru: 'Все параметры свободны: SNR, SAR, время сканирования и артефакты в балансе.' },
-    component: ProtocolConsole,
+    // Ohne Fall-Szenario: freie Konsole (die Startansicht wird hier nicht genutzt)
+    component: () => <ProtocolConsole />,
   },
 ];
 
 export const SIMULATOR_BY_ID = Object.fromEntries(SIMULATORS.map((s) => [s.id, s])) as Record<SimulatorId, SimulatorMeta>;
 
 /** Rendert einen Simulator und registriert den Besuch (für das Entdecker-Abzeichen). */
-export function SimulatorHost({ id }: { id: SimulatorId }) {
+export function SimulatorHost({ id, preset }: { id: SimulatorId; preset?: string }) {
   const { dispatch } = useGame();
   useEffect(() => {
     dispatch({ type: 'VISIT_SIMULATOR', simulatorId: id });
@@ -108,7 +109,7 @@ export function SimulatorHost({ id }: { id: SimulatorId }) {
   return (
     <>
       <SimGuide id={id} />
-      <Comp />
+      <Comp preset={preset} />
       <SimTakeaway id={id} />
     </>
   );

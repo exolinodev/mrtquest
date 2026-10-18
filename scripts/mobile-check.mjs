@@ -42,7 +42,7 @@ const ALL_VIEWPORTS = {
   1280: { width: 1280, height: 900 }, // Desktop-Kontrolle
 };
 
-const MODULES = ['kernspin', 'relaxation', 'ortskodierung', 'kraum', 'hardware', 'anwendungen', 'sequenzen', 'qualitaet'];
+const MODULES = ['einfuehrung', 'prinzip', 'bild', 'anwendungen', 'fourier', 'sequenzen', 'qualitaet'];
 const SCENARIOS = ['ms-flair', 'claustro-brain', 'knee-stir-3t', 'liver-breathhold', 'stroke-dwi', 'implant-spine'];
 const SIMULATORS = ['larmor', 'relaxation', 'gradient', 'kspace', 'sequence', 'artifact', 'scanner', 'protocol', 'signal', 'fourier', 'applications'];
 
@@ -68,12 +68,12 @@ const PAGES = [
   {
     name: 'vorlesung-alter-link', path: '/vorlesung/dft',
     interact: async page=>{
-      await page.waitForFunction(()=>location.hash==='#/modul/kraum');
+      await page.waitForFunction(()=>location.hash==='#/modul/fourier');
       assert.ok(await page.locator('.theory').isVisible());
     },
   },
   {
-    name: 'theorie-pruefungsfrage', path: '/modul/kernspin/theorie',
+    name: 'theorie-pruefungsfrage', path: '/modul/prinzip/theorie',
     interact: async page=>{
       for (const summary of await page.locator('.exam-block summary').all()) await summary.click();
     },
@@ -94,14 +94,14 @@ const PAGES = [
   { name: 'profil', path: '/profil' },
   { name: 'navigation-offen', path: '/', click: '.menu-btn', mobileOnly: true },
   {
-    name: 'challenge-regeln', path: '/modul/hardware/challenge',
+    name: 'challenge-regeln', path: '/modul/bild/challenge',
     interact: async (page) => {
       await page.locator('.challenge-rules summary').click();
       assert.match(await page.locator('.challenge-overview').innerText(), /7/);
     },
   },
   {
-    name: 'challenge-auswertung', path: '/modul/kernspin/challenge',
+    name: 'challenge-auswertung', path: '/modul/prinzip/challenge',
     interact: async (page) => {
       await page.locator('.challenge-start').click();
       for (let i = 0; i < 8; i++) {
@@ -134,7 +134,7 @@ const PAGES = [
     interact: async (page) => page.locator('canvas.clickable').click(),
   },
   {
-    name: 'scanner-auswahl', path: '/modul/hardware/simulator',
+    name: 'scanner-auswahl', path: '/modul/bild/simulator/scanner',
     interact: async (page) => {
       await page.locator('.scanner-index summary').click();
       await page.locator('.scanner-component[data-component="surface"]').click();

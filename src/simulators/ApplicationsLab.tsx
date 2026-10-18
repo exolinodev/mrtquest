@@ -18,10 +18,10 @@ const CASE_LABELS: Record<string, { de: string; ru: string }> = {
 const CASES = LECTURE_LESSONS.filter((l) => ['brain', 'hybrid', 'knee', 'pelvis', 'pregnancy'].includes(l.id));
 
 /** Klinische Anwendungen: Flussmessung, DTI, Spektroskopie, BOLD, Kontrastmittel und Fallkarten. */
-export function ApplicationsLab() {
+export function ApplicationsLab({ preset: initial }: { preset?: string }) {
   const { tr, loc } = useLang();
   const [mode, setMode] = useState<Mode>(() => {
-    const preset = window.location.hash.split('/')[3];
+    const preset = initial ?? window.location.hash.split('/')[3];
     return ['flow', 'dti', 'mrs', 'bold', 'contrast', 'cases'].includes(preset) ? (preset as Mode) : 'flow';
   });
   const [caseId, setCaseId] = useState('brain');

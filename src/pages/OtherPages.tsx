@@ -150,8 +150,8 @@ export function ExamPage() {
         <h1>{title}</h1>
         <p className="lead">
           {tr(
-            'Die Probeprüfung wird freigeschaltet, sobald du jede Challenge der sechs Prüfungsmodule mindestens einmal gespielt hast. Die Bonus-Module zählen nicht dazu.',
-            'Пробный экзамен откроется, когда ты хотя бы раз пройдёшь задание каждого из шести экзаменационных модулей. Бонусные модули не учитываются.',
+            'Die Probeprüfung wird freigeschaltet, sobald du jede Challenge der fünf Prüfungsmodule mindestens einmal gespielt hast. Die Bonus-Module zählen nicht dazu.',
+            'Пробный экзамен откроется, когда ты хотя бы раз пройдёшь задание каждого из пяти экзаменационных модулей. Бонусные модули не учитываются.',
           )}
         </p>
         <ul className="checklist">

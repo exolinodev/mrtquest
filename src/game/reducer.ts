@@ -136,6 +136,34 @@ function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v);
 }
 
+/** Frühere Module (vor der Gliederung nach dem Skript) → heutige Kapitel. */
+const LEGACY_MODULES: Record<string, string> = {
+  kernspin: 'prinzip',
+  relaxation: 'prinzip',
+  ortskodierung: 'bild',
+  kraum: 'bild',
+  hardware: 'bild',
+};
+
+/** Überträgt Fortschritt alter Module auf die neuen Kapitel: Bestwert und Theorie werden übernommen, Versuche addiert. */
+export function migrateModules(modules: GameState['modules']): GameState['modules'] {
+  const result: GameState['modules'] = {};
+  for (const [id, progress] of Object.entries(modules)) {
+    const target = LEGACY_MODULES[id] ?? id;
+    const prev = result[target];
+    result[target] = prev
+      ? {
+          bestScore: Math.max(prev.bestScore, progress.bestScore),
+          attempts: prev.attempts + progress.attempts,
+          perfect: prev.perfect || progress.perfect,
+          theoryRead: prev.theoryRead || progress.theoryRead,
+          xpEarned: prev.xpEarned + progress.xpEarned,
+        }
+      : { ...progress };
+  }
+  return result;
+}
+
 /** Lädt und validiert den gespeicherten Zustand; fehlende Felder werden ergänzt. */
 export function loadState(storage: Pick<Storage, 'getItem'> | undefined = globalThis.localStorage): GameState {
   const initial = createInitialState();
@@ -148,7 +176,7 @@ export function loadState(storage: Pick<Storage, 'getItem'> | undefined = global
       ...initial,
       ...(parsed as Partial<GameState>),
       stats: { ...initial.stats, ...(isRecord(parsed.stats) ? (parsed.stats as Partial<GameState['stats']>) : {}) },
-      modules: isRecord(parsed.modules) ? (parsed.modules as GameState['modules']) : {},
+      modules: isRecord(parsed.modules) ? migrateModules(parsed.modules as GameState['modules']) : {},
       scenarios: isRecord(parsed.scenarios) ? (parsed.scenarios as GameState['scenarios']) : {},
       badges: isRecord(parsed.badges) ? (parsed.badges as GameState['badges']) : {},
       flags: isRecord(parsed.flags) ? (parsed.flags as GameState['flags']) : {},

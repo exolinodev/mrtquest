@@ -70,7 +70,7 @@ export const hardware: Chapter = {
         },
         {
           type: 'p',
-          text: 'Ganz anders die **Gradientenspulen**. Sie sollen das Feld absichtlich ungleich machen, aber kontrolliert. Im Magneten stecken **drei Gradientenspulen**, eine für jede Raumrichtung x, y und z. Jede legt eine lineare Rampe über das Feld. Aus Modul 3 kennst du ihre drei Aufgaben in der Bildgebung: Schichtauswahl, Phasenkodierung und Frequenzkodierung (Auslesen).',
+          text: 'Ganz anders die **Gradientenspulen**. Sie sollen das Feld absichtlich ungleich machen, aber kontrolliert. Im Magneten stecken **drei Gradientenspulen**, eine für jede Raumrichtung x, y und z. Jede legt eine lineare Rampe über das Feld. Aus dem vorherigen Abschnitt kennst du ihre drei Aufgaben in der Bildgebung: Schichtauswahl, Phasenkodierung und Frequenzkodierung (Auslesen).',
         },
         { type: 'formula', tex: 'B(x) = B_0 + G_x\\, x \\quad\\Rightarrow\\quad \\omega(x) = \\gamma\\,(B_0 + G_x x)', caption: 'der Gradient macht die Larmor-Frequenz ortsabhängig' },
         {
@@ -390,7 +390,7 @@ export const hardware: Chapter = {
         },
         {
           type: 'p',
-          text: 'С **градиентными катушками** всё наоборот. Они должны сделать поле неоднородным нарочно, но контролируемо. В магните стоят **три градиентные катушки**, по одной для каждого направления x, y и z. Каждая накладывает на поле линейный наклон. Из модуля 3 ты знаешь их три задачи: выбор среза, фазовое кодирование и частотное кодирование (считывание).',
+          text: 'С **градиентными катушками** всё наоборот. Они должны сделать поле неоднородным нарочно, но контролируемо. В магните стоят **три градиентные катушки**, по одной для каждого направления x, y и z. Каждая накладывает на поле линейный наклон. Из предыдущего раздела ты знаешь их три задачи: выбор среза, фазовое кодирование и частотное кодирование (считывание).',
         },
         { type: 'formula', tex: 'B(x) = B_0 + G_x\\, x \\quad\\Rightarrow\\quad \\omega(x) = \\gamma\\,(B_0 + G_x x)', caption: 'градиент делает ларморову частоту зависящей от места' },
         {
