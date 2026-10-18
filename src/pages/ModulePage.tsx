@@ -1,12 +1,16 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ChallengeRunner } from '../components/ChallengeRunner';
 import { ChallengeIntro } from '../components/ChallengeIntro';
 import { Figure } from '../components/figures';
+import { QuickCheck } from '../components/QuickCheck';
+import { CONCEPTS } from '../game/learning/concepts';
 import { RichText, TeX } from '../components/RichText';
 import { Link, navigate } from '../components/router';
 import { Callout } from '../components/ui';
 import { MODULES, MODULE_BY_ID, type ModuleId } from '../content/modules';
-import { CHALLENGE_LENGTH, drawChallenge } from '../content/questions';
+import { CHALLENGE_LENGTH, drawChallenge, QUESTION_BANK } from '../content/questions';
+import type { QuestionRef } from '../content/questions/types';
+import { focusConcepts, randomSeed } from '../game/learning/select';
 import { seededRandom } from '../physics/phantom';
 import { THEORY, type TheoryBlock } from '../content/theory';
 import { useGame } from '../game/GameContext';
@@ -147,11 +151,20 @@ function Block({ block }: { block: TheoryBlock }) {
   }
 }
 
-function TheoryView({ moduleId }: { moduleId: ModuleId }) {
+/** Konzept, dessen Kapitelabschnitt dies ist (für den Kurz-Check). */
+const sectionConcept = (moduleId: ModuleId, index: number) => CONCEPTS.find((c) => c.module === moduleId && c.section === index)?.id;
+
+function TheoryView({ moduleId, section }: { moduleId: ModuleId; section?: string }) {
   const { state, dispatch } = useGame();
   const { lang, tr } = useLang();
   const sections = THEORY[lang][moduleId];
   const read = state.modules[moduleId]?.theoryRead;
+  // Direkter Sprung zu einem Abschnitt, z. B. aus „Nachlesen“ in der Lückenkarte
+  useEffect(() => {
+    if (section === undefined) return;
+    const t = window.setTimeout(() => document.getElementById(`sec-${moduleId}-${section}`)?.scrollIntoView({ block: 'start' }), 50);
+    return () => window.clearTimeout(t);
+  }, [moduleId, section]);
   return (
     <article className="theory">
       <nav className="toc" aria-label={tr('Inhaltsverzeichnis', 'Содержание')}>
@@ -191,6 +204,7 @@ function TheoryView({ moduleId }: { moduleId: ModuleId }) {
             {s.blocks.map((b, j) => (
               <Block key={j} block={b} />
             ))}
+            {sectionConcept(moduleId, i) && <QuickCheck conceptId={sectionConcept(moduleId, i)!} />}
           </section>
         ))}
         <div className="theory-done">
@@ -212,16 +226,21 @@ function TheoryView({ moduleId }: { moduleId: ModuleId }) {
 
 function ChallengeView({ moduleId }: { moduleId: ModuleId }) {
   const { state } = useGame();
+  const [questions, setQuestions] = useState<QuestionRef[] | null>(null);
   const [round, setRound] = useState(0);
-  const [started, setStarted] = useState(false);
   const progress = state.modules[moduleId];
   const replay = (progress?.bestScore ?? 0) >= 0.8;
-  const questions = useMemo(() => drawChallenge(moduleId, seededRandom((Date.now() + round * 7919) & 0xffffffff)), [moduleId, round]);
+  const focus = useMemo(() => focusConcepts(QUESTION_BANK[moduleId], state.learning, Date.now()), [moduleId, state.learning]);
+  // Jede Runde wird beim Start frisch und adaptiv gezogen: fällige Wiederholungen, Schwächen, Neues
+  const start = () => {
+    setQuestions(drawChallenge(moduleId, seededRandom(randomSeed()), CHALLENGE_LENGTH, state.learning));
+    setRound((r) => r + 1);
+  };
 
-  if (!started) {
+  if (!questions) {
     return (
       <ChallengeIntro count={CHALLENGE_LENGTH} kind={{ type: 'module', moduleId }} replay={replay}
-        attempts={progress?.attempts} bestScore={progress?.bestScore} onStart={() => setStarted(true)} />
+        attempts={progress?.attempts} bestScore={progress?.bestScore} focus={focus} onStart={start} />
     );
   }
 
@@ -231,11 +250,9 @@ function ChallengeView({ moduleId }: { moduleId: ModuleId }) {
       questions={questions}
       kind={{ type: 'module', moduleId }}
       replay={replay}
-      onRestart={() => setRound((r) => r + 1)}
-      onExit={() => {
-        setStarted(false);
-        setRound((r) => r + 1);
-      }}
+      followUpPool={QUESTION_BANK[moduleId]}
+      onRestart={start}
+      onExit={() => setQuestions(null)}
     />
   );
 }
@@ -284,7 +301,7 @@ export function ModulePage({ moduleId, tab, lab }: { moduleId: string; tab?: str
         ))}
       </div>
       <div className="tab-body">
-        {active === 'theorie' && <TheoryView moduleId={meta.id} />}
+        {active === 'theorie' && <TheoryView moduleId={meta.id} section={lab} />}
         {active === 'simulator' && (
           <>
             <LabSwitcher meta={meta} lab={lab} />

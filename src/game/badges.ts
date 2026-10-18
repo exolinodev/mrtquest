@@ -1,4 +1,6 @@
 import { ALL_SIMULATORS, MODULES, type ModuleId } from '../content/modules';
+import { CONCEPTS } from './learning/concepts';
+import { conceptMastery } from './learning/memory';
 import type { Loc } from '../i18n/format';
 import { SCENARIOS } from '../content/scenarios';
 import { levelFromXp } from './levels';
@@ -275,6 +277,28 @@ export const BADGES: BadgeDef[] = [
     tier: 'gold',
     xp: 0,
     check: (s) => levelFromXp(s.xp) >= 10,
+  },
+  {
+    id: 'luecke-geschlossen',
+    title: { de: 'Lücke geschlossen', ru: 'Пробел закрыт' },
+    description: { de: 'Mach aus einem Thema mit Fehlern ein Thema, das sicher sitzt (ab 80 %).', ru: 'Преврати тему с ошибками в уверенно усвоенную (от 80 %).' },
+    icon: '🧩',
+    tier: 'silver',
+    xp: 50,
+    check: (s) =>
+      CONCEPTS.some((c) => {
+        const items = c.items.map((id) => s.learning?.items[id]).filter((m) => !!m);
+        return items.some((m) => m!.history.includes(false)) && (conceptMastery(s.learning, c.id, Date.now()).mastery ?? 0) >= 0.8;
+      }),
+  },
+  {
+    id: 'langzeitgedaechtnis',
+    title: { de: 'Langzeitgedächtnis', ru: 'Долговременная память' },
+    description: { de: 'Bring 25 Fragen oder Karten in die dritte Wiederholungsstufe.', ru: 'Доведи 25 вопросов или карточек до третьего уровня повторения.' },
+    icon: '🧠',
+    tier: 'gold',
+    xp: 100,
+    check: (s) => Object.values(s.learning?.items ?? {}).filter((m) => m.box >= 3).length >= 25,
   },
 ];
 

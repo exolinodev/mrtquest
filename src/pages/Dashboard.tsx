@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link } from '../components/router';
 import { ProgressBar, Stars } from '../components/ui';
 import { EXAM_QUESTIONS, RECAP_QUESTIONS } from '../content/examPrep';
+import { conceptMastery, dueItems, isCardSolid } from '../game/learning/memory';
+import { CONCEPT_BY_ID, CONCEPTS } from '../game/learning/concepts';
 import { ALL_SIMULATORS, BONUS_MODULES, EXAM_MODULES, MODULE_BY_ID, type ModuleMeta } from '../content/modules';
 import { totalQuestionCount } from '../content/questions';
 import { SCENARIOS } from '../content/scenarios';
@@ -16,7 +18,7 @@ export function Dashboard() {
   const { lang, tr, loc } = useLang();
   const lp = levelProgress(state.xp, lang);
   const prepTotal = RECAP_QUESTIONS.length + EXAM_QUESTIONS.length;
-  const prepDone = [...RECAP_QUESTIONS.map((q) => `recap-${q.id}`), ...EXAM_QUESTIONS.map((q) => `exq-${q.id}`)].filter((f) => state.flags[f]).length;
+  const prepDone = RECAP_QUESTIONS.filter((q) => state.flags[`recap-${q.id}`]).length + EXAM_QUESTIONS.filter((q) => isCardSolid(state.learning, state.flags, q.id)).length;
   const [name, setName] = useState(state.playerName);
   const mastered = EXAM_MODULES.filter((m) => (state.modules[m.id]?.bestScore ?? 0) >= 0.8).length;
   const nextModule = EXAM_MODULES.find((m) => (state.modules[m.id]?.bestScore ?? 0) < 0.8);
@@ -105,6 +107,8 @@ export function Dashboard() {
           <span className="kpi-label">{tr('Abzeichen', 'Награды')}</span>
         </div>
       </section>
+
+      <TodayCard />
 
       <h2 className="section-title">{tr('Dein Lernpfad entlang des Skripts', 'Твой путь по конспекту')}</h2>
       <p className="muted">
@@ -214,5 +218,45 @@ function ModuleCard({ m }: { m: ModuleMeta }) {
       </span>
       {!recDone && rec && <span className="module-rec">{tr(`Empfohlen nach „${rec.title.de}“`, `Рекомендуется после «${rec.title.ru}»`)}</span>}
     </Link>
+  );
+}
+
+/** „Heute dran“: fällige Wiederholungen und schwächste Themen auf einen Blick. */
+function TodayCard() {
+  const { state } = useGame();
+  const { tr, loc } = useLang();
+  const now = Date.now();
+  const due = dueItems(state.learning, now).length;
+  const weakest = CONCEPTS.map((c) => conceptMastery(state.learning, c.id, now))
+    .filter((m) => m.mastery !== null && m.mastery < 0.5)
+    .sort((a, b) => a.mastery! - b.mastery!)
+    .slice(0, 3);
+  const started = Object.keys(state.learning.items).length > 0;
+  return (
+    <section className="today-card panel">
+      <div>
+        <p className="eyebrow">{tr('Heute dran', 'Сегодня')}</p>
+        <h2>
+          {due > 0
+            ? tr(`${due} Wiederholungen fällig · ca. ${Math.max(2, Math.round(due * 0.6))} Minuten`, `${due} повторений · около ${Math.max(2, Math.round(due * 0.6))} мин.`)
+            : started
+              ? tr('Alles wiederholt. Stark!', 'Всё повторено. Отлично!')
+              : tr('Dein Lerngedächtnis startet mit der ersten Challenge', 'Память обучения начнётся с первого задания')}
+        </h2>
+        <p className="small muted">
+          {weakest.length
+            ? tr(`Deine größten Lücken gerade: ${weakest.map((m) => loc(CONCEPT_BY_ID[m.concept].title)).join(', ')}.`, `Самые большие пробелы сейчас: ${weakest.map((m) => loc(CONCEPT_BY_ID[m.concept].title)).join(', ')}.`)
+            : tr('Die App merkt sich jede Antwort und holt Fragen genau dann zurück, bevor du sie vergisst.', 'Приложение запоминает каждый ответ и возвращает вопросы как раз перед тем, как ты их забудешь.')}
+        </p>
+      </div>
+      <div className="row gap wrap">
+        <Link className="btn primary" to="/ueben">
+          🔁 {due > 0 ? tr('Jetzt wiederholen', 'Повторить сейчас') : tr('Gemischte Runde', 'Смешанный раунд')}
+        </Link>
+        <Link className="btn" to="/vorlesung/luecken">
+          🗺️ {tr('Meine Lücken', 'Мои пробелы')}
+        </Link>
+      </div>
+    </section>
   );
 }

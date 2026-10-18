@@ -1,5 +1,9 @@
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from 'react';
-import { isNumericCorrect, materialize, parseNumber, type Question, type QuestionRef } from '../content/questions/types';
+import { isNumericCorrect, materialize, parseNumber, type Question, type QuestionRef, type QuestionSource } from '../content/questions/types';
+import { CONCEPT_BY_ID, conceptOf } from '../game/learning/concepts';
+import { conceptMastery, masteryLevel } from '../game/learning/memory';
+import { followUpQuestion, randomSeed, toRef } from '../game/learning/select';
+import { seededRandom } from '../physics/phantom';
 import { useGame } from '../game/GameContext';
 import { answerXp } from '../game/levels';
 import { completionBonus, MASTERY_SCORE, type ChallengeKind } from '../game/challenge';
@@ -20,11 +24,48 @@ interface Props {
   replay: boolean;
   onRestart: () => void;
   onExit: () => void;
+  /** Pool für Nachhak-Fragen: nach einem Fehler kommt am Ende eine weitere Frage zum selben Konzept */
+  followUpPool?: QuestionSource[];
 }
 
 interface AnswerRecord {
   correct: boolean;
   xp: number;
+  /** Nachhak-Frage: zählt nicht zur Wertung der Runde */
+  followUp: boolean;
+}
+
+const MAX_FOLLOW_UPS = 3;
+
+/** Konzepte mit Fehlern in dieser Runde, samt aktueller Beherrschung und Sprungzielen. */
+function RoundGaps({ ids, records }: { ids: string[]; records: AnswerRecord[] }) {
+  const { tr, loc } = useLang();
+  const { state } = useGame();
+  const missed = [...new Set(records.map((r, i) => (!r.correct ? conceptOf(ids[i]) : undefined)).filter((c): c is string => !!c && !!CONCEPT_BY_ID[c]))];
+  if (!missed.length) return <p className="ok-text">{tr('✓ Keine Lücken in dieser Runde.', '✓ В этом раунде пробелов нет.')}</p>;
+  const now = Date.now();
+  return (
+    <section className="round-gaps">
+      <h3>{tr('Deine Lücken in dieser Runde', 'Твои пробелы в этом раунде')}</h3>
+      <p className="small muted">{tr('Hier lohnt sich ein zweiter Blick. Die App merkt sich diese Themen und fragt sie in den nächsten Tagen wieder ab.', 'Здесь стоит взглянуть ещё раз. Приложение запомнит эти темы и спросит их снова в ближайшие дни.')}</p>
+      <ul>
+        {missed.map((id) => {
+          const c = CONCEPT_BY_ID[id];
+          const m = conceptMastery(state.learning, id, now);
+          return (
+            <li key={id} className={`gap-item level-${masteryLevel(m.mastery)}`}>
+              <strong>{loc(c.title)}</strong>
+              <span className="small muted">{m.mastery === null ? tr('noch wenig Daten', 'пока мало данных') : `${Math.round(m.mastery * 100)} %`}</span>
+              <span className="row gap wrap">
+                <Link className="btn ghost" to={`/modul/${c.module}/theorie/${c.section}`}>📖 {tr('Nachlesen', 'Перечитать')}</Link>
+                <Link className="btn" to={`/ueben/${id}`}>🎯 {tr('Gezielt üben', 'Целевая практика')}</Link>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
 }
 
 function AnswerSolution({ question }: { question: Question }) {
@@ -34,7 +75,7 @@ function AnswerSolution({ question }: { question: Question }) {
   return <ul className="solution-list">{indices.map((i) => <li key={i}><RichText text={question.options[i]} /></li>)}</ul>;
 }
 
-export function ChallengeRunner({ questions, kind, replay: replayAtStart, onRestart, onExit }: Props) {
+export function ChallengeRunner({ questions: initialQuestions, kind, replay: replayAtStart, onRestart, onExit, followUpPool }: Props) {
   const { state, dispatch } = useGame();
   const { lang, tr } = useLang();
   // A newly earned mastery badge affects the next round, not this round’s summary.
@@ -52,6 +93,15 @@ export function ChallengeRunner({ questions, kind, replay: replayAtStart, onRest
   const [hintShown, setHintShown] = useState(false);
   const [submitted, setSubmitted] = useState<AnswerRecord | null>(null);
   const [finished, setFinished] = useState<{ score: number; bonus: number } | null>(null);
+  // Runde inkl. angehängter Nachhak-Fragen; die ursprüngliche Länge bestimmt die Wertung
+  const [questions, setQuestions] = useState<QuestionRef[]>(initialQuestions);
+  const baseCount = initialQuestions.length;
+  const [followRng] = useState(() => seededRandom(randomSeed()));
+  useEffect(() => {
+    dispatch({ type: 'START_ROUND', itemIds: initialQuestions.map((r) => r.source.id) });
+  }, [initialQuestions, dispatch]);
+  const isFollowUp = index >= baseCount;
+  const [followUpFor, setFollowUpFor] = useState<number | null>(null);
   const questionRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     questionRef.current?.focus({ preventScroll: true });
@@ -66,7 +116,7 @@ export function ChallengeRunner({ questions, kind, replay: replayAtStart, onRest
 
   // Bei Sprachwechsel neu materialisiert: gleiche Seeds ⇒ gleiche Werte und Optionsreihenfolge
   const q = useMemo(() => (questions[index] ? materialize(questions[index], lang) : undefined), [questions, index, lang]);
-  const correctCount = records.filter((r) => r.correct).length;
+  const correctCount = records.filter((r) => r.correct && !r.followUp).length;
   const earned = records.reduce((s, r) => s + r.xp, 0);
 
   const errorText = inputError === 'number'
@@ -79,7 +129,7 @@ export function ChallengeRunner({ questions, kind, replay: replayAtStart, onRest
       <div className="challenge-summary" ref={questionRef} tabIndex={-1}>
         <div className="summary-score" data-tone={pct >= 80 ? 'good' : pct >= 60 ? 'warn' : 'bad'}>
           <span className="summary-pct">{pct} %</span>
-          <span>{tr(`${correctCount} von ${questions.length} richtig`, `${correctCount} из ${questions.length} правильно`)}</span>
+          <span>{tr(`${correctCount} von ${baseCount} richtig`, `${correctCount} из ${baseCount} правильно`)}</span>
         </div>
         <p className="summary-text">
           {pct === 100
@@ -102,13 +152,14 @@ export function ChallengeRunner({ questions, kind, replay: replayAtStart, onRest
           <button className="btn" type="button" onClick={onExit}>{tr('Zurück zur Übersicht', 'Назад к обзору')}</button>
           {kind.type === 'module' && <Link className="btn ghost" to={`/modul/${kind.moduleId}/theorie`}>{tr('Theorie auffrischen', 'Повторить теорию')}</Link>}
         </div>
+        <RoundGaps ids={questions.map((r) => r.source.id)} records={records} />
         <section className="challenge-review" aria-label={tr('Rückblick auf deine Antworten', 'Разбор твоих ответов')}>
           <h3>{tr('Deine Antworten im Rückblick', 'Разбор твоих ответов')}</h3>
           <p className="small muted">{tr('Öffne eine Aufgabe, um Lösung und Erklärung nachzulesen.', 'Открой задание, чтобы посмотреть решение и объяснение.')}</p>
           {records.map((record, i) => {
             const question = materialize(questions[i], lang);
             return <details key={i} className="challenge-review-item" data-correct={record.correct}>
-              <summary><span>{tr('Aufgabe', 'Задание')} {i + 1}</span><span>{record.correct ? tr('✓ Richtig', '✓ Верно') : tr('↻ Noch üben', '↻ Повторить')}</span></summary>
+              <summary><span>{record.followUp ? tr('Nachhak-Frage', 'Контрольный вопрос') : `${tr('Aufgabe', 'Задание')} ${i + 1}`}</span><span>{record.correct ? tr('✓ Richtig', '✓ Верно') : tr('↻ Noch üben', '↻ Повторить')}</span></summary>
               <p className="review-prompt"><RichText text={question.prompt} /></p>
               <h4>{tr('Die Lösung', 'Решение')}</h4>
               <AnswerSolution question={question} />
@@ -147,15 +198,24 @@ export function ChallengeRunner({ questions, kind, replay: replayAtStart, onRest
     if (correct === null) return;
     setInputError(null);
     const xp = correct ? answerXp(q.difficulty, state.stats.streak + 1, hintShown, replay) : 0;
-    dispatch({ type: 'ANSWER', correct, xp, hintUsed: hintShown });
-    const rec = { correct, xp };
+    const questionId = questions[index].source.id;
+    dispatch({ type: 'ANSWER', correct, xp, hintUsed: hintShown, questionId });
+    const rec = { correct, xp, followUp: isFollowUp };
     setSubmitted(rec);
     setRecords((r) => [...r, rec]);
+    const concept = conceptOf(questionId);
+    if (!correct && !isFollowUp && followUpPool && concept && questions.length - baseCount < MAX_FOLLOW_UPS) {
+      const extra = followUpQuestion(followUpPool, concept, questions.map((r) => r.source.id), followRng);
+      if (extra) {
+        setQuestions((list) => [...list, toRef(extra, followRng)]);
+        setFollowUpFor(index);
+      }
+    }
   };
 
   const next = () => {
     if (index + 1 >= questions.length) {
-      const score = records.filter((r) => r.correct).length / questions.length;
+      const score = records.filter((r) => r.correct && !r.followUp).length / baseCount;
       const bonus = completionBonus(score, kind, replay);
       if (kind.type === 'module') dispatch({ type: 'COMPLETE_CHALLENGE', moduleId: kind.moduleId, score, bonusXp: bonus });
       else dispatch({ type: 'EXAM_RESULT', score, xp: bonus });
@@ -189,7 +249,7 @@ export function ChallengeRunner({ questions, kind, replay: replayAtStart, onRest
     <div className="challenge" ref={questionRef} tabIndex={-1}>
       <div className="challenge-head">
         <span>
-          {tr('Aufgabe', 'Задание')} {index + 1} / {questions.length}
+          {isFollowUp ? `↻ ${tr('Nachhak-Frage', 'Контрольный вопрос')}` : `${tr('Aufgabe', 'Задание')} ${index + 1} / ${baseCount}`}
         </span>
         <span className="difficulty">{tr(['Basis', 'Aufbau', 'Transfer'][q.difficulty - 1], ['Базовый', 'Средний', 'Продвинутый'][q.difficulty - 1])} · {tr(`Stufe ${q.difficulty}/3`, `Уровень ${q.difficulty}/3`)}</span>
         <span className="combo" data-active={state.stats.streak >= 3}>
@@ -284,6 +344,9 @@ export function ChallengeRunner({ questions, kind, replay: replayAtStart, onRest
           <div className={`feedback ${submitted.correct ? 'is-correct' : 'is-wrong'}`} ref={feedbackRef} tabIndex={-1} aria-labelledby={feedbackId}>
             <strong id={feedbackId}>{submitted.correct ? `✔ ${tr('Richtig!', 'Правильно!')} +${submitted.xp} XP` : tr('Noch nicht richtig – schauen wir es uns an.', 'Пока неверно — давай разберёмся.')}</strong>
             {!submitted.correct && <div className="answer-solution"><h4>{tr('Die richtige Lösung', 'Верное решение')}</h4><AnswerSolution question={q} /></div>}
+            {followUpFor === index && (
+              <p className="small follow-up-note">↻ {tr('Am Ende der Runde kommt noch eine Nachhak-Frage zu diesem Thema. So festigst du es gleich.', 'В конце раунда будет ещё контрольный вопрос по этой теме. Так ты сразу закрепишь её.')}</p>
+            )}
             <h4>{tr('Warum ist das so?', 'Почему так?')}</h4>
             <p><RichText text={q.explanation} /></p>
             <button className="btn primary" type="button" onClick={next}>

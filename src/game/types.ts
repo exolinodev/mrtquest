@@ -1,3 +1,5 @@
+import type { LearningState, Rating } from './learning/memory';
+
 export interface ModuleProgress {
   /** bester Anteil korrekter Antworten in einer Challenge (0..1) */
   bestScore: number;
@@ -37,10 +39,15 @@ export interface GameState {
   flags: Record<string, boolean>;
   examBest: number;
   createdAt: number;
+  /** Lerngedächtnis je Frage/Karte für adaptive Wiederholung */
+  learning: LearningState;
 }
 
 export type GameAction =
-  | { type: 'ANSWER'; correct: boolean; xp: number; hintUsed: boolean }
+  | { type: 'ANSWER'; correct: boolean; xp: number; hintUsed: boolean; questionId?: string; now?: number }
+  | { type: 'RATE_CARD'; itemId: string; rating: Rating; xp?: number; now?: number }
+  | { type: 'LEARN'; itemId: string; correct: boolean; now?: number }
+  | { type: 'START_ROUND'; itemIds: string[] }
   | { type: 'COMPLETE_CHALLENGE'; moduleId: string; score: number; bonusXp: number }
   | { type: 'READ_THEORY'; moduleId: string }
   | { type: 'VISIT_SIMULATOR'; simulatorId: string }

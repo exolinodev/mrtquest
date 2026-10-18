@@ -13,6 +13,7 @@ import { levelProgress, xpForLevel } from '../game/levels';
 import { numberLocale, type Loc } from '../i18n/format';
 import { useLang } from '../i18n/LanguageContext';
 import { seededRandom } from '../physics/phantom';
+import { randomSeed } from '../game/learning/select';
 import { ProtocolConsole } from '../simulators/ProtocolConsole';
 import { SimulatorHost, SIMULATOR_BY_ID, SIMULATORS } from '../simulators/registry';
 import type { SimulatorId } from '../content/modules';
@@ -141,7 +142,7 @@ export function ExamPage() {
   const [round, setRound] = useState(0);
   const [started, setStarted] = useState(false);
   const unlocked = EXAM_MODULES.every((m) => (state.modules[m.id]?.attempts ?? 0) > 0);
-  const questions = useMemo(() => drawExam(seededRandom((Date.now() + round * 104729) & 0xffffffff)), [round]);
+  const questions = useMemo(() => drawExam(seededRandom(randomSeed() + round)), [round]);
   const title = `🎓 ${tr('Probeprüfung', 'Пробный экзамен')}`;
 
   if (!unlocked) {

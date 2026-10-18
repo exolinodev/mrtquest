@@ -5,6 +5,7 @@ import { LanguageProvider } from './i18n/LanguageContext';
 import { Dashboard } from './pages/Dashboard';
 import { ModulePage } from './pages/ModulePage';
 import { LecturePage } from './pages/LecturePage';
+import { PracticePage } from './pages/PracticePage';
 import { ClinicPage, ExamPage, LabPage, ProfilePage } from './pages/OtherPages';
 
 function Routes({ route }: { route: string[] }) {
@@ -17,6 +18,8 @@ function Routes({ route }: { route: string[] }) {
       return <ClinicPage scenarioId={route[1]} />;
     case 'labor':
       return <LabPage key={route.slice(1).join('/')} simulatorId={route[1]} />;
+    case 'ueben':
+      return <PracticePage key={route[1] ?? 'mix'} conceptId={route[1]} />;
     case 'pruefung':
       return <ExamPage />;
     case 'profil':
