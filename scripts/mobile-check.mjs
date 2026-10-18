@@ -87,6 +87,18 @@ const PAGES = [
     },
   },
   {
+    name: 'vorlesung-kontrollfragen-layout', path: '/vorlesung/kontrollfragen',
+    interact: async page => {
+      const available = await page.locator('.recap-tab').evaluate(el => el.getBoundingClientRect().width);
+      const bodyWidth = await page.locator('.recap-tab .theory-body').evaluate(el => el.getBoundingClientRect().width);
+      assert.ok(bodyWidth >= Math.min(available - 1, 360), `Lesespalte zu schmal: ${bodyWidth}px`);
+      assert.equal(await page.locator('.recap-tab .toc a').count(), 5);
+      await page.locator('.recap-tab .toc a').last().click();
+      assert.match(await page.locator(':focus').innerText(), /Komponenten|компоненты/);
+      assert.match(page.url(), /#\/vorlesung\/kontrollfragen$/);
+    },
+  },
+  {
     name: 'vorlesung-karteikarte', path: '/vorlesung/karteikarten',
     interact: async page=>{
       await page.locator('.flashcard .btn.primary').click();
