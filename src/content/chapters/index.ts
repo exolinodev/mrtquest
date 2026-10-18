@@ -35,7 +35,7 @@ const range = (chapter: Chapter, from: number, to: number): Part[] => Array.from
 
 /** Kapitel je Modul; die Prüfungsmodule folgen der Gliederung des Vorlesungsskripts. */
 export const CHAPTERS: Record<ModuleId, Chapter> = {
-  einfuehrung: compose([[einfuehrungIntro, 0], [anwendungen, 0]]),
+  einfuehrung: compose([[einfuehrungIntro, 0], [anwendungen, 0], [einfuehrungIntro, 1], [einfuehrungIntro, 2], [einfuehrungIntro, 3], [einfuehrungIntro, 4]]),
   prinzip: compose([...range(kernspin, 0, 5), ...range(relaxation, 0, 3)]),
   bild: compose(
     [

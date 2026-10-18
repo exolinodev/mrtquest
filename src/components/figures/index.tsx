@@ -1,8 +1,9 @@
 import { RichText } from '../RichText';
 import { FIGURES_A } from './setA';
 import { FIGURES_B } from './setB';
+import { FIGURES_C } from './setC';
 
-export const FIGURES = { ...FIGURES_A, ...FIGURES_B };
+export const FIGURES = { ...FIGURES_A, ...FIGURES_B, ...FIGURES_C };
 
 /** Rendert eine Kapitel-Abbildung mit Bildunterschrift. */
 export function Figure({ id, caption }: { id: string; caption: string }) {

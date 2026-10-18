@@ -285,4 +285,29 @@ export const SIM_GUIDES: Partial<Record<SimulatorId, SimGuideData>> = {
       ru: 'Для каждого применения нужно уметь назвать принцип измерения и показание: поток через фазу, DTI через направленную диффузию, спектроскопия через химический сдвиг, BOLD через дезоксигемоглобин, контраст через укорочение T1.',
     },
   },
+
+  modality: {
+    intro: {
+      de: 'Oben wählst du zwischen **Kontrast vergleichen** und **Welches Verfahren passt?**. Im Vergleich siehst du denselben Kopf zweimal: links als schematisches CT-Bild aus Dichtewerten in HU, rechts als MRT-Bild aus Protonendichte, T1 und T2. Im Spiel ordnest du acht klinischen Fragen ein Verfahren zu. Grundidee aus dem Skript: Das MRT liefert Weichteilkontrast, aber kein Signal aus Knochen.',
+      ru: 'Вверху ты выбираешь между **Сравнить контраст** и **Какой метод подходит?**. В сравнении ты видишь одну и ту же голову дважды: слева схематическое КТ-изображение по значениям плотности в HU, справа МРТ-изображение по протонной плотности, T1 и T2. В игре ты подбираешь метод к восьми клиническим вопросам. Главная идея из конспекта: МРТ даёт контраст мягких тканей, но не даёт сигнала от кости.',
+    },
+    steps: [
+      {
+        de: 'Bleib bei **Kontrast vergleichen** und schau auf den Schädelknochen. Im CT ist er hell, im MRT fast schwarz. Der Grund: Die CT misst, wie stark Gewebe Röntgenstrahlen schwächt, und Kalzium schwächt stark. Das MRT braucht bewegliches Wasser, und davon hat kompakter Knochen kaum etwas.',
+        ru: 'Оставайся в режиме **Сравнить контраст** и посмотри на кости черепа. На КТ они светлые, на МРТ почти чёрные. Причина: КТ измеряет, насколько сильно ткань ослабляет рентгеновские лучи, а кальций ослабляет сильно. МРТ нужна подвижная вода, а её в компактной кости почти нет.',
+      },
+      {
+        de: 'Schalte die **MRT-Gewichtung** zwischen PD, T1 und T2 um und vergleiche **Kontrast Grau/Weiß CT** mit **Kontrast Grau/Weiß MRT**. Das CT bleibt bei etwa 3 %, im MRT ist der Wert in jeder Gewichtung größer, in T2 sogar mehrfach so groß, und Liquor springt von dunkel (T1) auf hell (T2). Der Grund: Graue und weiße Substanz haben fast dieselbe Dichte, aber verschiedene Relaxationszeiten.',
+        ru: 'Переключай **Взвешенность МРТ** между PD, T1 и T2 и сравни **Контраст серое/белое КТ** с **Контраст серое/белое МРТ**. КТ остаётся на уровне около 3 %, на МРТ значение больше при любой взвешенности, а на T2 даже в несколько раз, и ликвор переходит от тёмного (T1) к светлому (T2). Причина: серое и белое вещество почти одинаковы по плотности, но различаются временами релаксации.',
+      },
+      {
+        de: 'Wechsle zu **Welches Verfahren passt?** und löse die acht Fälle. Frag dich jedes Mal, was sichtbar werden muss: Knochendichte, Weichteil, ein Schallecho oder Stoffwechsel. Beim Schlaganfall und bei der Plazenta sind zwei Antworten richtig. Am Ende kannst du mit **Nochmal** neu starten.',
+        ru: 'Перейди к **Какой метод подходит?** и реши восемь случаев. Каждый раз спрашивай себя, что должно стать видимым: плотность кости, мягкая ткань, эхо звука или обмен веществ. При инсульте и при плаценте верны два ответа. В конце можно начать заново кнопкой **Ещё раз**.',
+      },
+    ],
+    takeaway: {
+      de: 'Jedes Verfahren misst etwas anderes: Röntgen und CT die Dichte, Ultraschall Schallechos, PET den Stoffwechsel und das MRT Wasserstoffkerne im Magnetfeld. Darum zeigt das MRT Weichteile mit großem Kontrast und ohne ionisierende Strahlung, Knochen aber dunkel.',
+      ru: 'Каждый метод измеряет своё: рентген и КТ плотность, УЗИ эхо звука, ПЭТ обмен веществ, а МРТ ядра водорода в магнитном поле. Поэтому МРТ показывает мягкие ткани с большим контрастом и без ионизирующего излучения, а кость тёмной.',
+    },
+  },
 };
