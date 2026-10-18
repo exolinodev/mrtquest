@@ -3319,3 +3319,13 @@ path.sx-focus-shape { fill: none; stroke-width: 10; }
 .quick-check .question-prompt {
   font-size: 1rem;
 }
+
+/* Bildaufbau-Labor */
+.imaging-controls {
+  display: grid;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+.imaging-stats .stat-label {
+  text-transform: none;
+}

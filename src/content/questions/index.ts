@@ -1,6 +1,7 @@
 import { EXAM_MODULES, type ModuleId } from '../modules';
 import { LECTURE_LESSONS } from '../lecture';
 import { anwendungenQuestions } from './anwendungen';
+import { bildQuestions } from './bild';
 import { einfuehrungQuestions } from './einfuehrung';
 import { fourierQuestions } from './fourier';
 import { hardwareQuestions } from './hardware';
@@ -19,7 +20,7 @@ import { drawAdaptive, toRef } from '../../game/learning/select';
 export const QUESTION_BANK: Record<ModuleId, QuestionSource[]> = {
   einfuehrung: [...einfuehrungQuestions],
   prinzip: [...kernspinQuestions, ...relaxationQuestions, ...prinzipQuestions],
-  bild: [...ortskodierungQuestions, ...kraumQuestions, ...hardwareQuestions],
+  bild: [...ortskodierungQuestions, ...kraumQuestions, ...hardwareQuestions, ...bildQuestions],
   anwendungen: [...anwendungenQuestions],
   fourier: [...fourierQuestions],
   sequenzen: [...sequenzenQuestions],

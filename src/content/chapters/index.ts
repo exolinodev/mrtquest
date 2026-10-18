@@ -6,6 +6,7 @@ import { hardware } from './hardware';
 import { ANWENDUNGEN_HOOK, BILD_HOOK, einfuehrungIntro } from './intro';
 import { kernspin } from './kernspin';
 import { kraum } from './kraum';
+import { bildPlus } from './bildPlus';
 import { ortskodierung } from './ortskodierung';
 import { prinzipPlus } from './prinzipPlus';
 import { qualitaet } from './qualitaet';
@@ -57,6 +58,7 @@ export const CHAPTERS: Record<ModuleId, Chapter> = {
   bild: compose(
     [
       [hardware, 3], // Signaldetektion: EM-Welle, Antenne, komplexes Signal
+      [bildPlus, 0], // Demodulation ins Basisband
       [ortskodierung, 0], // Grundidee: Gradient → ortsabhängige Frequenz
       [hardware, 0], // Magnetbauformen
       [hardware, 2], // HF-System und Spulen als Antennen
@@ -64,14 +66,19 @@ export const CHAPTERS: Record<ModuleId, Chapter> = {
       [ortskodierung, 1], // drei Gradienten, dω/dz
       [hardware, 1], // Shim und Gradientenspulen
       [ortskodierung, 2], // Schichtselektion
+      [bildPlus, 5], // Schichtprofil und sinc-Puls
       [ortskodierung, 4], // Phasenkodierung
       [ortskodierung, 3], // Frequenzkodierung: die Spule hört die Summe
+      [bildPlus, 1], // FOV, Pixelgröße, Bandbreite nachgerechnet
       [ortskodierung, 5], // Pulsdiagramm und Weg in den k-Raum
+      [bildPlus, 3], // Zeile für Zeile: k-Raum füllen
       [kraum, 3], // k-Raum
       [kraum, 4], // inverse Transformation, Betrag und Phase
+      [bildPlus, 2], // Kehrwert-Prinzip
       [kraum, 5], // Zentrum und Rand
       [relaxation, 4], // T2 im Spektrum
       [relaxation, 5], // Gewichtung PD/T1/T2
+      [bildPlus, 4], // Signalgleichung nachgerechnet
       [hardware, 5], // Recap: essentielle Komponenten
     ],
     BILD_HOOK,
