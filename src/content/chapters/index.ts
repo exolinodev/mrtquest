@@ -7,6 +7,7 @@ import { ANWENDUNGEN_HOOK, BILD_HOOK, einfuehrungIntro } from './intro';
 import { kernspin } from './kernspin';
 import { kraum } from './kraum';
 import { ortskodierung } from './ortskodierung';
+import { prinzipPlus } from './prinzipPlus';
 import { qualitaet } from './qualitaet';
 import { relaxation } from './relaxation';
 import { sequenzen } from './sequenzen';
@@ -36,7 +37,23 @@ const range = (chapter: Chapter, from: number, to: number): Part[] => Array.from
 /** Kapitel je Modul; die Prüfungsmodule folgen der Gliederung des Vorlesungsskripts. */
 export const CHAPTERS: Record<ModuleId, Chapter> = {
   einfuehrung: compose([[einfuehrungIntro, 0], [anwendungen, 0], [einfuehrungIntro, 1], [einfuehrungIntro, 2], [einfuehrungIntro, 3], [einfuehrungIntro, 4]]),
-  prinzip: compose([...range(kernspin, 0, 5), ...range(relaxation, 0, 3)]),
+  prinzip: compose([
+    [kernspin, 0], // Warum Protonen?
+    [kernspin, 1], // Spin
+    [kernspin, 2], // Boltzmann
+    [prinzipPlus, 0], // Boltzmann nachgerechnet
+    [kernspin, 3], // Präzession, Larmor
+    [prinzipPlus, 3], // ΔE = h·f₀
+    [prinzipPlus, 1], // rotierendes Bezugssystem
+    [kernspin, 4], // Bloch-Gleichung
+    [kernspin, 5], // HF-Puls, FID
+    [prinzipPlus, 2], // Bloch-Simulation lesen
+    [relaxation, 0], // Relaxation
+    [relaxation, 1], // T1
+    [relaxation, 2], // T2, T2*
+    [prinzipPlus, 4], // molekulare Bewegung
+    [relaxation, 3], // Spin-Echo
+  ]),
   bild: compose(
     [
       [hardware, 3], // Signaldetektion: EM-Welle, Antenne, komplexes Signal

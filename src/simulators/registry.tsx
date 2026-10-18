@@ -17,6 +17,7 @@ import { SignalLab } from './SignalLab';
 import { FourierLab } from './FourierLab';
 import { ApplicationsLab } from './ApplicationsLab';
 import { ModalityLab } from './ModalityLab';
+import { EnsembleLab } from './EnsembleLab';
 
 export interface SimulatorMeta {
   id: SimulatorId;
@@ -27,6 +28,10 @@ export interface SimulatorMeta {
 }
 
 export const SIMULATORS: SimulatorMeta[] = [
+  {
+    id: 'ensemble', title: { de: 'Spin-Ensemble-Labor', ru: 'Лаборатория ансамбля спинов' }, icon: '🌀',
+    description: { de: 'Boltzmann-Überschuss zum Nachzählen, Larmor-Präzession im Labor- und im rotierenden Bezugssystem und auseinanderlaufende Spins (T2*).', ru: 'Избыток Больцмана для подсчёта, ларморова прецессия в лабораторной и вращающейся системе и расфазировка спинов (T2*).' }, component: EnsembleLab,
+  },
   {
     id: 'modality', title: { de: 'Modalitäten-Labor', ru: 'Лаборатория методов' }, icon: '🩻',
     description: { de: 'Röntgen, CT, Ultraschall, PET und MRT vergleichen: Was misst welches Verfahren, und welches passt zur klinischen Frage?', ru: 'Сравни рентген, КТ, УЗИ, ПЭТ и МРТ: что измеряет каждый метод и какой подходит к клиническому вопросу?' }, component: ModalityLab,

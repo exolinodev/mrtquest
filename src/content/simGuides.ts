@@ -310,4 +310,29 @@ export const SIM_GUIDES: Partial<Record<SimulatorId, SimGuideData>> = {
       ru: 'Каждый метод измеряет своё: рентген и КТ плотность, УЗИ эхо звука, ПЭТ обмен веществ, а МРТ ядра водорода в магнитном поле. Поэтому МРТ показывает мягкие ткани с большим контрастом и без ионизирующего излучения, а кость тёмной.',
     },
   },
+
+  ensemble: {
+    intro: {
+      de: 'Oben wählst du eines von drei Experimenten: **Boltzmann-Überschuss**, **Bezugssystem** und **Dephasierung** (T2*). Im ersten siehst du 400 Spins als Pfeile, blau parallel und rosa antiparallel zu $B_0$. Das Bild ist stark überhöht, die Zahlen daneben sind echt gerechnet. Im zweiten schaust du von schräg oben auf einen 90°-Puls, im dritten von oben in die Querebene. Grundidee aus dem Skript: Aus vielen winzigen Kernmagneten wird eine messbare Magnetisierung M, und die Bloch-Gleichungen beschreiben, wie sie kippt und wieder zerfällt.',
+      ru: 'Вверху ты выбираешь один из трёх экспериментов: **Избыток Больцмана**, **Система отсчёта** и **Расфазировка** (T2*). В первом ты видишь 400 спинов в виде стрелок, синие параллельны $B_0$, розовые антипараллельны. Картинка сильно преувеличена, а числа рядом рассчитаны по-настоящему. Во втором ты смотришь сверху наискосок на 90°-импульс, в третьем сверху на поперечную плоскость. Главная идея из конспекта: из множества крошечных ядерных магнитов складывается измеримая намагниченность M, а уравнения Блоха описывают, как она отклоняется и снова затухает.',
+    },
+    steps: [
+      {
+        de: 'Bleib bei **Boltzmann-Überschuss** und schiebe die **Feldstärke B₀** von 1,5 T auf 3 T. Der **Überschuss** steigt von etwa 4,9 ppm auf etwa 9,9 ppm, und **M₀ relativ zu 1,5 T / 310 K** zeigt 2. Drück danach **Flüssiges Helium 4 K**: Der Überschuss wird fast 80-mal größer. Der Grund: Der Überschuss ist ungefähr $\\Delta E/(2kT)$ mit $\\Delta E = \\gamma\\hbar B_0$. Mehr Feld vergrößert die Energielücke, weniger Wärme stört weniger. Den Körper kannst du aber nicht kühlen.',
+        ru: 'Оставайся в **Избыток Больцмана** и передвинь **Индукция поля B₀** с 1,5 Тл на 3 Тл. **Избыток** растёт примерно с 4,9 ppm до 9,9 ppm, а **M₀ относительно 1,5 Тл / 310 K** показывает 2. Затем нажми **Жидкий гелий 4 K**: избыток становится почти в 80 раз больше. Причина: избыток примерно равен $\\Delta E/(2kT)$, где $\\Delta E = \\gamma\\hbar B_0$. Больше поле увеличивает энергетическую щель, меньше тепла меньше мешает. Но охладить тело нельзя.',
+      },
+      {
+        de: 'Wechsle zu **Bezugssystem**, wähle **Laborsystem** und drück **▶ Abspielen** (oder zieh den Regler **Zeit im Puls**). Die Spitze von M zeichnet eine Spirale nach unten. Schalte auf **Rotierendes System**: Jetzt läuft sie auf einem Viertelkreis um x′ von z nach y′. Der Grund: Wenn du dich mit der Larmor-Frequenz mitdrehst, verschwindet die Präzession, und das HF-Feld B₁ steht still. Achte auf den Hinweis **Didaktisch verlangsamt**: In Wahrheit kreist M während eines Pulses zehntausende Male.',
+        ru: 'Перейди к **Система отсчёта**, выбери **Лабораторная** и нажми **▶ Воспроизвести** (или двигай ползунок **Время внутри импульса**). Кончик M рисует спираль вниз. Переключи на **Вращающаяся**: теперь он идёт по четверти окружности вокруг x′ от z к y′. Причина: если вращаться вместе с ларморовой частотой, прецессия исчезает, и РЧ-поле B₁ стоит на месте. Обрати внимание на подсказку **Учебно замедлено**: на самом деле за импульс M делает десятки тысяч оборотов.',
+      },
+      {
+        de: 'Wechsle zu **Dephasierung** (T2*), lass die **Feldinhomogenität ΔB₀** auf 0,1 ppm und zieh die **Zeit nach dem 90°-Puls** auf 20 ms. Die Spins fächern auf, und |Mxy| fällt viel schneller als die grüne Kurve e^(−t/T2). Drück jetzt **180°-Puls** und zieh die Zeit weiter bis 40 ms: Die Spins laufen wieder zusammen, es entsteht ein Echo. Es erreicht aber nur die grüne Kurve. Der Grund: Der 180°-Puls kehrt statische Feldunterschiede (T2′) um, die zufälligen Spin-Spin-Wechselwirkungen (T2) nicht. Mit **↺ Zurücksetzen** startest du neu.',
+        ru: 'Перейди к **Расфазировка** (T2*), оставь **Неоднородность поля ΔB₀** на 0,1 ppm и передвинь **Время после 90°-импульса** на 20 мс. Спины расходятся веером, и |Mxy| падает гораздо быстрее зелёной кривой e^(−t/T2). Теперь нажми **180°-импульс** и двигай время дальше до 40 мс: спины снова сходятся, возникает эхо. Но оно достигает только зелёной кривой. Причина: 180°-импульс обращает статические различия поля (T2′), но не случайные спин-спиновые взаимодействия (T2). Кнопкой **↺ Сбросить** начинаешь заново.',
+      },
+    ],
+    takeaway: {
+      de: 'Nur wenige ppm der Protonen bilden den Überschuss, und er wächst linear mit $B_0$. Im rotierenden System wird der HF-Puls zu einer einfachen Drehung um $B_1$ mit $\\alpha = \\gamma B_1 \\tau$. Die Quermagnetisierung zerfällt mit $T_2^*$, weil $1/T_2^* = 1/T_2 + 1/T_2\'$. Ein Spin-Echo holt den $T_2\'$-Anteil zurück, den $T_2$-Anteil nie.',
+      ru: 'Лишь несколько ppm протонов образуют избыток, и он растёт линейно с $B_0$. Во вращающейся системе РЧ-импульс становится простым поворотом вокруг $B_1$ с $\\alpha = \\gamma B_1 \\tau$. Поперечная намагниченность затухает с $T_2^*$, потому что $1/T_2^* = 1/T_2 + 1/T_2\'$. Спиновое эхо возвращает вклад $T_2\'$, но никогда вклад $T_2$.',
+    },
+  },
 };

@@ -7,6 +7,7 @@ import { hardwareQuestions } from './hardware';
 import { kernspinQuestions } from './kernspin';
 import { kraumQuestions } from './kraum';
 import { ortskodierungQuestions } from './ortskodierung';
+import { prinzipQuestions } from './prinzip';
 import { qualitaetQuestions } from './qualitaet';
 import { relaxationQuestions } from './relaxation';
 import { sequenzenQuestions } from './sequenzen';
@@ -15,7 +16,7 @@ import { shuffle, type QuestionRef, type QuestionSource, type Rng } from './type
 /** Fragenpools je Kapitel; die Themendateien sind nach den früheren Modulen benannt. */
 export const QUESTION_BANK: Record<ModuleId, QuestionSource[]> = {
   einfuehrung: [...einfuehrungQuestions],
-  prinzip: [...kernspinQuestions, ...relaxationQuestions],
+  prinzip: [...kernspinQuestions, ...relaxationQuestions, ...prinzipQuestions],
   bild: [...ortskodierungQuestions, ...kraumQuestions, ...hardwareQuestions],
   anwendungen: [...anwendungenQuestions],
   fourier: [...fourierQuestions],
