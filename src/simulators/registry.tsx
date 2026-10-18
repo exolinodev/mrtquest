@@ -18,6 +18,7 @@ import { FourierLab } from './FourierLab';
 import { ApplicationsLab } from './ApplicationsLab';
 import { ModalityLab } from './ModalityLab';
 import { EnsembleLab } from './EnsembleLab';
+import { ImagingLab } from './ImagingLab';
 
 export interface SimulatorMeta {
   id: SimulatorId;
@@ -28,6 +29,10 @@ export interface SimulatorMeta {
 }
 
 export const SIMULATORS: SimulatorMeta[] = [
+  {
+    id: 'imaging', title: { de: 'Bildaufbau-Labor', ru: 'Лаборатория построения изображения' }, icon: '🧱',
+    description: { de: 'Zuschauen, wie eine Sequenz den k-Raum Zeile für Zeile füllt und das Bild entsteht; FOV, Matrix und Einfaltung zum Ausprobieren.', ru: 'Посмотри, как последовательность заполняет k-пространство строка за строкой и появляется изображение; FOV, матрица и наложение.' }, component: ImagingLab,
+  },
   {
     id: 'ensemble', title: { de: 'Spin-Ensemble-Labor', ru: 'Лаборатория ансамбля спинов' }, icon: '🌀',
     description: { de: 'Boltzmann-Überschuss zum Nachzählen, Larmor-Präzession im Labor- und im rotierenden Bezugssystem und auseinanderlaufende Spins (T2*).', ru: 'Избыток Больцмана для подсчёта, ларморова прецессия в лабораторной и вращающейся системе и расфазировка спинов (T2*).' }, component: EnsembleLab,

@@ -2,7 +2,7 @@ import type { Loc } from '../i18n/format';
 
 export type ModuleId = 'einfuehrung' | 'prinzip' | 'bild' | 'anwendungen' | 'fourier' | 'sequenzen' | 'qualitaet';
 
-export type SimulatorId = 'larmor' | 'relaxation' | 'gradient' | 'kspace' | 'sequence' | 'artifact' | 'scanner' | 'protocol' | 'signal' | 'fourier' | 'applications' | 'modality' | 'ensemble';
+export type SimulatorId = 'larmor' | 'relaxation' | 'gradient' | 'kspace' | 'sequence' | 'artifact' | 'scanner' | 'protocol' | 'signal' | 'fourier' | 'applications' | 'modality' | 'ensemble' | 'imaging';
 
 export interface ModuleMeta {
   id: ModuleId;
@@ -60,7 +60,7 @@ const MODULE_LIST: ModuleMeta[] = [
     accent: '#34d399',
     simulator: 'gradient',
     simulatorTitle: { de: 'Gradienten-Werkbank', ru: 'Градиентная мастерская' },
-    labs: ['scanner', 'kspace', 'signal', 'relaxation'],
+    labs: ['imaging', 'scanner', 'kspace', 'signal', 'relaxation'],
     track: 'exam',
     recommendedAfter: 'prinzip',
   },
@@ -122,4 +122,4 @@ export const BONUS_MODULES = MODULES.filter((m) => m.track === 'bonus');
 
 export const MODULE_BY_ID = Object.fromEntries(MODULES.map((m) => [m.id, m])) as Record<ModuleId, ModuleMeta>;
 
-export const ALL_SIMULATORS: SimulatorId[] = ['larmor', 'relaxation', 'gradient', 'kspace', 'sequence', 'artifact', 'scanner', 'protocol', 'signal', 'fourier', 'applications', 'modality', 'ensemble'];
+export const ALL_SIMULATORS: SimulatorId[] = ['larmor', 'relaxation', 'gradient', 'kspace', 'sequence', 'artifact', 'scanner', 'protocol', 'signal', 'fourier', 'applications', 'modality', 'ensemble', 'imaging'];

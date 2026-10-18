@@ -335,4 +335,29 @@ export const SIM_GUIDES: Partial<Record<SimulatorId, SimGuideData>> = {
       ru: 'Лишь несколько ppm протонов образуют избыток, и он растёт линейно с $B_0$. Во вращающейся системе РЧ-импульс становится простым поворотом вокруг $B_1$ с $\\alpha = \\gamma B_1 \\tau$. Поперечная намагниченность затухает с $T_2^*$, потому что $1/T_2^* = 1/T_2 + 1/T_2\'$. Спиновое эхо возвращает вклад $T_2\'$, но никогда вклад $T_2$.',
     },
   },
+
+  imaging: {
+    intro: {
+      de: 'Oben wählst du zwischen **Zeile für Zeile** und **FOV & Auflösung**. Im ersten Modus siehst du links den k-Raum eines Kopfphantoms: Dunkelblaue Zeilen sind noch nicht gemessen, grüne kamen im letzten TR dazu. Rechts steht das Bild, das die inverse Fourier-Transformation aus genau diesen Zeilen macht. Im zweiten Modus zeigt das linke Bild den Kopf mit dem FOV als gelbes Quadrat, das rechte das rekonstruierte Bild in diesem FOV. Grundidee aus dem Skript: Das Signal ist eine Abtastung des k-Raums, und erst $F^{-1}$ macht daraus die Protonendichte $\\rho(x,y)$.',
+      ru: 'Вверху ты выбираешь между **Строка за строкой** и **FOV и разрешение**. В первом режиме слева видно k-пространство фантома головы: тёмно-синие строки ещё не измерены, зелёные добавились за последний TR. Справа изображение, которое обратное преобразование Фурье строит именно из этих строк. Во втором режиме левая картинка показывает голову с полем обзора в виде жёлтого квадрата, правая реконструированное изображение в этом поле. Главная идея из конспекта: сигнал это дискретизация k-пространства, и только $F^{-1}$ превращает его в плотность протонов $\\rho(x,y)$.',
+    },
+    steps: [
+      {
+        de: 'Bleib bei **Zeile für Zeile**, wähle bei **Reihenfolge** „Linear“ und schiebe **Gemessene Zeilen** auf 16. Das Bild ist dunkel, die **Signalenergie erfasst** liegt nahe null. Stell jetzt „Zentrisch“ ein: Das Bild ist zwar unscharf, aber Liquor, graue und weiße Substanz haben schon ihre richtige Helligkeit, und die Signalenergie springt auf fast 90 %. Der Grund: Die Mitte des k-Raums trägt den Kontrast, der Rand nur die feinen Details.',
+        ru: 'Оставайся в **Строка за строкой**, выбери в **Порядок** «Линейный» и передвинь **Измеренные строки** на 16. Изображение тёмное, **Собранная энергия сигнала** почти ноль. Теперь включи «Центрический»: изображение размыто, но ликвор, серое и белое вещество уже имеют правильную яркость, а энергия сигнала подскакивает почти до 90 %. Причина: центр k-пространства несёт контраст, край только мелкие детали.',
+      },
+      {
+        de: 'Lass T2w eingestellt (TR 4000 ms) und schau bei **Sequenz** „Spin-Echo“ auf **Messzeit gesamt**: 128 Zeilen mal 4 s ergeben 8:32 min. Wechsle auf „TSE ETL 8“ und drück **▶ Abspielen**: Pro TR werden acht grüne Zeilen auf einmal gefüllt, und die Messzeit fällt auf 1:04 min. Der Grund: $T_A = N_{\\text{Zeilen}} \\cdot TR / ETL$. Ein Echozug liefert mehrere Phasenkodierzeilen pro Anregung.',
+        ru: 'Оставь T2w (TR 4000 мс) и посмотри в **Последовательность** «Спин-эхо» на **Полное время**: 128 строк по 4 с дают 8:32 мин. Переключись на «TSE ETL 8» и нажми **▶ Запустить**: за один TR заполняются сразу восемь зелёных строк, а время падает до 1:04 мин. Причина: $T_A = N_{\\text{строк}} \\cdot TR / ETL$. Одна эхо-цепочка даёт несколько строк фазового кодирования за одно возбуждение.',
+      },
+      {
+        de: 'Wechsle zu **FOV & Auflösung** und zieh das **FOV** von 240 mm auf 160 mm. **Δk** steigt von 4,17 auf 6,25 1/m, die **Pixelgröße** sinkt von 1,88 auf 1,25 mm, und bei **Einfaltung** steht „ja“: Oben und unten ragt der Kopf heraus und taucht auf der Gegenseite im Bild wieder auf. Stell dann **Matrix N** auf 32: Die Pixel werden viermal so groß, an den Kanten siehst du Ringe. Der Grund: Δk = 1/FOV legt fest, wie groß das eindeutige Bildfeld ist, und N legt fest, wie weit nach außen ($k_{\\max}$) du misst.',
+        ru: 'Перейди к **FOV и разрешение** и передвинь **FOV** с 240 мм на 160 мм. **Δk** растёт с 4,17 до 6,25 м⁻¹, **Размер пикселя** падает с 1,88 до 1,25 мм, а в **Заворот** появляется «да»: сверху и снизу голова выступает и снова появляется на изображении с противоположной стороны. Затем поставь **Матрица N** на 32: пиксели становятся в четыре раза больше, на краях видны кольца. Причина: Δk = 1/FOV задаёт размер однозначного поля, а N задаёт, как далеко наружу ($k_{\\max}$) ты измеряешь.',
+      },
+    ],
+    takeaway: {
+      de: 'Bild und k-Raum sind Kehrwerte: $FOV = 1/\\Delta k$ und $\\Delta x = FOV/N$. Die Messzeit ist $T_A = N_{\\text{Zeilen}} \\cdot TR$ (geteilt durch ETL bei TSE). Ist das FOV in Phasenrichtung kleiner als das Objekt, faltet es sich ein.',
+      ru: 'Изображение и k-пространство обратны друг другу: $FOV = 1/\\Delta k$ и $\\Delta x = FOV/N$. Время измерения $T_A = N_{\\text{строк}} \\cdot TR$ (делённое на ETL в TSE). Если FOV в фазовом направлении меньше объекта, возникает заворот.',
+    },
+  },
 };
