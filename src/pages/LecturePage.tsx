@@ -6,6 +6,11 @@ import { CHEAT_SHEET, EXAM_QUESTIONS, LAB3_STEPS, OBJECTIVES, RECAP_QUESTIONS, t
 import { LECTURE_LESSONS, LECTURE_SOURCE } from '../content/lecture';
 import { MODULE_BY_ID, type ModuleId } from '../content/modules';
 import { useGame } from '../game/GameContext';
+import { CONCEPTS } from '../game/learning/concepts';
+import { BOX_INTERVAL_DAYS, conceptMastery, DAY, dueItems, isCardSolid, masteryLevel, type Rating } from '../game/learning/memory';
+import { randomSeed } from '../game/learning/select';
+import { shuffle } from '../content/questions/types';
+import { seededRandom } from '../physics/phantom';
 import type { GameState } from '../game/types';
 import { useLang } from '../i18n/LanguageContext';
 import { SIMULATOR_BY_ID } from '../simulators/registry';
@@ -14,8 +19,8 @@ const RECAP_XP = 20;
 const QUESTION_XP = 10;
 const ACCENT = '#34d399';
 
-type Tab = 'ueberblick' | 'kontrollfragen' | 'karteikarten' | 'spickzettel' | 'lab3';
-const TABS: Tab[] = ['ueberblick', 'kontrollfragen', 'karteikarten', 'spickzettel', 'lab3'];
+type Tab = 'ueberblick' | 'luecken' | 'kontrollfragen' | 'karteikarten' | 'spickzettel' | 'lab3';
+const TABS: Tab[] = ['ueberblick', 'luecken', 'kontrollfragen', 'karteikarten', 'spickzettel', 'lab3'];
 
 /** Fortschritt eines Moduls: halb Theorie gelesen, halb Challenge (voll ab 80 %). */
 function moduleReadiness(state: GameState, id: ModuleId): number {
@@ -42,7 +47,7 @@ function Overview() {
   const { state } = useGame();
   const readiness = OBJECTIVES.map((o) => o.modules.reduce((s, id) => s + moduleReadiness(state, id), 0) / Math.max(1, o.modules.length));
   const recapDone = RECAP_QUESTIONS.filter((q) => state.flags[`recap-${q.id}`]).length;
-  const known = EXAM_QUESTIONS.filter((q) => state.flags[`exq-${q.id}`]).length;
+  const known = EXAM_QUESTIONS.filter((q) => isCardSolid(state.learning, state.flags, q.id)).length;
   const steps: Array<{ icon: string; title: string; text: string; to: string; done: number; total: number }> = [
     {
       icon: '📖',
@@ -204,7 +209,10 @@ function RecapLesson({ q, index }: { q: RecapQuestion; index: number }) {
             {done ? (
               <span className="ok-text">✔ {tr('Sitzt', 'Усвоено')}</span>
             ) : (
-              <button type="button" className="btn primary" onClick={() => dispatch({ type: 'FLAG', flag, xp: RECAP_XP })}>
+              <button type="button" className="btn primary" onClick={() => {
+                dispatch({ type: 'FLAG', flag, xp: RECAP_XP });
+                dispatch({ type: 'RATE_CARD', itemId: `recap:${q.id}`, rating: 'good' });
+              }}>
                 ✓ {tr('Kann ich erklären', 'Могу объяснить')} (+{RECAP_XP} XP)
               </button>
             )}
@@ -236,69 +244,91 @@ function RecapTab() {
 
 /* ------------------------------------------------------------------ Karteikarten */
 
+const CARD_XP: Record<Rating, number> = { again: 0, hard: 5, good: QUESTION_XP };
+
+/** Karteikarten mit Wiedervorlage: fällige und schwache Karten zuerst, Bewertung Nochmal / Schwer / Gut. */
 function Flashcards() {
   const { tr, loc } = useLang();
   const { state, dispatch } = useGame();
   const [objective, setObjective] = useState<ObjectiveId | 'all'>('all');
-  const [onlyOpen, setOnlyOpen] = useState(true);
   const [round, setRound] = useState(0);
-  const deck = useMemo(
-    () => EXAM_QUESTIONS.filter((q) => (objective === 'all' || q.objective === objective) && (!onlyOpen || !state.flags[`exq-${q.id}`])),
-    // Der Stapel wird nur beim Start einer Runde gebildet, nicht nach jeder Antwort.
+  const now = Date.now();
+  const memory = (q: ExamQuestion) => state.learning.items[`card:${q.id}`];
+  const deck = useMemo(() => {
+    const t = Date.now();
+    const rng = seededRandom(randomSeed());
+    const cards = shuffle(rng, EXAM_QUESTIONS.filter((q) => objective === 'all' || q.objective === objective));
+    // Reihenfolge: fällig (älteste zuerst) → neu → noch nicht fällig (nach Box, schwache zuerst)
+    const rank = (q: ExamQuestion) => {
+      const m = state.learning.items[`card:${q.id}`];
+      if (!m) return 1;
+      if (m.due <= t) return 0;
+      return 2 + m.box;
+    };
+    return cards.sort((a, b) => rank(a) - rank(b));
+    // Der Stapel wird nur beim Start einer Runde gebildet, nicht nach jeder Bewertung.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [objective, onlyOpen, round],
-  );
+  }, [objective, round]);
   const [queue, setQueue] = useState<ExamQuestion[]>(deck);
   const [revealed, setRevealed] = useState(false);
-  const [knownCount, setKnownCount] = useState(0);
+  const [rated, setRated] = useState(0);
   useEffect(() => {
     setQueue(deck);
     setRevealed(false);
-    setKnownCount(0);
+    setRated(0);
   }, [deck]);
 
+  const dueCount = EXAM_QUESTIONS.filter((q) => memory(q) && memory(q)!.due <= now).length;
+  const newCount = EXAM_QUESTIONS.filter((q) => !memory(q)).length;
+  const solid = EXAM_QUESTIONS.filter((q) => (memory(q)?.box ?? 0) >= 3).length;
   const card = queue[0];
-  const total = EXAM_QUESTIONS.length;
-  const knownTotal = EXAM_QUESTIONS.filter((q) => state.flags[`exq-${q.id}`]).length;
+  const nextDue = EXAM_QUESTIONS.map((q) => memory(q)?.due).filter((d): d is number => !!d && d > now).sort((a, b) => a - b)[0];
+  const fmtDue = (t: number) => {
+    const days = Math.ceil((t - now) / DAY);
+    return days <= 0 ? tr('heute', 'сегодня') : days === 1 ? tr('morgen', 'завтра') : tr(`in ${days} Tagen`, `через ${days} дн.`);
+  };
 
-  const answer = (known: boolean) => {
+  const rate = (rating: Rating) => {
     if (!card) return;
-    if (known) {
-      dispatch({ type: 'FLAG', flag: `exq-${card.id}`, xp: QUESTION_XP });
-      setKnownCount((n) => n + 1);
-      setQueue((q) => q.slice(1));
-    } else {
-      setQueue((q) => [...q.slice(1), q[0]]);
-    }
+    const fresh = !memory(card);
+    dispatch({ type: 'RATE_CARD', itemId: `card:${card.id}`, rating, xp: fresh || memory(card)!.due <= Date.now() ? CARD_XP[rating] : 0 });
+    setRated((n) => n + 1);
+    // „Nochmal“ kommt in dieser Runde nach drei weiteren Karten zurück
+    setQueue((q) => (rating === 'again' ? [...q.slice(1, 4), q[0], ...q.slice(4)] : q.slice(1)));
     setRevealed(false);
   };
 
   return (
     <div className="flashcards">
-      <div className="flashcard-controls">
-        <Segmented
-          label={tr('Lernziel', 'Цель обучения')}
-          value={objective}
-          onChange={setObjective}
-          options={[{ value: 'all' as const, label: tr('Alle', 'Все') }, ...OBJECTIVES.map((o, i) => ({ value: o.id, label: `${tr('Ziel', 'Цель')} ${i + 1}` }))]}
-        />
-        <Segmented
-          label={tr('Karten', 'Карточки')}
-          value={onlyOpen ? 'open' : 'all'}
-          onChange={(v) => setOnlyOpen(v === 'open')}
-          options={[
-            { value: 'open', label: tr('Nur offene', 'Только новые') },
-            { value: 'all', label: tr('Alle', 'Все') },
-          ]}
-        />
+      <div className="kpi-row flashcard-kpis">
+        <div className="kpi">
+          <span className="kpi-value">{dueCount}</span>
+          <span className="kpi-label">{tr('heute fällig', 'к повторению сегодня')}</span>
+        </div>
+        <div className="kpi">
+          <span className="kpi-value">{newCount}</span>
+          <span className="kpi-label">{tr('noch neu', 'ещё новые')}</span>
+        </div>
+        <div className="kpi">
+          <span className="kpi-value">
+            {solid}/{EXAM_QUESTIONS.length}
+          </span>
+          <span className="kpi-label">{tr('sitzen sicher', 'усвоено надёжно')}</span>
+        </div>
       </div>
+      <Segmented
+        label={tr('Lernziel', 'Цель обучения')}
+        value={objective}
+        onChange={setObjective}
+        options={[{ value: 'all' as const, label: tr('Alle', 'Все') }, ...OBJECTIVES.map((o, i) => ({ value: o.id, label: `${tr('Ziel', 'Цель')} ${i + 1}` }))]}
+      />
       {objective !== 'all' && <p className="muted small">{loc(OBJECTIVES.find((o) => o.id === objective)!.title)}</p>}
-      <ProgressBar value={total ? knownTotal / total : 0} label={`${knownTotal}/${total} ${tr('Karten sitzen', 'карточек усвоено')}`} color={ACCENT} />
 
       {card ? (
         <article className="flashcard" style={{ ['--accent' as string]: MODULE_BY_ID[card.module].accent }}>
           <p className="question-kind">
             {MODULE_BY_ID[card.module].icon} {loc(MODULE_BY_ID[card.module].title)} · {tr('noch', 'осталось')} {queue.length}
+            {memory(card) ? (memory(card)!.due <= now ? ` · ${tr('fällig', 'к повторению')}` : ` · ${tr('Box', 'уровень')} ${memory(card)!.box}/5`) : ` · ${tr('neu', 'новая')}`}
           </p>
           <h2 className="question-prompt">
             <RichText text={loc(card.question)} />
@@ -322,39 +352,139 @@ function Flashcards() {
                 <strong>{tr('Für volle Punkte: ', 'Для полного балла: ')}</strong>
                 <RichText text={loc(card.full)} />
               </p>
-              <p className="small muted">{tr('Ehrlich zu dir: Hättest du das so gewusst?', 'Честно: ты бы так ответил(а)?')}</p>
-              <div className="row gap wrap">
-                <button type="button" className="btn primary" onClick={() => answer(true)}>
-                  ✓ {tr('Gewusst', 'Знал(а)')} (+{QUESTION_XP} XP)
+              <p className="small muted">{tr('Wie gut hättest du das gewusst? Davon hängt ab, wann die Karte wiederkommt.', 'Насколько хорошо ты это знал(а)? От этого зависит, когда карточка вернётся.')}</p>
+              <div className="rating-row">
+                <button type="button" className="btn rating-again" onClick={() => rate('again')}>
+                  ↻ {tr('Nochmal', 'Ещё раз')}
+                  <small>{tr('gleich wieder', 'сразу снова')}</small>
                 </button>
-                <button type="button" className="btn" onClick={() => answer(false)}>
-                  ↻ {tr('Nochmal, später', 'Ещё раз, позже')}
+                <button type="button" className="btn rating-hard" onClick={() => rate('hard')}>
+                  😬 {tr('Schwer', 'Трудно')}
+                  <small>{fmtDue(Date.now() + BOX_INTERVAL_DAYS[Math.max(1, memory(card)?.box ?? 0)] * DAY)}</small>
                 </button>
-                <Link to={`/modul/${card.module}`} className="btn ghost">
-                  📖 {tr('Im Kapitel nachlesen', 'Прочитать в главе')}
-                </Link>
+                <button type="button" className="btn primary rating-good" onClick={() => rate('good')}>
+                  ✓ {tr('Gut', 'Хорошо')}
+                  <small>{fmtDue(Date.now() + BOX_INTERVAL_DAYS[Math.min(5, (memory(card)?.box ?? 0) + 1)] * DAY)}</small>
+                </button>
               </div>
+              <Link to={`/modul/${card.module}`} className="btn ghost">
+                📖 {tr('Im Kapitel nachlesen', 'Прочитать в главе')}
+              </Link>
             </>
           )}
         </article>
       ) : (
         <Panel className="flashcard-done">
           <p>
-            <strong>{deck.length ? tr('Runde geschafft! 🎉', 'Раунд пройден! 🎉') : tr('Hier ist nichts mehr offen. 🎉', 'Здесь всё пройдено. 🎉')}</strong>{' '}
-            {deck.length
-              ? tr(`Du hast ${knownCount} Karten gewusst. Karten mit „Nochmal“ kamen so lange wieder, bis sie saßen.`, `Ты знал(а) ${knownCount} карточек. Карточки «Ещё раз» возвращались, пока не запомнились.`)
-              : tr('Wähle „Alle“, um alle Karten noch einmal durchzugehen.', 'Выбери «Все», чтобы пройти все карточки ещё раз.')}
+            <strong>{tr('Runde geschafft! 🎉', 'Раунд пройден! 🎉')}</strong>{' '}
+            {tr(`Du hast ${rated} Karten bewertet.`, `Ты оценил(а) ${rated} карточек.`)}{' '}
+            {nextDue ? tr(`Die nächste Karte ist ${fmtDue(nextDue)} wieder dran.`, `Следующая карточка вернётся ${fmtDue(nextDue)}.`) : ''}
           </p>
           <div className="row gap wrap">
             <button type="button" className="btn" onClick={() => setRound((r) => r + 1)}>
               ↻ {tr('Neue Runde', 'Новый раунд')}
             </button>
-            <Link to="/pruefung" className="btn primary">
-              🏆 {tr('Zur Probeprüfung', 'К пробному экзамену')}
+            <Link to="/vorlesung/luecken" className="btn">
+              🗺️ {tr('Meine Lücken ansehen', 'Посмотреть мои пробелы')}
             </Link>
           </div>
         </Panel>
       )}
+          </div>
+  );
+}
+
+/* ------------------------------------------------------------------ Lückenkarte */
+
+const LEVEL_LABEL = {
+  unknown: { de: 'noch nicht geübt', ru: 'ещё не тренировалось' },
+  weak: { de: 'Lücke', ru: 'пробел' },
+  shaky: { de: 'unsicher', ru: 'неуверенно' },
+  solid: { de: 'sitzt', ru: 'усвоено' },
+} as const;
+
+/** Wissenslandkarte: alle Konzepte nach Lernzielen, eingefärbt nach Beherrschung, mit nächsten Schritten. */
+function GapMap() {
+  const { tr, loc } = useLang();
+  const { state } = useGame();
+  const now = Date.now();
+  const due = dueItems(state.learning, now).length;
+  const groups = [...OBJECTIVES.map((o) => ({ id: o.id as string, title: loc(o.title) })), { id: 'bonus', title: tr('Bonus: Praxiswissen', 'Бонус: практические знания') }];
+  const stats = CONCEPTS.map((c) => ({ c, m: conceptMastery(state.learning, c.id, now) }));
+  const counts = { weak: 0, shaky: 0, solid: 0, unknown: 0 };
+  stats.forEach(({ m }) => counts[masteryLevel(m.mastery)]++);
+  const weakest = stats.filter(({ m }) => m.mastery !== null && m.mastery < 0.8).sort((a, b) => a.m.mastery! - b.m.mastery!).slice(0, 3);
+
+  return (
+    <div className="gap-map">
+      <p className="theory-hook">
+        {tr(
+          'Diese Karte zeigt, wie sicher du jedes Thema beherrschst. Sie lernt aus allen Antworten in Challenges, Kurz-Checks, Karteikarten und der Probeprüfung. Wenn du etwas länger nicht wiederholst, verblasst die Farbe langsam, genau wie dein Gedächtnis.',
+          'Эта карта показывает, насколько уверенно ты владеешь каждой темой. Она учится на всех ответах в заданиях, мини-проверках, карточках и пробном экзамене. Если долго не повторять, цвет постепенно бледнеет, как и память.',
+        )}
+      </p>
+      <div className="gap-summary">
+        <span className="gap-chip level-weak">● {counts.weak} {tr('Lücken', 'пробелов')}</span>
+        <span className="gap-chip level-shaky">● {counts.shaky} {tr('unsicher', 'неуверенно')}</span>
+        <span className="gap-chip level-solid">● {counts.solid} {tr('sitzen', 'усвоено')}</span>
+        <span className="gap-chip level-unknown">● {counts.unknown} {tr('offen', 'не начато')}</span>
+      </div>
+      <Panel className="gap-next">
+        <p>
+          <strong>{tr('Dein nächster sinnvoller Schritt:', 'Твой следующий шаг:')}</strong>{' '}
+          {weakest.length
+            ? tr(`Übe gezielt ${weakest.map(({ c }) => loc(c.title)).join(', ')}.`, `Целенаправленно потренируй: ${weakest.map(({ c }) => loc(c.title)).join(', ')}.`)
+            : counts.unknown === CONCEPTS.length
+              ? tr('Spiel die erste Challenge oder einen Kurz-Check, dann füllt sich die Karte.', 'Пройди первое задание или мини-проверку, и карта начнёт заполняться.')
+              : tr('Keine akuten Lücken. Halte das Wissen mit der täglichen Wiederholung frisch.', 'Острых пробелов нет. Поддерживай знания ежедневным повторением.')}
+        </p>
+        <div className="row gap wrap">
+          {weakest[0] && (
+            <Link className="btn primary" to={`/ueben/${weakest[0].c.id}`}>
+              🎯 {tr('Schwächstes Thema üben', 'Тренировать самую слабую тему')}
+            </Link>
+          )}
+          <Link className="btn" to="/ueben">
+            🔁 {tr('Wiederholung', 'Повторение')}
+            {due > 0 ? ` (${due} ${tr('fällig', 'к повт.')})` : ''}
+          </Link>
+        </div>
+      </Panel>
+      {groups.map((g) => {
+        const items = stats.filter(({ c }) => (c.objective ?? 'bonus') === g.id);
+        if (!items.length) return null;
+        return (
+          <section key={g.id}>
+            <h2 className="section-title">{g.title}</h2>
+            <div className="gap-grid">
+              {items.map(({ c, m }) => {
+                const level = masteryLevel(m.mastery);
+                return (
+                  <article key={c.id} className={`gap-tile level-${level}`}>
+                    <header>
+                      <strong>{loc(c.title)}</strong>
+                      <span className="gap-pct">{m.mastery === null ? '–' : `${Math.round(m.mastery * 100)} %`}</span>
+                    </header>
+                    <p className="small muted">
+                      {tr(LEVEL_LABEL[level].de, LEVEL_LABEL[level].ru)}
+                      {m.trend === 1 ? ` · ↗ ${tr('besser', 'лучше')}` : m.trend === -1 ? ` · ↘ ${tr('schlechter', 'хуже')}` : ''}
+                      {m.due > 0 ? ` · ${m.due} ${tr('fällig', 'к повт.')}` : ''}
+                    </p>
+                    <div className="gap-bar" aria-hidden="true">
+                      <span style={{ width: `${Math.round((m.mastery ?? 0) * 100)}%` }} />
+                    </div>
+                    <div className="gap-actions">
+                      <Link to={`/ueben/${c.id}`}>🎯 {tr('Üben', 'Тренировать')}</Link>
+                      <Link to={`/modul/${c.module}/theorie/${c.section}`}>📖 {tr('Nachlesen', 'Перечитать')}</Link>
+                      {c.lab && <Link to={`/labor/${c.lab}`}>🔬 {tr('Labor', 'Лаборатория')}</Link>}
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })}
     </div>
   );
 }
@@ -427,9 +557,10 @@ function ExamCenter({ tab }: { tab: Tab }) {
   const { tr } = useLang();
   const { state } = useGame();
   const recapDone = RECAP_QUESTIONS.filter((q) => state.flags[`recap-${q.id}`]).length;
-  const known = EXAM_QUESTIONS.filter((q) => state.flags[`exq-${q.id}`]).length;
+  const known = EXAM_QUESTIONS.filter((q) => isCardSolid(state.learning, state.flags, q.id)).length;
   const labels: Record<Tab, string> = {
     ueberblick: tr('🧭 Überblick', '🧭 Обзор'),
+    luecken: tr('🗺️ Meine Lücken', '🗺️ Мои пробелы'),
     kontrollfragen: `${tr('🎯 Kontrollfragen', '🎯 Контрольные')} ${recapDone}/${RECAP_QUESTIONS.length}`,
     karteikarten: `${tr('🃏 Karteikarten', '🃏 Карточки')} ${known}/${EXAM_QUESTIONS.length}`,
     spickzettel: tr('📝 Spickzettel', '📝 Шпаргалка'),
@@ -462,6 +593,7 @@ function ExamCenter({ tab }: { tab: Tab }) {
       </div>
       <div className="tab-body">
         {tab === 'ueberblick' && <Overview />}
+        {tab === 'luecken' && <GapMap />}
         {tab === 'kontrollfragen' && <RecapTab />}
         {tab === 'karteikarten' && <Flashcards />}
         {tab === 'spickzettel' && <CheatSheet />}

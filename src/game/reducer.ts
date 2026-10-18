@@ -1,5 +1,6 @@
 import { BADGES } from './badges';
 import type { GameAction, GameState, ModuleProgress } from './types';
+import { emptyLearning, updateItem, type LearningState } from './learning/memory';
 
 export const STORAGE_KEY = 'mrt-quest:v1';
 
@@ -25,10 +26,45 @@ export function createInitialState(now = Date.now()): GameState {
     flags: {},
     examBest: 0,
     createdAt: now,
+    learning: emptyLearning(),
   };
 }
 
 const emptyModule = (): ModuleProgress => ({ bestScore: 0, attempts: 0, perfect: false, theoryRead: false, xpEarned: 0 });
+
+const MAX_ITEMS = 1000;
+
+/** Aktualisiert das Lerngedächtnis eines Items; die Größe bleibt begrenzt. */
+function learn(learning: LearningState, itemId: string, result: Parameters<typeof updateItem>[1], now = Date.now()): LearningState {
+  const items = { ...learning.items, [itemId]: updateItem(learning.items[itemId], result, now) };
+  const ids = Object.keys(items);
+  if (ids.length > MAX_ITEMS) {
+    ids.sort((a, b) => items[a].last - items[b].last).slice(0, ids.length - MAX_ITEMS).forEach((id) => delete items[id]);
+  }
+  return { ...learning, items };
+}
+
+/** Prüft ein gespeichertes Lerngedächtnis und verwirft ungültige Einträge. */
+function sanitizeLearning(raw: unknown): LearningState {
+  if (!isRecord(raw)) return emptyLearning();
+  const items: LearningState['items'] = {};
+  if (isRecord(raw.items)) {
+    for (const [id, m] of Object.entries(raw.items)) {
+      if (!isRecord(m)) continue;
+      const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
+      items[id] = {
+        box: Math.min(5, Math.max(0, Math.round(num(m.box)))),
+        seen: num(m.seen),
+        correct: num(m.correct),
+        last: num(m.last),
+        due: num(m.due),
+        history: Array.isArray(m.history) ? m.history.filter((x): x is boolean => typeof x === 'boolean').slice(-8) : [],
+      };
+    }
+  }
+  const lastRound = Array.isArray(raw.lastRound) ? raw.lastRound.filter((x): x is string => typeof x === 'string') : [];
+  return { items, lastRound };
+}
 
 /** XP für das erstmalige Lesen eines Theorie-Kapitels. */
 export const THEORY_XP = 20;
@@ -39,11 +75,21 @@ function updateModule(state: GameState, id: string, fn: (m: ModuleProgress) => M
 
 function baseReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
+    case 'RATE_CARD': {
+      const learning = learn(state.learning, action.itemId, action.rating, action.now);
+      const xp = action.xp ?? 0;
+      return { ...state, learning, xp: state.xp + xp };
+    }
+    case 'LEARN':
+      return { ...state, learning: learn(state.learning, action.itemId, action.correct, action.now) };
+    case 'START_ROUND':
+      return { ...state, learning: { ...state.learning, lastRound: action.itemIds } };
     case 'ANSWER': {
       const streak = action.correct ? state.stats.streak + 1 : 0;
       return {
         ...state,
         xp: state.xp + (action.correct ? action.xp : 0),
+        learning: action.questionId ? learn(state.learning, action.questionId, action.correct, action.now) : state.learning,
         stats: {
           ...state.stats,
           answered: state.stats.answered + 1,
@@ -182,6 +228,7 @@ export function loadState(storage: Pick<Storage, 'getItem'> | undefined = global
       flags: isRecord(parsed.flags) ? (parsed.flags as GameState['flags']) : {},
       simulatorsVisited: Array.isArray(parsed.simulatorsVisited) ? parsed.simulatorsVisited.filter((x): x is string => typeof x === 'string') : [],
       activeDays: Array.isArray(parsed.activeDays) ? parsed.activeDays.filter((x): x is string => typeof x === 'string') : [],
+      learning: sanitizeLearning(parsed.learning),
     };
     if (typeof merged.xp !== 'number' || !Number.isFinite(merged.xp) || merged.xp < 0) merged.xp = 0;
     return merged;

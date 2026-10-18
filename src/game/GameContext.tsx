@@ -79,13 +79,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
       });
     }
     const gained = state.xp - prev.xp;
-    if (gained > 0 && action && (action.type === 'FLAG' || action.type === 'READ_THEORY')) {
+    if (gained > 0 && action && (action.type === 'FLAG' || action.type === 'READ_THEORY' || action.type === 'RATE_CARD')) {
       notify({
         kind: 'xp',
         title: `+${gained} XP`,
         detail: action.type === 'READ_THEORY'
           ? t('Theorie-Kapitel abgeschlossen', 'Теоретическая глава завершена')
-          : action.flag.startsWith('recap-') || action.flag.startsWith('exq-')
+          : action.type === 'RATE_CARD' || action.flag.startsWith('recap-') || action.flag.startsWith('exq-')
             ? t('Prüfungsfrage gemeistert', 'Экзаменационный вопрос усвоен')
             : t('Entdeckung im Simulator', 'Открытие в симуляторе'),
         icon: '✨',

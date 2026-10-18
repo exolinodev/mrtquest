@@ -2,11 +2,15 @@ import { answerXp } from '../game/levels';
 import { completionBonus, requiredCorrect, type ChallengeKind } from '../game/challenge';
 import { numberLocale } from '../i18n/format';
 import { useLang } from '../i18n/LanguageContext';
+import { CONCEPT_BY_ID } from '../game/learning/concepts';
 
-export function ChallengeIntro({ count, kind, replay, attempts = 0, bestScore = 0, onStart }: {
-  count: number; kind: ChallengeKind; replay: boolean; attempts?: number; bestScore?: number; onStart: () => void;
+export function ChallengeIntro({ count, kind, replay, attempts = 0, bestScore = 0, focus = [], onStart }: {
+  count: number; kind: ChallengeKind; replay: boolean; attempts?: number; bestScore?: number;
+  /** schwächste Konzepte, auf die diese Runde zielt */
+  focus?: string[];
+  onStart: () => void;
 }) {
-  const { lang, tr } = useLang();
+  const { lang, tr, loc } = useLang();
   const exam = kind.type === 'exam';
   const target = requiredCorrect(count);
   const tiers = exam ? [0.6, 0.8] : [0.6, 0.8, 1];
@@ -21,6 +25,7 @@ export function ChallengeIntro({ count, kind, replay, attempts = 0, bestScore = 
       <div><dt>{tr(exam ? 'Zum Bestehen' : 'Zum Meistern', exam ? 'Для сдачи' : 'Для освоения')}</dt><dd>{target} <span>{tr(`von ${count} richtig`, `из ${count} верно`)}</span></dd></div>
       <div><dt>{tr('Dein Tempo', 'В своём темпе')}</dt><dd className="challenge-no-timer">{tr('Ohne Zeitlimit', 'Без таймера')}</dd></div>
     </dl>
+    {focus.length > 0 && <p className="challenge-focus">🎯 {tr('Fokus dieser Runde', 'Фокус этого раунда')}: {focus.map((id) => CONCEPT_BY_ID[id] && loc(CONCEPT_BY_ID[id].title)).filter(Boolean).join(' · ')}. {tr('Die Runde mischt fällige Wiederholungen, deine schwächsten Themen und Neues.', 'Раунд смешивает повторения, самые слабые темы и новое.')}</p>}
     <p className="challenge-goal">{exam
       ? tr('Ab 80 % erhältst du das Gold-Abzeichen „Prüfung bestanden“.', 'От 80 % ты получишь золотую награду «Экзамен сдан».')
       : tr('Ab 80 % ist das Modul gemeistert und du erhältst das Modul-Abzeichen.', 'От 80 % модуль считается освоенным, и ты получишь награду за модуль.')}</p>

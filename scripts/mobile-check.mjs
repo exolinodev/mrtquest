@@ -50,7 +50,35 @@ const SIMULATORS = ['larmor', 'relaxation', 'gradient', 'kspace', 'sequence', 'a
 const PAGES = [
   { name: 'uebersicht', path: '/' },
   { name: 'vorlesung', path: '/vorlesung' },
-  ...['kontrollfragen','karteikarten','spickzettel','lab3'].map(tab=>({name:`vorlesung-${tab}`,path:`/vorlesung/${tab}`})),
+  ...['luecken','kontrollfragen','karteikarten','spickzettel','lab3'].map(tab=>({name:`vorlesung-${tab}`,path:`/vorlesung/${tab}`})),
+  { name: 'ueben-wiederholung', path: '/ueben' },
+  { name: 'ueben-konzept', path: '/ueben/t2', click: '.practice-page .btn.primary' },
+  {
+    name: 'karteikarte-bewerten', path: '/vorlesung/karteikarten',
+    interact: async page=>{
+      await page.locator('.flashcard .btn.primary').click();
+      await page.locator('.rating-row .rating-again').click();
+      assert.ok(await page.locator('.flashcard').isVisible());
+    },
+  },
+  {
+    name: 'kurz-check', path: '/modul/prinzip/theorie',
+    interact: async page=>{
+      await page.locator('.quick-check-open').first().click();
+      assert.ok(await page.locator('.quick-check').first().isVisible());
+    },
+  },
+  {
+    name: 'nachhak-frage', path: '/modul/einfuehrung/challenge',
+    interact: async page=>{
+      await page.locator('.challenge-intro .btn.primary').click();
+      // Bewusst falsch antworten: bei Auswahlfragen die erste falsche Option, bei Zahlen eine absurde Zahl
+      if (await page.locator('.numeric-input input').count()) await page.locator('.numeric-input input').fill('-999999');
+      else await page.locator('.options .option').first().click();
+      await page.getByRole('button',{name:/Antwort prüfen|Проверить ответ/}).click();
+      assert.ok(await page.locator('.feedback').isVisible());
+    },
+  },
   {
     name: 'vorlesung-kontrollfrage-offen', path: '/vorlesung/kontrollfragen',
     interact: async page=>{
@@ -104,16 +132,18 @@ const PAGES = [
     name: 'challenge-auswertung', path: '/modul/prinzip/challenge',
     interact: async (page) => {
       await page.locator('.challenge-start').click();
-      for (let i = 0; i < 8; i++) {
+      // 8 Aufgaben plus bis zu 3 Nachhak-Fragen nach Fehlern
+      for (let i = 0; i < 11 && !(await page.locator('.challenge-summary').count()); i++) {
         const input = page.locator('.numeric-input input');
         if (await input.count()) await input.fill('0');
         else await page.locator('.option').first().click();
         await page.locator('.question button[type="submit"]').press('Enter');
         await page.locator('.feedback').waitFor({ state: 'visible' });
-        await page.locator('.feedback .btn').click();
-        await page.locator('.feedback').waitFor({ state: 'hidden' });
+        await page.locator('.feedback .btn').first().click();
       }
-      assert.equal(await page.locator('.challenge-review-item').count(), 8);
+      await page.locator('.challenge-summary').waitFor({ state: 'visible' });
+      assert.ok((await page.locator('.challenge-review-item').count()) >= 8);
+      assert.ok(await page.locator('.round-gaps, .challenge-summary .ok-text').first().isVisible());
       await page.locator('.challenge-review-item summary').first().click();
     },
   },
