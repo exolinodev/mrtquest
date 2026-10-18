@@ -3141,3 +3141,9 @@ path.sx-focus-shape { fill: none; stroke-width: 10; }
 .modlab-table table {
   min-width: 0;
 }
+
+/* Spin-Ensemble-Labor: größere Achsenbeschriftung, damit sie auch auf 390 px lesbar bleibt */
+.ens-fig .lab-axis-label,
+.ens-fig .fig-label {
+  font-size: 16px;
+}
