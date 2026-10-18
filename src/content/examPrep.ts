@@ -14,6 +14,7 @@ export interface Objective {
 /** Eine der Recap-Fragen am Ende des Skripts, mit ausführlicher Musterantwort. */
 export interface RecapQuestion {
   id: string;
+  title: Loc;
   question: Loc;
   /** Lösungsweg in kurzen Schritten (Markdown-light: **fett**, $TeX$) */
   steps: Loc[];
@@ -86,6 +87,7 @@ export const OBJECTIVES: Objective[] = [
 export const RECAP_QUESTIONS: RecapQuestion[] = [
   {
     id: 'recap-protonen',
+    title: { de: 'Warum Protonen?', ru: 'Почему протоны?' },
     question: {
       de: 'Warum sind Protonen für die MRT besonders gut geeignet?',
       ru: 'Почему протоны особенно хорошо подходят для МРТ?',
@@ -124,6 +126,7 @@ export const RECAP_QUESTIONS: RecapQuestion[] = [
   },
   {
     id: 'recap-gradient-steigung',
+    title: { de: 'Gradient und Frequenz', ru: 'Градиент и частота' },
     question: {
       de: 'Gegeben ist ein Gradientenfeld $B(z) = B_0 z$. Welche Steigung $d\\omega/dz$ hat dann die Frequenz entlang z?',
       ru: 'Дано градиентное поле $B(z) = B_0 z$. Какой наклон $d\\omega/dz$ имеет тогда частота вдоль z?',
@@ -162,6 +165,7 @@ export const RECAP_QUESTIONS: RecapQuestion[] = [
   },
   {
     id: 'recap-t2-merkmal',
+    title: { de: 'T2 im Signal', ru: 'T2 в сигнале' },
     question: {
       de: 'Welches Merkmal des Signals muss man auswerten, um ein T2-gewichtetes Bild zu bekommen?',
       ru: 'Какой признак сигнала нужно анализировать, чтобы получить T2-взвешенное изображение?',
@@ -200,6 +204,7 @@ export const RECAP_QUESTIONS: RecapQuestion[] = [
   },
   {
     id: 'recap-kanten-kraum',
+    title: { de: 'Kanten im k-Raum', ru: 'Края в k-пространстве' },
     question: {
       de: 'Wie kann man über den k-Raum die Kanten in einer MRT-Schicht verstärken?',
       ru: 'Как через k-пространство усилить края на срезе МРТ?',
@@ -238,6 +243,7 @@ export const RECAP_QUESTIONS: RecapQuestion[] = [
   },
   {
     id: 'recap-komponenten',
+    title: { de: 'Bauteile und Funktion', ru: 'Узлы и их функции' },
     question: {
       de: 'Was sind die essentiellen Komponenten eines MRT-Geräts?',
       ru: 'Каковы основные компоненты МР-томографа?',

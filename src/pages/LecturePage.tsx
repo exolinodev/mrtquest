@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { StudyContents } from '../components/StudyContents';
 import { RichText, TeX } from '../components/RichText';
 import { Link, navigate } from '../components/router';
 import { Panel, ProgressBar, Segmented } from '../components/ui';
@@ -166,9 +167,9 @@ function RecapLesson({ q, index }: { q: RecapQuestion; index: number }) {
   const flag = `recap-${q.id}`;
   const done = !!state.flags[flag];
   return (
-    <section className={`recap-lesson${done ? ' done' : ''}`}>
-      <h2>
-        <span className="sec-num">{done ? '✓' : index + 1}</span> <RichText text={loc(q.question)} />
+    <section id={q.id} className={`recap-lesson${done ? ' done' : ''}`}>
+      <h2 tabIndex={-1}>
+        <span className="sec-num">{done ? '✓' : index + 1}</span> <span><RichText text={loc(q.question)} /></span>
       </h2>
       {!open ? (
         <>
@@ -224,9 +225,10 @@ function RecapLesson({ q, index }: { q: RecapQuestion; index: number }) {
 }
 
 function RecapTab() {
-  const { tr } = useLang();
+  const { tr, loc } = useLang();
   return (
     <article className="theory recap-tab">
+      <StudyContents items={RECAP_QUESTIONS.map(q => ({ id: q.id, title: loc(q.title) }))} />
       <div className="theory-body">
         <p className="theory-hook">
           {tr(
